@@ -21,6 +21,10 @@ export interface RecommendRequest {
   quantityKg?: number;
   /** Search radius in km. Defaults to DEFAULT_RADIUS_KM, or unlimited when a province is given. */
   radiusKm?: number;
+  /** Hard cap from the caller's tier (see limits.ts); applied on top of `limit`. */
+  maxResults?: number;
+  /** Whether custom weights may be honoured (Enterprise). */
+  allowWeights?: boolean;
   lat?: number;
   lng?: number;
   limit?: number;
@@ -92,9 +96,12 @@ export async function recommend(req: RecommendRequest) {
     reportedAt: l.reportedAt,
   })).filter((c) => c.distanceKm <= radiusKm);
 
+  const cap = req.maxResults ?? 3;
+  const limit = Math.min(req.limit ?? 3, cap);
+  const weights = req.allowWeights === false ? undefined : req.weights;
   let ranked;
   try {
-    ranked = rankCandidates(candidates, { weights: req.weights, limit: req.limit ?? 3 });
+    ranked = rankCandidates(candidates, { weights, limit });
   } catch (e) {
     throw new RecommendError(400, (e as Error).message);
   }
@@ -105,6 +112,8 @@ export async function recommend(req: RecommendRequest) {
     province: province?.key ?? null,
     quantityKg: quantityKg ?? null,
     radiusKm: Number.isFinite(radiusKm) ? radiusKm : null,
+    weightsApplied: Boolean(weights),
+    maxResults: cap,
     buyerLocation: buyer,
     candidates: candidates.length,
     results: ranked.map((r) => ({

@@ -41,6 +41,9 @@ const S = {
     voiceHeard: (t: string) => `🎤 Eshitdim: <i>${t}</i>`,
     backendDown: "⚠️ Server javob bermayapti. Bir ozdan keyin qayta urinib ko'ring.",
     breakdown: (p: number, q: number, d: number) => `narx ${p} · sifat ${q} · masofa ${d}`,
+    limitReached: "⛔ Bugungi bepul qidiruvlar tugadi (5 ta/kun).\nMini App'da qo'shimcha paket oling yoki Enterprise'ga o'ting — cheksiz qidiruv, 7 kunlik narx prognozi va savat bo'yicha taklif.",
+    upgradeBtn: "⭐ Enterprise'ga o'tish",
+    usageLine: (used: number, limit: number) => `\n\n<i>Bugun: ${used}/${limit} bepul qidiruv</i>`,
   },
   ru: {
     start:
@@ -74,6 +77,9 @@ const S = {
     voiceHeard: (t: string) => `🎤 Услышал: <i>${t}</i>`,
     backendDown: "⚠️ Сервер не отвечает. Попробуйте чуть позже.",
     breakdown: (p: number, q: number, d: number) => `цена ${p} · качество ${q} · расстояние ${d}`,
+    limitReached: "⛔ Бесплатные поиски на сегодня закончились (5 в день).\nКупите пакет в Mini App или перейдите на Enterprise — безлимит, прогноз цен на 7 дней и расчёт корзины.",
+    upgradeBtn: "⭐ Перейти на Enterprise",
+    usageLine: (used: number, limit: number) => `\n\n<i>Сегодня: ${used}/${limit} бесплатных поисков</i>`,
   },
   en: {
     start:
@@ -107,6 +113,9 @@ const S = {
     voiceHeard: (t: string) => `🎤 I heard: <i>${t}</i>`,
     backendDown: "⚠️ The server isn't responding. Please try again in a moment.",
     breakdown: (p: number, q: number, d: number) => `price ${p} · quality ${q} · distance ${d}`,
+    limitReached: "⛔ You've used today's free searches (5/day).\nBuy a pack in the Mini App or go Enterprise — unlimited searches, 7-day price forecasts and basket quotes.",
+    upgradeBtn: "⭐ Go Enterprise",
+    usageLine: (used: number, limit: number) => `\n\n<i>Today: ${used}/${limit} free searches</i>`,
   },
 } as const;
 

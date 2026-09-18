@@ -32,8 +32,10 @@ function harness() {
 }
 
 let updateId = 1;
-const user = (lang = "uz") => ({ id: 42, is_bot: false, first_name: "Test", language_code: lang });
-const chat = { id: 42, type: "private" as const };
+// Fresh Telegram user id per run so the daily quota never accumulates across test runs.
+const UID = 100_000 + Math.floor(Math.random() * 900_000);
+const user = (lang = "uz") => ({ id: UID, is_bot: false, first_name: "Test", language_code: lang });
+const chat = { id: UID, type: "private" as const };
 const textUpdate = (text: string, lang?: string) => ({
   update_id: updateId++,
   message: { message_id: updateId, date: 0, chat, from: user(lang), text },
@@ -106,6 +108,18 @@ test("voice without STT configured → asks to type", { skip: !backendUp && "bac
     message: { message_id: 1, date: 0, chat, from: user("en"), voice: { file_id: "x", file_unique_id: "y", duration: 2 } },
   } as never);
   assert.match(String(messages(sent)[0].payload.text), /speech recognition isn't connected/);
+});
+
+test("6th search of the day → limit message with upgrade button", { skip: !backendUp && "backend not running" }, async () => {
+  const { bot, sent } = harness();
+  const fresh = (text: string) => { const u = textUpdate(text, "en"); const id = UID + 1; return { ...u, message: { ...u.message, chat: { id, type: "private" as const }, from: { ...u.message.from, id } } }; };
+  for (let i = 0; i < 6; i++) await bot.handleUpdate(fresh("kartoshka") as never);
+  const msgs = messages(sent);
+  assert.match(String(msgs[4].payload.text), /Today: 5\/5 free searches/);
+  assert.match(String(msgs[5].payload.text), /used today's free searches/);
+  const kb = msgs[5].payload.reply_markup as { inline_keyboard: { text: string; web_app: { url: string } }[][] };
+  assert.match(kb.inline_keyboard[0][0].text, /Enterprise/);
+  assert.match(kb.inline_keyboard[0][0].web_app.url, /screen=profile/);
 });
 
 test("backend down → friendly message", async () => {

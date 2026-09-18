@@ -82,6 +82,24 @@ npx cloudflared tunnel --url http://localhost:3000
 bot, and the "Open in Mini App" button appears under every result. Optionally register the same URL
 in @BotFather → Bot Settings → Menu Button so the app opens from the chat's menu button too.
 
+## Tiers & paywall
+
+Identity comes from Telegram (the Mini App sends `Authorization: tma <initData>`, validated with
+`BOT_TOKEN` when the backend has it; the bot sends `x-telegram-user-id`). Everything about quotas and
+prices lives in `backend/src/limits.ts`:
+
+| | Standard (free) | Enterprise ($49/mo, fake checkout) |
+|---|---|---|
+| Searches | 5/day, +20 per 15 000 so'm pack | unlimited |
+| Results | top 3, fixed weights | top 10, adjustable weights |
+| Price history | 30 days | + 7-day forecast with buy/wait verdict |
+| Basket quote | locked | `POST /quote`: best single supplier vs best split, delivery included |
+
+Endpoints: `GET /me`, `POST /me/upgrade` (`{tier}`), `POST /me/credits`, `GET /history/:sellerId/:product`,
+`POST /quote` (`{text}` or `{items}`). `/recommend` returns `402 limit_reached` when the quota is spent
+and `403 enterprise_required` guards Enterprise-only endpoints. The Profile tab has a "Demo: switch back
+to Standard" link so judges can see both sides.
+
 ## The bot (`bot/`)
 
 - `/start` — welcome + quick-pick buttons (🍅 🥔 🧅) and a "share location" button.

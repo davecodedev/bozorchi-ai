@@ -75,20 +75,23 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
 
     await ctx.replyWithChatAction("typing");
     try {
-      const data = await recommend(backendUrl, {
-        product: text,
-        region,
-        lat: loc?.lat,
-        lng: loc?.lng,
-        limit: 3,
-      });
+      const data = await recommend(
+        backendUrl,
+        { product: text, region, lat: loc?.lat, lng: loc?.lng, limit: 3 },
+        ctx.from ? { telegramUserId: ctx.from.id, name: [ctx.from.first_name, ctx.from.last_name].filter(Boolean).join(" ") } : undefined,
+      );
 
       const reply_markup = miniAppUrl ? miniAppKeyboard(miniAppUrl, s.openApp, data.product, region, loc) : undefined;
-      await ctx.reply(formatRecommendation(data, lang, s, where), {
+      const usageLine = data.usage && data.usage.limit != null ? s.usageLine(data.usage.used, data.usage.limit) : "";
+      await ctx.reply(formatRecommendation(data, lang, s, where) + usageLine, {
         parse_mode: "HTML",
         reply_markup,
       });
     } catch (e) {
+      if (e instanceof ApiError && e.status === 402) {
+        const reply_markup = miniAppUrl ? new InlineKeyboard().webApp(s.upgradeBtn, `${miniAppUrl}${miniAppUrl.includes("?") ? "&" : "?"}screen=profile`) : undefined;
+        return ctx.reply(s.limitReached, { reply_markup });
+      }
       if (e instanceof ApiError && e.status === 404) {
         return ctx.reply(s.unknownProduct(text), { parse_mode: "HTML" });
       }

@@ -41,11 +41,17 @@ model Listing {
 
 
 model Buyer {
-  id             Int      @id @default(autoincrement())
-  telegramUserId String   @unique
+  id             Int       @id @default(autoincrement())
+  telegramUserId String    @unique
   name           String?
-  tier           String   @default("standard") // "standard" | "enterprise"
-  createdAt      DateTime @default(now())
+  username       String?
+  tier           String    @default("standard") // "standard" | "enterprise"
+  upgradedAt     DateTime?
+  // daily search quota (standard tier) — see backend/src/limits.ts
+  searchesUsed   Int       @default(0)
+  searchesDate   String    @default("") // YYYY-MM-DD the counter belongs to
+  credits        Int       @default(0) // extra searches bought as packs
+  createdAt      DateTime  @default(now())
   reviews        Review[]
 }
 
