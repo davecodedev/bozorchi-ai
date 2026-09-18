@@ -1,4 +1,4 @@
-// Bazarcha data model. SQLite for the hackathon; switching to PostgreSQL later is a
+// Bozorchi AI data model. SQLite for the hackathon; switching to PostgreSQL later is a
 // one-line change of `provider` + DATABASE_URL.
 
 generator client {

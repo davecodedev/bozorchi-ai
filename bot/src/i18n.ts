@@ -11,7 +11,7 @@ export function pickLang(code?: string): Lang {
 const S = {
   uz: {
     start:
-      "👋 <b>Bazarcha</b>ga xush kelibsiz!\n\n" +
+      "👋 <b>Bozorchi AI</b>ga xush kelibsiz!\n\n" +
       "Qaysi mahsulot kerak? Yozing (masalan, <i>pomidor</i>, <i>2 tonna kartoshka</i>) " +
       "yoki pastdagi tugmalardan tanlang.\n\n" +
       "📍 Joylashuvingizni yuborsangiz, eng yaqin sotuvchilarni topaman.",
@@ -44,7 +44,7 @@ const S = {
   },
   ru: {
     start:
-      "👋 Добро пожаловать в <b>Bazarcha</b>!\n\n" +
+      "👋 Добро пожаловать в <b>Bozorchi AI</b>!\n\n" +
       "Какой товар нужен? Напишите (например, <i>помидоры</i>, <i>2 тонны картошки</i>) " +
       "или выберите кнопкой ниже.\n\n" +
       "📍 Отправьте геолокацию — найду ближайших продавцов.",
@@ -77,7 +77,7 @@ const S = {
   },
   en: {
     start:
-      "👋 Welcome to <b>Bazarcha</b>!\n\n" +
+      "👋 Welcome to <b>Bozorchi AI</b>!\n\n" +
       "What do you need? Type it (e.g. <i>tomatoes</i>, <i>2 tons of potatoes</i>) " +
       "or pick a button below.\n\n" +
       "📍 Share your location and I'll find the nearest sellers.",

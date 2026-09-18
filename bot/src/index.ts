@@ -18,7 +18,7 @@ const bot = createBot({ token: BOT_TOKEN, backendUrl: BACKEND_URL, miniAppUrl })
 
 bot.api
   .setMyCommands([
-    { command: "start", description: "Bazarcha — start" },
+    { command: "start", description: "Bozorchi AI — start" },
     { command: "help", description: "How to use" },
   ])
   .catch(() => {});

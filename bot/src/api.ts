@@ -1,4 +1,4 @@
-/** Thin client for the Bazarcha backend. */
+/** Thin client for the Bozorchi AI backend. */
 export interface RecommendParams {
   product: string;
   region?: string;

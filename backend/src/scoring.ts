@@ -1,5 +1,5 @@
 /**
- * Bazarcha recommendation engine.
+ * Bozorchi AI recommendation engine.
  *
  * Pure function: takes candidate listings, returns them ranked.
  * No I/O, no DB — everything it needs is passed in, so it is trivially unit-testable

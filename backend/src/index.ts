@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/health", (_req, res) => res.json({ ok: true, service: "bazarcha-backend" }));
+app.get("/health", (_req, res) => res.json({ ok: true, service: "bozorchi-ai-backend" }));
 
 /** Everything the Mini App needs to draw its chips. */
 app.get("/meta", (_req, res) =>
@@ -71,5 +71,5 @@ app.get("/", (_req, res) => res.redirect("/app/"));
 
 const port = Number(process.env.PORT ?? 3000);
 app.listen(port, () => {
-  console.log(`bazarcha backend listening on http://localhost:${port}  (mini app at /app/)`);
+  console.log(`bozorchi-ai backend listening on http://localhost:${port}  (mini app at /app/)`);
 });

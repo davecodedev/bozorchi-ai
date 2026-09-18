@@ -24,7 +24,7 @@ function harness() {
     return { ok: true, result: true } as never;
   });
   bot.botInfo = {
-    id: 1, is_bot: true, first_name: "Bazarcha", username: "bazarcha_test_bot",
+    id: 1, is_bot: true, first_name: "Bozorchi AI", username: "bazarcha_test_bot",
     can_join_groups: true, can_read_all_group_messages: false, supports_inline_queries: false,
     can_connect_to_business: false, has_main_web_app: true, has_topics_enabled: false,
   } as never;
@@ -47,7 +47,7 @@ test("/start replies with welcome + quick-pick keyboard", { skip: !backendUp && 
     message: { ...textUpdate("/start").message, entities: [{ type: "bot_command", offset: 0, length: 6 }] },
   } as never);
   const [m] = messages(sent);
-  assert.match(String(m.payload.text), /Bazarcha/);
+  assert.match(String(m.payload.text), /Bozorchi AI/);
   const kb = (m.payload.reply_markup as { keyboard: { text: string }[][] }).keyboard;
   assert.equal(kb[0].length, 3);
   assert.match(kb[0][0].text, /Pomidor/);

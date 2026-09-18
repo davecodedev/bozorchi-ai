@@ -1,11 +1,11 @@
-/* Bazarcha Mini App — plain JS, no build step. Talks to the backend's /recommend, /sellers, /meta. */
+/* Bozorchi AI Mini App — plain JS, no build step. Talks to the backend's /recommend, /sellers, /meta. */
 (() => {
   "use strict";
 
   const tg = window.Telegram && window.Telegram.WebApp;
   const params = new URLSearchParams(location.search);
   const API = (params.get("api") || (location.protocol.startsWith("http") ? location.origin : "http://localhost:3000")).replace(/\/$/, "");
-  const BRAND = "Bazarcha";
+  const BRAND = "Bozorchi AI";
   const DEFAULT_PROVINCE = "toshkent-shahri";
 
   // ---------------------------------------------------------------- i18n

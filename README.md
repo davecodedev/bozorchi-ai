@@ -1,4 +1,4 @@
-# Bazarcha
+# Bozorchi AI
 
 AI-powered B2B sourcing for Uzbekistan's bazaars, delivered as a Telegram bot + Mini App.
 A buyer asks for a product; the scoring engine ranks sellers by **price**, **verified quality**
