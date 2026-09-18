@@ -1,0 +1,59 @@
+// Bazarcha data model. SQLite for the hackathon; switching to PostgreSQL later is a
+// one-line change of `provider` + DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Seller {
+  id          Int       @id @default(autoincrement())
+  name        String
+  region      String    // Tashkent district / bazaar area, e.g. "Chilanzar"
+  bazaar      String    // e.g. "Chorsu Bazaar"
+  lat         Float
+  lng         Float
+  verified    Boolean   @default(false)
+  rating      Float     @default(0) // 0–5
+  reviewCount Int       @default(0)
+  phone       String?
+  listings    Listing[]
+  reviews     Review[]
+}
+
+model Listing {
+  id         Int      @id @default(autoincrement())
+  seller     Seller   @relation(fields: [sellerId], references: [id])
+  sellerId   Int
+  product    String   // canonical product key, e.g. "tomato"
+  pricePerKg Int      // UZS
+  minOrderKg Int      @default(1)
+  reportedAt DateTime @default(now()) // for staleness decay
+
+  @@index([product])
+  @@index([sellerId, product])
+}
+
+model Buyer {
+  id             Int      @id @default(autoincrement())
+  telegramUserId String   @unique
+  name           String?
+  tier           String   @default("standard") // "standard" | "enterprise"
+  createdAt      DateTime @default(now())
+  reviews        Review[]
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  seller    Seller   @relation(fields: [sellerId], references: [id])
+  sellerId  Int
+  buyer     Buyer    @relation(fields: [buyerId], references: [id])
+  buyerId   Int
+  rating    Int      // 1–5
+  comment   String?
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,21 @@
+{
+  "name": "bazarcha",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI-powered B2B sourcing for Uzbekistan's bazaars — Telegram bot + Mini App",
+  "workspaces": [
+    "backend",
+    "bot"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace backend",
+    "dev:backend": "npm run dev --workspace backend",
+    "dev:bot": "npm run dev --workspace bot",
+    "db:setup": "npm run db:setup --workspace backend",
+    "db:seed": "npm run db:seed --workspace backend",
+    "test": "npm run test --workspace backend"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
