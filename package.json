@@ -13,7 +13,7 @@
     "dev:bot": "npm run dev --workspace bot",
     "db:setup": "npm run db:setup --workspace backend",
     "db:seed": "npm run db:seed --workspace backend",
-    "test": "npm run test --workspace backend"
+    "test": "npm run test --workspaces --if-present"
   },
   "engines": {
     "node": ">=20"

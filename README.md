@@ -10,7 +10,7 @@ and **distance**, and returns the top 3.
 bazarcha/
 ├── backend/   Express API + Prisma (SQLite)  →  POST /recommend
 │   └── src/scoring.ts   the recommendation engine (pure, unit-tested)
-├── bot/       grammY Telegram bot            (checkpoint step 4)
+├── bot/       grammY Telegram bot            (/start, text, voice, location → /recommend)
 ├── miniapp/   Telegram Mini App frontend     (checkpoint step 5)
 └── data/      seed.ts — mock sellers × products for Tashkent
 ```
@@ -32,11 +32,30 @@ curl -s -X POST http://localhost:3000/recommend \
   -d '{"product":"pomidor","region":"Chilanzar"}' | jq
 ```
 
-Run the scoring-engine tests:
+Run the bot (needs a real `BOT_TOKEN` in `bot/.env` — get one from @BotFather, never commit it):
+
+```bash
+npm run dev:bot
+```
+
+Run all tests (scoring engine + bot; the bot's integration tests run only while the backend is up):
 
 ```bash
 npm test
 ```
+
+## The bot (`bot/`)
+
+- `/start` — welcome + quick-pick buttons (🍅 🥔 🧅) and a "share location" button.
+- Any text → product + optional district are extracted (`pomidor Chilonzor`, `помидор Чиланзар`,
+  `2 tonna kartoshka`) → `POST /recommend` → top 3 as a formatted message with the score breakdown,
+  plus an inline **Open in Mini App** button that carries `?product=&region=&lat=&lng=` for step 5.
+- 📍 Location messages are remembered per user (in memory) and used for exact distances.
+- 🎤 Voice: if `OPENAI_API_KEY` is set, the audio is transcribed (Whisper, plain `fetch`) and
+  handled like text; otherwise the bot asks the user to type. Swap providers in `bot/src/stt.ts`.
+- Replies in Uzbek by default, Russian or English when Telegram reports that language.
+- The Mini App button only appears when `MINIAPP_URL` is `https://` — Telegram rejects anything else.
+- `bot/src/bot.ts` exports `createBot()` so tests drive it with fake updates and no token.
 
 ## How the scoring works
 
