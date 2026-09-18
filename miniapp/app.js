@@ -42,6 +42,11 @@
       voiceUnsupported: "Voice search isn't available here — send a voice message to the bot instead.", listening: "Listening…",
       unknownProduct: "Product not recognised. Try: pomidor, kartoshka, piyoz, bodring, olma.", offline: "Can't reach the server. Is the backend running?",
       ago: (d) => d === 0 ? "today" : d === 1 ? "yesterday" : d < 7 ? `${d} days ago` : d < 14 ? "1 week ago" : `${Math.floor(d / 7)} weeks ago`,
+      myProducts: "My products", addProduct: "Add a product", addProductSub: "List what you sell so buyers nearby can find you.",
+      productName: "Product name", productNamePh: "e.g. Pomidor", pricePerKg: "Price (so'm/kg)", location: "Location", placePh: "Bazaar or city, e.g. Chorsu bozori",
+      useMyLocation: "Use my location", locationSet: "GPS location attached", saveProduct: "Add product", fillAll: "Please fill in every field.",
+      productAdded: "Product added!", productAddedBody: (n) => `${n} is now listed. Buyers searching nearby will see your offer.`, ok: "Got it", noProducts: "You haven't listed anything yet.",
+      demoNote: "Demo: stored on this device for now.", perKgShort: "/kg",
       catLabel: (c) => ({ vegetables: "Vegetables", fruits: "Fruits", meat: "Meat", dairy: "Dairy", durable: "Durable goods" })[c] || c,
     },
     uz: {
@@ -76,6 +81,11 @@
       voiceUnsupported: "Ovozli qidiruv bu yerda ishlamaydi — botga ovozli xabar yuboring.", listening: "Tinglayapman…",
       unknownProduct: "Mahsulot tanilmadi. Masalan: pomidor, kartoshka, piyoz, bodring, olma.", offline: "Server bilan aloqa yo'q. Backend ishlayaptimi?",
       ago: (d) => d === 0 ? "bugun" : d === 1 ? "kecha" : d < 7 ? `${d} kun oldin` : d < 14 ? "1 hafta oldin" : `${Math.floor(d / 7)} hafta oldin`,
+      myProducts: "Mahsulotlarim", addProduct: "Mahsulot qo'shish", addProductSub: "Nima sotayotganingizni kiriting — yaqin atrofdagi xaridorlar sizni topadi.",
+      productName: "Mahsulot nomi", productNamePh: "masalan, Pomidor", pricePerKg: "Narx (so'm/kg)", location: "Joylashuv", placePh: "Bozor yoki shahar, masalan, Chorsu bozori",
+      useMyLocation: "Joylashuvimni aniqlash", locationSet: "GPS joylashuv biriktirildi", saveProduct: "Qo'shish", fillAll: "Iltimos, barcha maydonlarni to'ldiring.",
+      productAdded: "Mahsulot qo'shildi!", productAddedBody: (n) => `${n} ro'yxatga kiritildi. Yaqin atrofda qidirayotgan xaridorlar taklifingizni ko'radi.`, ok: "Tushunarli", noProducts: "Hali hech narsa qo'shmagansiz.",
+      demoNote: "Demo: hozircha shu qurilmada saqlanadi.", perKgShort: "/kg",
       catLabel: (c) => ({ vegetables: "Sabzavotlar", fruits: "Mevalar", meat: "Go'sht", dairy: "Sut mahsulotlari", durable: "Uzoq saqlanadigan" })[c] || c,
     },
     ru: {
@@ -110,6 +120,11 @@
       voiceUnsupported: "Голосовой поиск здесь недоступен — отправьте голосовое боту.", listening: "Слушаю…",
       unknownProduct: "Товар не распознан. Например: помидор, картошка, лук, огурец, яблоко.", offline: "Сервер недоступен. Бэкенд запущен?",
       ago: (d) => d === 0 ? "сегодня" : d === 1 ? "вчера" : d < 7 ? `${d} дн. назад` : d < 14 ? "неделю назад" : `${Math.floor(d / 7)} нед. назад`,
+      myProducts: "Мои товары", addProduct: "Добавить товар", addProductSub: "Укажите, что продаёте, — покупатели рядом вас найдут.",
+      productName: "Название товара", productNamePh: "например, Помидор", pricePerKg: "Цена (сум/кг)", location: "Локация", placePh: "Базар или город, например, Чорсу",
+      useMyLocation: "Определить моё местоположение", locationSet: "GPS-локация добавлена", saveProduct: "Добавить", fillAll: "Заполните все поля.",
+      productAdded: "Товар добавлен!", productAddedBody: (n) => `${n} теперь в списке. Покупатели рядом увидят ваше предложение.`, ok: "Понятно", noProducts: "Вы пока ничего не добавили.",
+      demoNote: "Демо: пока хранится на этом устройстве.", perKgShort: "/кг",
       catLabel: (c) => ({ vegetables: "Овощи", fruits: "Фрукты", meat: "Мясо", dairy: "Молочные", durable: "Долгого хранения" })[c] || c,
     },
   };
@@ -135,13 +150,16 @@
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
     thumb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.5 1 2.5 2.5V10h5a2 2 0 0 1 2 2l-1.5 6.5a2 2 0 0 1-2 1.5H7"/></svg>',
     sliders: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>',
+    close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
     phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',
   };
 
   // ---------------------------------------------------------------- storage (localStorage + Telegram CloudStorage mirror)
   const KEY = "bazarcha:v1";
   const defaults = () => ({
-    lang: null, province: DEFAULT_PROVINCE, saved: [], requests: [], alerts: [],
+    lang: null, province: DEFAULT_PROVINCE, saved: [], requests: [], alerts: [], myProducts: [],
     notif: { priceDrop: true, newSellers: true, orderUpdates: false },
   });
   const store = { ...defaults() };
@@ -234,6 +252,8 @@
   const go = (hash) => { location.hash = hash; };
   const route = () => { const h = location.hash.replace(/^#\/?/, ""); const [name, ...rest] = h.split("/"); return { name: name || "search", args: rest }; };
   const TABS = ["search", "saved", "sellers", "profile"];
+  /** Which tab lights up for each sub-screen. */
+  const TAB_OF = { results: "search", history: "search", seller: "sellers", requests: "profile", notifications: "profile" };
   window.addEventListener("hashchange", render);
 
   function render() {
@@ -241,12 +261,10 @@
     const view = document.getElementById("view");
     const fn = SCREENS[r.name] || SCREENS.search;
     const isTab = TABS.includes(r.name);
-    view.classList.toggle("has-tabs", isTab);
-    document.getElementById("tabbar").hidden = !isTab;
-    if (isTab) renderTabs(r.name);
+    document.getElementById("tabbar").hidden = false;
+    renderTabs(isTab ? r.name : TAB_OF[r.name] || "search");
     if (tg) { if (isTab) tg.BackButton.hide(); else tg.BackButton.show(); }
-    view.scrollTop = 0; window.scrollTo(0, 0);
-    Promise.resolve(fn(...r.args)).then((html) => { if (route().name === r.name) view.innerHTML = html; afterRender(r.name); })
+    Promise.resolve(fn(...r.args)).then((html) => { if (route().name === r.name) { view.innerHTML = `<div class="screen">${html}</div>`; view.scrollTop = 0; } afterRender(r.name); })
       .catch((e) => { view.innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
   }
   function renderTabs(active) {
@@ -331,13 +349,15 @@
           <div class="row" style="margin-bottom:14px">${avatar(top.sellerName, "md")}
             <div class="grow"><div class="name">${esc(top.sellerName)}</div><div class="sub">${esc(top.region)}</div></div>
             <div style="text-align:right"><div class="big">${Math.round(top.score)}</div><div class="sub">${t("matchScore")}</div></div></div>
+          <div class="price-row"><span class="price">${fmt(top.pricePerKg)} <small>${t("perKg")}</small></span><span class="sub">${top.minOrderKg ? t("minOrder", top.minOrderKg) + " · " : ""}${top.distanceKm} km</span></div>
           ${bars(top.breakdown)}
           <button class="btn" style="margin-top:16px" data-go="seller/${top.sellerId}">${t("viewProfile")} ${I.arrow}</button>
         </div>
         ${rest.length ? `<p class="label caps">${t("alsoMatching")}</p>` : ""}
         ${rest.map((r) => `
           <button class="card" style="width:100%;text-align:left" data-go="seller/${r.sellerId}">
-            <div class="row"><span class="rank">#${r.rank}</span><div class="grow"><div class="name">${esc(r.sellerName)}</div><div class="sub">${esc(r.region)}</div></div><div class="big" style="font-size:24px">${Math.round(r.score)}</div></div>
+            <div class="row"><span class="rank">#${r.rank}</span><div class="grow"><div class="name">${esc(r.sellerName)}</div><div class="sub">${esc(r.region)} · ${r.distanceKm} km</div></div>
+              <div style="text-align:right;flex:none"><div class="big" style="font-size:24px">${Math.round(r.score)}</div><div class="price" style="font-size:14px">${fmt(r.pricePerKg)}<small>${t("perKgShort")}</small></div></div></div>
             <div class="legend"><span><i class="dot"></i>${t("price")} <b>${Math.round(r.breakdown.priceScore)}</b></span><span><i class="dot q"></i>${t("quality")} <b>${Math.round(r.breakdown.qualityScore)}</b></span><span><i class="dot d"></i>${t("dist")} <b>${Math.round(r.breakdown.distanceScore)}</b></span></div>
             ${r.sellerId === cheapestId ? `<div class="hint">${t("cheapestNote")}</div>` : ""}
           </button>`).join("")}`}`;
@@ -407,6 +427,15 @@
         <button class="link-row" data-go="requests"><span class="ic">${I.list}</span><span class="grow">${t("myRequests")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <button class="link-row" data-go="saved"><span class="ic">${I.bookmark}</span><span class="grow">${t("savedSellers")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <button class="link-row" data-go="notifications"><span class="ic">${I.bell}</span><span class="grow">${t("notifications")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
+        <p class="label caps" style="margin-top:20px">${t("myProducts")}</p>
+        ${store.myProducts.length ? store.myProducts.map((p, i) => `
+          <div class="card mp-row" style="padding:12px 14px"><span class="mp-ic">${I.bag}</span>
+            <div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(t("catLabel", p.category))} · ${esc(p.place || provLabel(p.province))}</div></div>
+            <div class="price" style="font-size:15px">${fmt(p.price)}<small>${t("perKgShort")}</small></div>
+            <button class="x" data-act="removeProduct" data-i="${i}" aria-label="Remove">${I.close}</button></div>`).join("")
+          : `<p class="sub wrap" style="margin:0 0 10px">${t("noProducts")}</p>`}
+        <button class="btn" style="margin-bottom:6px" data-act="addProduct">${I.plus}${t("addProduct")}</button>
+        <p class="sub wrap" style="margin:0 0 20px;text-align:center">${t("demoNote")}</p>
         <p class="label caps" style="margin-top:20px">${t("preferences")}</p>
         <div class="card">
           <div class="label" style="margin-bottom:0">${t("language")}</div>
@@ -523,6 +552,57 @@
       <button class="btn" data-act="saveAlert">${t("save")}</button>`);
   }
 
+  let draftLoc = null;
+  function addProductSheet() {
+    draftLoc = null;
+    const cats = S.meta.categories;
+    sheet(`
+      <h3>${t("addProduct")}</h3><p class="sub wrap">${t("addProductSub")}</p>
+      <label class="field"><span>${t("productName")}</span><input id="ap-name" list="ap-list" autocomplete="off" placeholder="${t("productNamePh")}" /><datalist id="ap-list">${S.meta.products.map((p) => `<option value="${esc(p.label[S.lang] || p.label.en)}">`).join("")}</datalist></label>
+      <div class="field"><span>${t("category")}</span><div class="seg" id="ap-cat">${cats.map((c, i) => `<button type="button" class="chip sm ${i === 0 ? "on" : ""}" data-apcat="${c.key}">${esc(c.label[S.lang] || c.label.en)}</button>`).join("")}</div></div>
+      <label class="field"><span>${t("pricePerKg")}</span><input id="ap-price" type="number" inputmode="numeric" placeholder="12000" /></label>
+      <label class="field"><span>${t("location")}</span><select id="ap-prov">${S.meta.provinces.map((p) => `<option value="${p.key}" ${p.key === store.province ? "selected" : ""}>${esc(p.label[S.lang] || p.label.en)}</option>`).join("")}</select></label>
+      <label class="field" style="margin-top:8px"><input id="ap-place" placeholder="${t("placePh")}" autocomplete="off" /></label>
+      <button type="button" class="btn ghost" style="margin-top:10px" data-act="apLocate" id="ap-locate">${I.pin}<span>${t("useMyLocation")}</span></button>
+      <button type="button" class="btn" data-act="saveProduct">${t("saveProduct")}</button>`);
+  }
+  function popup(title, body, onOk) {
+    if (tg && tg.showPopup && tg.isVersionAtLeast && tg.isVersionAtLeast("6.2")) {
+      try { tg.showPopup({ title, message: body, buttons: [{ id: "ok", type: "ok" }] }, () => onOk && onOk()); return; } catch { /* fall through */ }
+    }
+    const el = document.createElement("div"); el.className = "popup";
+    el.innerHTML = `<div class="popup-body"><div class="ok">${I.check}</div><h3>${esc(title)}</h3><p class="wrap">${esc(body)}</p><button class="btn" data-popup-ok>${t("ok")}</button></div>`;
+    el.addEventListener("click", (e) => { if (e.target === el || e.target.closest("[data-popup-ok]")) { el.remove(); onOk && onOk(); } });
+    document.body.appendChild(el);
+  }
+  function saveProduct() {
+    const name = document.getElementById("ap-name").value.trim();
+    const price = Number(document.getElementById("ap-price").value);
+    const catBtn = document.querySelector("#ap-cat .chip.on");
+    const province = document.getElementById("ap-prov").value;
+    const place = document.getElementById("ap-place").value.trim();
+    if (!name || !price || !catBtn) return toast(t("fillAll"));
+    store.myProducts.unshift({ id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, at: new Date().toISOString() });
+    save(); closeSheet(); haptic("medium");
+    try { tg.HapticFeedback.notificationOccurred("success"); } catch {}
+    popup(t("productAdded"), t("productAddedBody", name), () => render());
+    render();
+  }
+  function locateForProduct() {
+    const btn = document.getElementById("ap-locate");
+    const done = (lat, lng) => { draftLoc = { lat, lng }; if (btn) { btn.classList.add("soft"); btn.querySelector("span").textContent = t("locationSet"); } haptic(); };
+    const lm = tg && tg.LocationManager;
+    if (lm && tg.isVersionAtLeast && tg.isVersionAtLeast("8.0")) {
+      lm.init(() => lm.getLocation((loc) => { if (loc) done(loc.latitude, loc.longitude); else fallback(); }));
+      return;
+    }
+    fallback();
+    function fallback() {
+      if (!navigator.geolocation) return toast(t("voiceUnsupported").split(" — ")[0]);
+      navigator.geolocation.getCurrentPosition((p) => done(p.coords.latitude, p.coords.longitude), () => toast(t("fillAll")), { timeout: 8000 });
+    }
+  }
+
   // ---------------------------------------------------------------- voice (Web Speech API where the WebView supports it)
   function mic() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -558,7 +638,7 @@
   // Some WebViews don't fire submit for the keyboard's "search"/Enter key — handle it explicitly.
   document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "q") { e.preventDefault(); submitSearch(); } });
   document.addEventListener("click", async (e) => {
-    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov]");
+    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat]");
     if (!el) return;
     const d = el.dataset;
     if (d.go !== undefined) { haptic(); closeSheet(); return go(d.go); }
@@ -568,6 +648,7 @@
     if (d.sprov !== undefined) { S.sellersProv = d.sprov || null; return render(); }
     if (d.bm) { const id = Number(d.bm); store.saved = isSaved(id) ? store.saved.filter((x) => x !== id) : [...store.saved, id]; save(); haptic("medium"); return render(); }
     if (d.lang) { S.lang = store.lang = d.lang; save(); return render(); }
+    if (d.apcat) { document.querySelectorAll("#ap-cat .chip").forEach((c) => c.classList.toggle("on", c === el)); return; }
     if (d.setprov) { store.province = S.province = d.setprov; save(); closeSheet(); return render(); }
     if (d.tgl) {
       if (d.tgl === "notif") store.notif[d.sub] = !store.notif[d.sub];
@@ -580,6 +661,10 @@
       case "request": haptic(); return requestSheet(d.id);
       case "sendRequest": closeSheet(); haptic("medium"); try { tg.HapticFeedback.notificationOccurred("success"); } catch {} return toast(t("requestSent"));
       case "chooseRegion": return regionSheet();
+      case "addProduct": haptic(); return addProductSheet();
+      case "saveProduct": return saveProduct();
+      case "apLocate": return locateForProduct();
+      case "removeProduct": store.myProducts.splice(Number(d.i), 1); save(); haptic(); return render();
       case "addAlert": return alertSheet(S.results ? S.results.product : S.meta.products[0].key);
       case "quickAlert": return alertSheet(d.product, Number(d.price));
       case "saveAlert": {
@@ -593,7 +678,11 @@
 
   // ---------------------------------------------------------------- boot
   async function boot() {
-    if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor("#F5F6FA"); tg.setBackgroundColor("#F5F6FA"); } catch {} }
+    if (tg) {
+      tg.ready(); tg.expand();
+      try { tg.setHeaderColor("#F5F6FA"); tg.setBackgroundColor("#F5F6FA"); tg.setBottomBarColor && tg.setBottomBarColor("#FFFFFF"); } catch {}
+      try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch {} // don't close the app when scrolling a list
+    }
     await loadStore();
     const tgLang = tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code;
     S.lang = store.lang || (tgLang && tgLang.startsWith("ru") ? "ru" : tgLang && tgLang.startsWith("en") ? "en" : "uz");

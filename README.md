@@ -57,8 +57,13 @@ Notifications & price alerts.
 - Search, results, seller profiles and the sellers list are **live** from `/recommend`, `/sellers`, `/meta`.
 - The search box understands quantities: `pomidor 500 kg`, `2 t piyoz`. Sellers whose minimum
   order is bigger than the request are excluded.
-- Saved sellers, request history, price alerts and language are stored per user in Telegram
-  CloudStorage (falls back to localStorage in a browser). No backend tables yet — by design for the checkpoint.
+- Saved sellers, request history, price alerts, language and the seller-side **"Add a product"**
+  listings (Profile tab) are stored per user in Telegram CloudStorage (falls back to localStorage in
+  a browser). No backend tables yet — by design for the checkpoint; wiring "Add a product" to a real
+  `POST /listings` is the next step.
+- The bottom tab bar is always visible; the layout is sized from Telegram's viewport and safe-area
+  CSS variables so it fits every phone, including in-app keyboard and fullscreen modes.
+- Seller reviews come from the seed (8 fake buyers, 2–4 reviews per seller, deterministic).
 - The price-history chart is a deterministic **sample** series ending at the seller's real current
   price, and is labelled as such in the UI. It becomes real once sellers report daily.
 - Deep link from the bot: `/app/?product=tomato&region=Chilanzar&lat=..&lng=..` runs the search on open.

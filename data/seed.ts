@@ -76,14 +76,51 @@ async function main() {
     }
   }
 
-  const buyer = await prisma.buyer.create({
-    data: { telegramUserId: "demo-buyer", name: "Sardor Rahimov", tier: "standard" },
-  });
-  await prisma.review.create({
-    data: { sellerId: firstSellerId, buyerId: buyer.id, rating: 5, comment: "Fresh, delivered on time." },
-  });
+  // ---- fake buyers + reviews so every profile has a few (deterministic, not random) ----
+  const buyerSeeds = [
+    { telegramUserId: "demo-buyer", name: "Sardor Rahimov" },
+    { telegramUserId: "demo-buyer-2", name: "Dilnoza Karimova" },
+    { telegramUserId: "demo-buyer-3", name: "Bahor Restaurant" },
+    { telegramUserId: "demo-buyer-4", name: "Jasur Tashkentov" },
+    { telegramUserId: "demo-buyer-5", name: "Madina Yusupova" },
+    { telegramUserId: "demo-buyer-6", name: "Oqtepa Lavash" },
+    { telegramUserId: "demo-buyer-7", name: "Bobur Nazarov" },
+    { telegramUserId: "demo-buyer-8", name: "Sevara Alimova" },
+  ];
+  const buyers = [];
+  for (const b of buyerSeeds) buyers.push(await prisma.buyer.create({ data: { ...b, tier: "standard" } }));
 
-  console.log(`Seeded ${sellers.length} sellers, ${listingCount} listings, 1 buyer, 1 review.`);
+  const comments: [rating: number, comment: string][] = [
+    [5, "Fresh, delivered on time. Will order again."],
+    [5, "Juda sifatli mahsulot, narxi ham mos. Rahmat!"],
+    [4, "Good quality, slightly higher price than others nearby."],
+    [5, "Pomidorlar yangi va shirin edi. Restoranimiz uchun doimiy olamiz."],
+    [4, "Товар хороший, но доставка задержалась на час."],
+    [5, "Ulgurji narxi juda yaxshi, 500 kg oldik — hammasi bir xil sifatda."],
+    [3, "Quality was okay, some potatoes were small."],
+    [5, "Отличный продавец, всегда отвечает быстро."],
+    [4, "Narxi kelishildi, mahsulot yaxshi. Tavsiya qilaman."],
+    [5, "Best onions at Chorsu, honestly."],
+    [4, "Sabzi yaxshi, lekin qadoqlash zaif edi."],
+    [5, "Всё свежее, цена ниже рыночной. Берём каждую неделю."],
+  ];
+
+  let reviewCount = 0;
+  const allSellers = await prisma.seller.findMany({ orderBy: { id: "asc" } });
+  for (const [i, seller] of allSellers.entries()) {
+    // 2–4 reviews per seller, picked deterministically so demos are repeatable
+    const n = 2 + ((i * 7) % 3);
+    for (let k = 0; k < n; k++) {
+      const [rating, comment] = comments[(i * 5 + k * 3) % comments.length];
+      const buyer = buyers[(i + k * 2) % buyers.length];
+      await prisma.review.create({
+        data: { sellerId: seller.id, buyerId: buyer.id, rating, comment, createdAt: daysAgo(3 + ((i * 11 + k * 9) % 40)) },
+      });
+      reviewCount++;
+    }
+  }
+
+  console.log(`Seeded ${sellers.length} sellers, ${listingCount} listings, ${buyers.length} buyers, ${reviewCount} reviews.`);
 }
 
 main()
