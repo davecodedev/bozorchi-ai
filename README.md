@@ -11,7 +11,7 @@ bazarcha/
 ├── backend/   Express API + Prisma (SQLite)  →  POST /recommend
 │   └── src/scoring.ts   the recommendation engine (pure, unit-tested)
 ├── bot/       grammY Telegram bot            (/start, text, voice, location → /recommend)
-├── miniapp/   Telegram Mini App frontend     (checkpoint step 5)
+├── miniapp/   Telegram Mini App — plain HTML/CSS/JS, served by the backend at /app/
 └── data/      seed.ts — mock sellers × products for Tashkent
 ```
 
@@ -43,6 +43,39 @@ Run all tests (scoring engine + bot; the bot's integration tests run only while 
 ```bash
 npm test
 ```
+
+## The Mini App (`miniapp/`)
+
+Plain HTML/CSS/JS, no build step. The backend serves it at **`http://localhost:3000/app/`**, so one
+HTTPS tunnel exposes both the API and the app. Open that URL in a desktop browser to develop —
+outside Telegram it runs as a "Guest" with all features working.
+
+Screens: Search (category + region chips, best sellers carousel) → Top matches → Seller profile
+(match breakdown, 30-day price history, request offer) · Sellers · Saved · Profile · My requests ·
+Notifications & price alerts.
+
+- Search, results, seller profiles and the sellers list are **live** from `/recommend`, `/sellers`, `/meta`.
+- The search box understands quantities: `pomidor 500 kg`, `2 t piyoz`. Sellers whose minimum
+  order is bigger than the request are excluded.
+- Saved sellers, request history, price alerts and language are stored per user in Telegram
+  CloudStorage (falls back to localStorage in a browser). No backend tables yet — by design for the checkpoint.
+- The price-history chart is a deterministic **sample** series ending at the seller's real current
+  price, and is labelled as such in the UI. It becomes real once sellers report daily.
+- Deep link from the bot: `/app/?product=tomato&region=Chilanzar&lat=..&lng=..` runs the search on open.
+- Language: Uzbek by default, or Russian/English from Telegram's `language_code`; switchable in Profile.
+- Brand name and colours live at the top of `miniapp/app.js` (`BRAND`) and `styles.css` (`:root`).
+
+### Putting it in Telegram
+
+Telegram needs an **HTTPS** URL. For the demo, tunnel the backend:
+
+```bash
+npx cloudflared tunnel --url http://localhost:3000
+```
+
+(or `ngrok http 3000`). Then set `MINIAPP_URL=https://<tunnel-host>/app/` in `bot/.env`, restart the
+bot, and the "Open in Mini App" button appears under every result. Optionally register the same URL
+in @BotFather → Bot Settings → Menu Button so the app opens from the chat's menu button too.
 
 ## The bot (`bot/`)
 

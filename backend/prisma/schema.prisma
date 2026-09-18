@@ -13,7 +13,8 @@ datasource db {
 model Seller {
   id          Int       @id @default(autoincrement())
   name        String
-  region      String    // Tashkent district / bazaar area, e.g. "Chilanzar"
+  region      String    // district / city shown to buyers, e.g. "Chilanzar", "Qibray"
+  province    String    @default("toshkent-shahri") // key from backend/src/geo.ts PROVINCES
   bazaar      String    // e.g. "Chorsu Bazaar"
   lat         Float
   lng         Float
@@ -37,6 +38,7 @@ model Listing {
   @@index([product])
   @@index([sellerId, product])
 }
+
 
 model Buyer {
   id             Int      @id @default(autoincrement())

@@ -32,6 +32,9 @@ export interface Candidate {
   sellerName: string;
   bazaar: string;
   region: string;
+  province?: string;
+  phone?: string;
+  minOrderKg?: number;
   verified: boolean;
   rating: number; // 0–5
   reviewCount: number;

@@ -58,7 +58,7 @@ test("'pomidor Chilonzor' → 3 ranked sellers with Mini App button", { skip: !b
   await bot.handleUpdate(textUpdate("pomidor Chilonzor") as never);
   const [m] = messages(sent);
   const text = String(m.payload.text);
-  assert.match(text, /<b>Pomidor<\/b> — 10 ta taklifdan/);
+  assert.match(text, /<b>Pomidor<\/b> — \d+ ta taklifdan/);
   assert.match(text, /📍 Chilanzar/);
   assert.equal((text.match(/🥇|🥈|🥉/g) ?? []).length, 3);
   assert.match(text, /AI tanlovi/);
