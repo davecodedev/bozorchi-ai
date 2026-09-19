@@ -76,9 +76,9 @@ a { color: var(--primary); text-decoration: none; }
 .bm.on { color: var(--primary); background: var(--primary-soft); border-color: var(--primary-soft); }
 
 /* ---------- best sellers carousel ---------- */
-.carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 8px; }
+.carousel { display: flex; gap: 32px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 8px; }
 .carousel::-webkit-scrollbar { display: none; }
-.bs-card { flex: none; width: min(100% - 4px, 360px); scroll-snap-align: start; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.bs-card { flex: none; width: 100%; scroll-snap-align: start; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .bs-hero { height: clamp(120px, 38vw, 160px); background: var(--primary-soft); display: grid; place-items: center; position: relative; color: var(--primary); }
 .bs-hero svg { width: 56px; height: 56px; }
 .pill { position: absolute; top: 12px; right: 12px; background: var(--card); border-radius: 999px; padding: 5px 10px; font-size: 13px; font-weight: 700; }
@@ -212,7 +212,7 @@ a { color: var(--primary); text-decoration: none; }
   body { font-size: 14px; }
   #view > .screen { padding: 10px 12px 20px; }
   .chips.scroll { margin-left: -12px; margin-right: -12px; padding: 0 12px 6px; }
-  .carousel { margin: 0 -12px; padding: 0 12px 8px; }
+  .carousel { margin: 0 -12px; padding: 0 12px 8px; gap: 24px; }
   .chip { padding: 9px 13px; font-size: 13px; min-height: 38px; }
   .card { padding: 14px; }
   .bars { grid-template-columns: 54px 1fr 28px; gap: 8px 10px; font-size: 13px; }
@@ -223,7 +223,8 @@ a { color: var(--primary); text-decoration: none; }
 @media (min-width: 640px) { #app { border-left: 1px solid var(--border); border-right: 1px solid var(--border); } }
 
 /* ---------- tiers / paywall ---------- */
-.usage { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin: -8px 0 16px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.usage { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; width: 100%; text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin: -8px 0 16px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.usage > span:not(.meter):not(.vbuyer) { flex: 1 1 140px; min-width: 0; }
 .usage.ent { background: #FFF7DF; border-color: #F3DFA0; color: #6B4E00; }
 .usage.ent svg { width: 16px; height: 16px; color: #D9A400; flex: none; }
 .usage .chev { margin-left: auto; }
@@ -265,5 +266,5 @@ a { color: var(--primary); text-decoration: none; }
 .trendline.up { color: var(--alert); } .trendline.down { color: var(--positive); }
 .trendline .sub { font-weight: 500; }
 
-.vbuyer { display: inline-flex; align-items: center; background: var(--positive-soft); color: var(--positive); font-weight: 800; font-size: 12px; padding: 4px 9px; border-radius: 999px; margin-left: 8px; white-space: nowrap; }
+.vbuyer { display: inline-flex; align-items: center; background: var(--positive-soft); color: var(--positive); font-weight: 800; font-size: 12px; padding: 4px 9px; border-radius: 999px; margin-left: auto; white-space: nowrap; flex: none; }
 .btn.ghost.sm { flex: 1; }

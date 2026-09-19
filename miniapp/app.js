@@ -324,15 +324,20 @@
   const TAB_OF = { results: "search", history: "search", market: "search", seller: "sellers", requests: "profile", notifications: "profile" };
   window.addEventListener("hashchange", render);
 
+  let lastRouteKey = "";
   function render() {
     const r = route();
     const view = document.getElementById("view");
+    const routeKey = location.hash;
+    const sameScreen = routeKey === lastRouteKey;
+    const keepScroll = sameScreen ? view.scrollTop : 0;
+    lastRouteKey = routeKey;
     const fn = SCREENS[r.name] || SCREENS.search;
     const isTab = TABS.includes(r.name);
     document.getElementById("tabbar").hidden = false;
     renderTabs(isTab ? r.name : TAB_OF[r.name] || "search");
     if (tg) { if (isTab) tg.BackButton.hide(); else tg.BackButton.show(); }
-    Promise.resolve(fn(...r.args)).then((html) => { if (route().name === r.name) { view.innerHTML = `<div class="screen">${html}</div>`; view.scrollTop = 0; } afterRender(r.name); })
+    Promise.resolve(fn(...r.args)).then((html) => { if (route().name === r.name) { view.innerHTML = `<div class="screen">${html}</div>`; view.scrollTop = keepScroll; } afterRender(r.name); })
       .catch((e) => { view.innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
   }
   function renderTabs(active) {
@@ -884,7 +889,7 @@
   function afterRender(name) {
     if (name === "search") {
       const c = document.getElementById("carousel"), d = document.getElementById("dots");
-      if (c && d) c.addEventListener("scroll", () => { const i = Math.round(c.scrollLeft / (c.firstElementChild.offsetWidth + 12)); [...d.children].forEach((el, j) => el.classList.toggle("on", j === i)); }, { passive: true });
+      if (c && d) c.addEventListener("scroll", () => { const gap = parseFloat(getComputedStyle(c).columnGap) || 32; const i = Math.round(c.scrollLeft / (c.firstElementChild.offsetWidth + gap)); [...d.children].forEach((el, j) => el.classList.toggle("on", j === i)); }, { passive: true });
     }
     if (name === "sellers") { const i = document.getElementById("sq"); if (i) i.oninput = () => { S.sellerQ = i.value; const list = document.querySelector(".list"); renderSellersList(list); }; }
   }
