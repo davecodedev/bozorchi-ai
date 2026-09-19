@@ -73,23 +73,27 @@ export async function recommend(req: RecommendRequest) {
   const since = new Date(Date.now() - MAX_LISTING_AGE_DAYS * 24 * 60 * 60 * 1000);
 
   // Latest listing per seller for this product (a seller may have re-reported).
-  const listings = await prisma.listing.findMany({
+  const findListings = (inProvince: boolean) => prisma.listing.findMany({
     where: {
       product: productKey,
       reportedAt: { gte: since },
-      seller: { suspended: false, ...(province ? { province: province.key } : {}) },
+      seller: { suspended: false, ...(inProvince && province ? { province: province.key } : {}) },
       ...(quantityKg ? { minOrderKg: { lte: quantityKg } } : {}),
     },
     include: { seller: true },
     orderBy: { reportedAt: "desc" },
   });
+  let listings = await findListings(true);
+  // nobody sells it in the chosen province → widen to the whole country and say so, never an empty page
+  let provinceRelaxed = false;
+  if (listings.length === 0 && province) { listings = await findListings(false); provinceRelaxed = listings.length > 0; }
   const latestBySeller = new Map<number, (typeof listings)[number]>();
   for (const l of listings) if (!latestBySeller.has(l.sellerId)) latestBySeller.set(l.sellerId, l);
 
   const radiusKm =
     typeof req.radiusKm === "number" && req.radiusKm > 0
       ? req.radiusKm
-      : province
+      : province || provinceRelaxed
         ? Infinity
         : DEFAULT_RADIUS_KM;
 
@@ -143,6 +147,7 @@ export async function recommend(req: RecommendRequest) {
     label: productLabel(productKey) ?? { uz: customTitle ?? productKey, ru: customTitle ?? productKey, en: customTitle ?? productKey },
     unit: productUnit(productKey),
     province: province?.key ?? null,
+    provinceRelaxed,
     quantityKg: quantityKg ?? null,
     radiusKm: Number.isFinite(radiusKm) ? radiusKm : null,
     weightsApplied: Boolean(explicit),

@@ -10,8 +10,10 @@ test("parser unavailable → legacy path: raw text + keyword district", () => {
   assert.deepEqual(r, { product: "pomidor Chilonzor", quantityKg: undefined, region: "Chilanzar" });
 });
 
-test("parser found nothing → product null so the bot asks", () => {
-  assert.equal(resolveQuery("asdkjh", p({}), "Chilanzar").product, null);
+test("parser found nothing → raw text goes to the backend anyway (seller-posted custom products), region kept", () => {
+  const r = resolveQuery("airpods", p({}), "Chilanzar");
+  assert.equal(r.product, "airpods");
+  assert.equal(r.region, "Chilanzar");
 });
 
 test("full parse → canonical key, kg, district from the parsed region", () => {

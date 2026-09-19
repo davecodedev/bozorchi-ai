@@ -234,7 +234,8 @@ export function resolveQuery(rawText: string, parsed: ParsedQuery, lastRegion?: 
   if (!parsed.available) {
     return { product: rawText, quantityKg: undefined, region: extractRegion(rawText) ?? lastRegion };
   }
-  if (!parsed.product && !parsed.productKey) return { product: null, quantityKg: undefined, region: undefined };
+  // the LLM found no catalog product — still let the backend try the raw text (seller-posted custom products)
+  if (!parsed.product && !parsed.productKey) return { product: rawText, quantityKg: parsed.quantityKg ?? undefined, region: extractRegion(rawText) ?? lastRegion };
   const region = (parsed.region ? extractRegion(parsed.region) : undefined) ?? extractRegion(rawText) ?? lastRegion;
   return { product: parsed.productKey ?? parsed.product, quantityKg: parsed.quantityKg ?? undefined, region };
 }

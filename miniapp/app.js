@@ -63,6 +63,7 @@
       basketLockedBody: "Order lists, not single items: one quote for the whole basket.", deliveryNote: (b, k) => `Delivery estimate: ${b} + ${k} so'm/km per seller.`,
       tierGold: "Gold reporter", tierSilver: "Silver reporter", tierBronze: "Bronze reporter", tierNew: "New seller", tierHint: "Reliability: how often and how honestly this seller reports prices (last 30 days).",
       trendLine: (p) => `Price trend: ${p > 0 ? "+" : ""}${p}% over the last 30 days`, trendMarket: "market, seeded history",
+      provinceRelaxed: (p) => `No sellers in ${p} yet — showing all of Uzbekistan.`,
       hiddenNote: (n) => `${n} listing${n === 1 ? "" : "s"} hidden from the top results: stale or unreliable reporting.`, personalizedNote: (f) => `Ranking tuned to your habits: you tend to pick by ${f}.`,
       adminLink: "Bazaar admin dashboard",
       trendBtn: "Price trend & forecast", marketTitle: "Market price", marketSub: (n) => `average of ${n} sellers reporting`, marketNow: "market average today",
@@ -149,6 +150,7 @@
       basketLockedBody: "Bitta mahsulot emas — butun ro'yxat uchun bitta taklif.", deliveryNote: (b, k) => `Yetkazib berish hisobi: har sotuvchi uchun ${b} + ${k} so'm/km.`,
       tierGold: "Oltin sotuvchi", tierSilver: "Kumush sotuvchi", tierBronze: "Bronza sotuvchi", tierNew: "Yangi sotuvchi", tierHint: "Ishonchlilik: sotuvchi narxlarni qanchalik tez-tez va halol kiritadi (so'nggi 30 kun).",
       trendLine: (p) => `Narx tendensiyasi: so'nggi 30 kunda ${p > 0 ? "+" : ""}${p}%`, trendMarket: "bozor bo'yicha, demo tarix",
+      provinceRelaxed: (p) => `${p}da hali sotuvchi yo'q — butun O'zbekiston bo'yicha ko'rsatilmoqda.`,
       hiddenNote: (n) => `${n} ta taklif eng yaxshilar ro'yxatidan yashirildi: eskirgan yoki ishonchsiz.`, personalizedNote: (f) => `Reyting odatlaringizga moslandi: siz ko'proq ${f === "price" ? "narxga" : f === "quality" ? "sifatga" : "masofaga"} qaraysiz.`,
       adminLink: "Bozor ma'muriyati paneli",
       trendBtn: "Narx tendensiyasi va prognoz", marketTitle: "Bozor narxi", marketSub: (n) => `${n} ta sotuvchi o'rtachasi`, marketNow: "bugungi bozor o'rtachasi",
@@ -235,6 +237,7 @@
       basketLockedBody: "Не один товар, а весь список — одним расчётом.", deliveryNote: (b, k) => `Оценка доставки: ${b} + ${k} сум/км за продавца.`,
       tierGold: "Золотой продавец", tierSilver: "Серебряный продавец", tierBronze: "Бронзовый продавец", tierNew: "Новый продавец", tierHint: "Надёжность: как часто и честно продавец сообщает цены (последние 30 дней).",
       trendLine: (p) => `Тренд цены: ${p > 0 ? "+" : ""}${p}% за 30 дней`, trendMarket: "по рынку, демо-история",
+      provinceRelaxed: (p) => `В регионе ${p} пока нет продавцов — показаны все по Узбекистану.`,
       hiddenNote: (n) => `Скрыто из топа: ${n} — устаревшие или ненадёжные.`, personalizedNote: (f) => `Рейтинг подстроен под ваши привычки: вы выбираете по ${f === "price" ? "цене" : f === "quality" ? "качеству" : "расстоянию"}.`,
       adminLink: "Панель администрации базара",
       trendBtn: "Тренд цены и прогноз", marketTitle: "Рыночная цена", marketSub: (n) => `среднее по ${n} продавцам`, marketNow: "средняя по рынку сегодня",
@@ -594,6 +597,7 @@
         ${header(t("topMatches"), sub)}
         ${weightsCard(S.weights || w)}
         ${d.personalization && d.personalization.preference ? `<div class="banner">${I.user}<span>${esc(t("personalizedNote", d.personalization.preference))}</span></div>` : ""}
+        ${d.provinceRelaxed ? `<div class="banner">${I.pin}<span>${esc(t("provinceRelaxed", provLabel(S.province)))}</span></div>` : ""}
         ${d.own ? `<button class="card own" style="width:100%;text-align:left" data-go="seller/${d.own.sellerId}">
           <div class="row">${photo(d.own.photoUrl, "photo thumb")}<div class="grow"><div class="row" style="gap:6px"><span class="badge">${t("yourListing")}</span></div><div class="name" style="margin-top:4px">${esc(d.own.title || plabel(d.product))} · ${esc(d.own.sellerName)}</div><div class="sub">${esc(d.own.region)} · ${t("ago", daysBetween(d.own.reportedAt))}</div></div><div class="price" style="font-size:15px;flex:none">${fmt(d.own.pricePerKg)}<small>/${per(d.product).split("/")[1]}</small></div></div>
           <p class="sub wrap" style="margin:8px 0 0">${t("yourListingSub")}</p></button>` : ""}

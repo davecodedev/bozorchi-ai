@@ -70,11 +70,41 @@ export async function ownListingFor(buyer: Buyer, product: string) {
   return l ? { listingId: l.id, sellerId: l.sellerId, sellerName: l.seller.name, region: l.seller.region, pricePerKg: l.pricePerKg, minOrderKg: l.minOrderKg, photoUrl: l.photoUrl, title: l.title, reportedAt: l.reportedAt } : null;
 }
 
-/** Custom (non-catalog) products: find one by name so searches for "LED lampa" work. */
+/** "airpods" → "airpod", "lampalar" → "lampa": strip plural/possessive suffixes for matching. */
+const stem = (t: string) => t.replace(/(lari|lar|lary|ları|s|ы|и)$/u, "");
+const tokens = (v: string) => normalize(v).split(/[^\p{L}\p{N}]+/u).filter((t) => t.length >= 2).map(stem);
+function lev(a: string, b: string): number {
+  const dp = Array.from({ length: a.length + 1 }, (_, i) => [i, ...new Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return dp[a.length][b.length];
+}
+
+/**
+ * Custom (non-catalog) products: find one by name so searches for "LED lampa" / "airpods" / "AirPod pro"
+ * all reach the "Airpod" listing. Case-insensitive, plural-tolerant, typo-tolerant (edit distance ≤ 2).
+ */
 export async function resolveCustomProduct(query: string): Promise<{ key: string; title: string } | null> {
-  const n = normalize(query);
-  if (!n) return null;
-  const key = customKey(query);
-  const l = await prisma.listing.findFirst({ where: { OR: [{ product: key }, { title: { contains: query.trim() } }], seller: { suspended: false } }, orderBy: { reportedAt: "desc" } });
-  return l ? { key: l.product, title: l.title ?? query.trim() } : null;
+  const qn = normalize(query).replace(/[^\p{L}\p{N}]+/gu, "");
+  if (qn.length < 2) return null;
+  const qt = tokens(query);
+  const rows = await prisma.listing.findMany({ where: { product: { startsWith: "x-" }, seller: { suspended: false } }, orderBy: { reportedAt: "desc" }, select: { product: true, title: true }, take: 500 });
+  let best: { key: string; title: string; score: number } | null = null;
+  const seen = new Set<string>();
+  for (const r of rows) {
+    if (seen.has(r.product)) continue; seen.add(r.product);
+    const title = r.title ?? r.product.slice(2);
+    const tn = normalize(title).replace(/[^\p{L}\p{N}]+/gu, "");
+    const tt = tokens(title);
+    let score = 0;
+    if (tn === qn || stem(tn) === stem(qn)) score = 100;
+    else if (tn.length >= 3 && (qn.includes(tn) || tn.includes(qn))) score = 80;
+    else {
+      const overlap = tt.filter((t) => qt.some((q) => q === t || (q.length >= 4 && t.length >= 4 && lev(q, t) <= 1))).length;
+      if (overlap) score = 40 + Math.round((overlap / Math.max(tt.length, qt.length)) * 30);
+      else if (qn.length >= 5 && tn.length >= 5 && lev(qn, tn) <= 2) score = 50;
+    }
+    if (score && (!best || score > best.score)) best = { key: r.product, title, score };
+  }
+  return best ? { key: best.key, title: best.title } : null;
 }
