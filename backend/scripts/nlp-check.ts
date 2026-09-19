@@ -3,7 +3,7 @@
  * Needs ANTHROPIC_API_KEY in backend/.env.   Run:  npm run nlp:check --workspace backend
  */
 import "dotenv/config";
-import { nlpAvailable, parseQuery, toKg } from "../src/nlp.js";
+import { nlpAvailable, parseQuery, selectProviderName, toKg, GEMINI_MODEL, ANTHROPIC_MODEL } from "../src/nlp.js";
 
 const INPUTS = [
   "500 kg pomidor kerak, Toshkent",
@@ -14,9 +14,11 @@ const INPUTS = [
 ];
 
 if (!nlpAvailable()) {
-  console.error("ANTHROPIC_API_KEY is not set in backend/.env — nothing to test.");
+  console.error("Neither GEMINI_API_KEY nor ANTHROPIC_API_KEY is set in backend/.env — nothing to test.");
   process.exit(1);
 }
+const prov = selectProviderName();
+console.log(`provider: ${prov} · model: ${prov === "gemini" ? GEMINI_MODEL : ANTHROPIC_MODEL}`);
 for (const input of INPUTS) {
   const t0 = Date.now();
   const r = await parseQuery(input);

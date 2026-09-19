@@ -4,8 +4,13 @@
  *
  * Isolated on purpose: no DB, no Express. A failure here must never crash the bot, so
  * parseQuery() swallows every error and returns all-nulls; callers fall back gracefully.
+ *
+ * Two interchangeable providers, chosen from env (NLP_PROVIDER, else whichever key is set):
+ *   - gemini    : GEMINI_API_KEY   (Gemini Developer API "AIza…" keys, or Vertex AI express "AQ.…" keys)
+ *   - anthropic : ANTHROPIC_API_KEY
  */
 import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 
 export interface ParsedQuery {
   product: string | null;
@@ -14,7 +19,8 @@ export interface ParsedQuery {
   region: string | null;
 }
 
-export const NLP_MODEL = "claude-haiku-4-5"; // fast + cheap; right size for structured extraction
+export const ANTHROPIC_MODEL = "claude-haiku-4-5"; // fast + cheap; right size for structured extraction
+export const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
 export const NLP_MAX_TOKENS = 200;
 
 export const SYSTEM_PROMPT =
@@ -26,33 +32,82 @@ export const SYSTEM_PROMPT =
 
 export const EMPTY: ParsedQuery = Object.freeze({ product: null, quantity: null, unit: null, region: null });
 
-/** True when the backend has a credential the SDK can use. */
-export function nlpAvailable(): boolean {
-  const k = process.env.ANTHROPIC_API_KEY;
-  return Boolean((k && !k.includes("FAKE")) || process.env.ANTHROPIC_AUTH_TOKEN);
+/** A provider takes the raw text and returns the model's text output. */
+export interface Provider {
+  name: "anthropic" | "gemini";
+  call(text: string): Promise<string>;
 }
 
-let defaultClient: Anthropic | undefined;
-const getClient = () => (defaultClient ??= new Anthropic({ maxRetries: 0, timeout: 10_000 }));
+const realKey = (k: string | undefined) => (k && !k.includes("FAKE") ? k : undefined);
 
-/** Minimal surface we need from the SDK — lets tests inject a fake without network. */
+/** Minimal surface we need from the Anthropic SDK — lets tests inject a fake without network. */
 export type MessagesClient = { messages: { create: (params: Anthropic.MessageCreateParamsNonStreaming) => Promise<Anthropic.Message> } };
 
-export async function parseQuery(rawText: string, client: MessagesClient = getClient()): Promise<ParsedQuery> {
+export function anthropicProvider(client: MessagesClient = new Anthropic({ maxRetries: 0, timeout: 10_000 })): Provider {
+  return {
+    name: "anthropic",
+    async call(text) {
+      const res = await client.messages.create({
+        model: ANTHROPIC_MODEL,
+        max_tokens: NLP_MAX_TOKENS,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: "user", content: text }],
+      });
+      return res.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
+    },
+  };
+}
+
+/** Minimal surface we need from @google/genai. */
+export type GenAIClient = { models: { generateContent: (p: { model: string; contents: string; config?: Record<string, unknown> }) => Promise<{ text?: string }> } };
+
+export function geminiProvider(client?: GenAIClient, apiKey = realKey(process.env.GEMINI_API_KEY)): Provider {
+  const c: GenAIClient =
+    client ??
+    // "AIza…" = Gemini Developer API key; anything else (e.g. "AQ.…") = Vertex AI express-mode key.
+    new GoogleGenAI({ apiKey, vertexai: !!apiKey && !apiKey.startsWith("AIza"), httpOptions: { timeout: 10_000 } });
+  return {
+    name: "gemini",
+    async call(text) {
+      const res = await c.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: text,
+        config: { systemInstruction: SYSTEM_PROMPT, maxOutputTokens: NLP_MAX_TOKENS, responseMimeType: "application/json", temperature: 0 },
+      });
+      return res.text ?? "";
+    },
+  };
+}
+
+/** Which provider env selects, or null when no key is configured. */
+export function selectProviderName(): Provider["name"] | null {
+  const gem = realKey(process.env.GEMINI_API_KEY);
+  const ant = realKey(process.env.ANTHROPIC_API_KEY) || process.env.ANTHROPIC_AUTH_TOKEN;
+  const pref = process.env.NLP_PROVIDER;
+  if (pref === "gemini" && gem) return "gemini";
+  if (pref === "anthropic" && ant) return "anthropic";
+  return gem ? "gemini" : ant ? "anthropic" : null;
+}
+
+/** True when some provider has a credential. */
+export const nlpAvailable = () => selectProviderName() !== null;
+
+let defaultProvider: Provider | undefined;
+function getProvider(): Provider | null {
+  if (defaultProvider) return defaultProvider;
+  const name = selectProviderName();
+  if (!name) return null;
+  return (defaultProvider = name === "gemini" ? geminiProvider() : anthropicProvider());
+}
+
+export async function parseQuery(rawText: string, provider: Provider | null = getProvider()): Promise<ParsedQuery> {
   const text = (rawText ?? "").trim();
-  if (!text) return { ...EMPTY };
+  if (!text || !provider) return { ...EMPTY };
   try {
-    const res = await client.messages.create({
-      model: NLP_MODEL,
-      max_tokens: NLP_MAX_TOKENS,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: text }],
-    });
-    const out = res.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
-    return coerce(extractJson(out));
+    return coerce(extractJson(await provider.call(text)));
   } catch (e) {
     // Network, auth, rate-limit, malformed JSON — all handled the same way: degrade, don't crash.
-    console.warn("nlp: parseQuery failed:", e instanceof Error ? e.message : e);
+    console.warn(`nlp(${provider.name}): parseQuery failed:`, e instanceof Error ? e.message : e);
     return { ...EMPTY };
   }
 }
