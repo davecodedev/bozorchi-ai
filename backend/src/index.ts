@@ -2,9 +2,13 @@ import "dotenv/config";
 import express, { type Request, type Response } from "express";
 import { getOrCreateBuyer, identify } from "./auth.js";
 import { parseBasket, quoteBasket } from "./basket.js";
-import { forecast, sampleSeries } from "./history.js";
+import { forecast } from "./history.js";
 import { consumeSearch, CREDIT_PACK_SIZE, hasFeature, MAX_RESULTS, usageOf, type Tier } from "./limits.js";
 import { nlpAvailable, parseQuery, toKg } from "./nlp.js";
+import { explainAnomalies } from "./anomaly.js";
+import { forecastTrend, FORECAST_WINDOW_DAYS } from "./forecast.js";
+import { computeReliabilityBulk } from "./reliability.js";
+import { getPersonalWeights } from "./scoring.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -106,7 +110,14 @@ app.post("/recommend", async (req, res) => {
   try {
     const b = await buyerOf(req);
     const tier = (b.tier === "enterprise" ? "enterprise" : "standard") as Tier;
-    const data = await recommend({ ...(req.body ?? {}), maxResults: MAX_RESULTS[tier], allowWeights: hasFeature(b, "weights") });
+    const personal = await getPersonalWeights(b.telegramUserId); // P4
+    const data = await recommend({
+      ...(req.body ?? {}),
+      maxResults: MAX_RESULTS[tier],
+      allowWeights: hasFeature(b, "weights"),
+      personalWeights: personal.preference ? personal.weights : undefined,
+    });
+    (data as Record<string, unknown>).personalization = { preference: personal.preference, contacts: personal.contacts };
     // Only successful searches cost quota.
     const usage = await consumeSearch(b);
     if (!usage) return res.status(402).json({ error: "limit_reached", usage: usageOf(b) });
@@ -120,22 +131,74 @@ app.post("/recommend", async (req, res) => {
   }
 });
 
-/** 30-day series (all tiers) + 7-day forecast (Enterprise). */
+/** 30-day series from real price reports (all tiers) + 7-day forecast (Enterprise) + 30-day trend (P3). */
 app.get("/history/:sellerId/:product", async (req, res) => {
   const b = await buyerOf(req);
   const sellerId = Number(req.params.sellerId);
   const seller = Number.isInteger(sellerId) ? await getSeller(sellerId) : null;
   const listing = seller?.products.find((p) => p.product === req.params.product);
   if (!seller || !listing) return res.status(404).json({ error: "listing not found" });
-  const series = sampleSeries(listing.pricePerKg, `${seller.id}:${listing.product}`);
-  const first = series[0], last = series[series.length - 1];
+  const DAYS = 30;
+  const since = new Date(Date.now() - DAYS * 86_400_000);
+  const rows = await prisma.priceHistory.findMany({ where: { sellerId, product: listing.product, reportedAt: { gte: since } }, orderBy: { reportedAt: "asc" }, select: { price: true, reportedAt: true } });
+  // one point per day; days without a report carry the previous price forward
+  const byDay = new Map<number, number>();
+  for (const r of rows) byDay.set(Math.floor((r.reportedAt.getTime() - since.getTime()) / 86_400_000), r.price);
+  const series: number[] = [];
+  let last = rows[0]?.price ?? listing.pricePerKg;
+  for (let d = 0; d <= DAYS; d++) { if (byDay.has(d)) last = byDay.get(d)!; series.push(last); }
+  series[series.length - 1] = listing.pricePerKg;
+  const first = series[0], current = series[series.length - 1];
   const body: Record<string, unknown> = {
     sellerId: seller.id, sellerName: seller.name, bazaar: seller.bazaar, province: seller.province, product: listing.product,
-    series, current: last, changePct: Math.round(((last - first) / first) * 100), sample: true,
+    series, current, changePct: Math.round(((current - first) / first) * 100), reports: rows.length, seeded: true,
+    trend: await forecastTrend(listing.product, seller.province), // market-wide, not just this seller
   };
   if (hasFeature(b, "forecast")) body.forecast = forecast(series);
   else body.forecastLocked = true;
   res.json(body);
+});
+
+/** P2: z-score price anomalies over current listings, grouped by product × province. */
+app.get("/anomalies", async (_req, res) => {
+  const since = new Date(Date.now() - 21 * 86_400_000);
+  const listings = await prisma.listing.findMany({ where: { reportedAt: { gte: since } }, include: { seller: true }, orderBy: { reportedAt: "desc" } });
+  const latest = new Map<string, (typeof listings)[number]>();
+  for (const l of listings) { const k = `${l.sellerId}:${l.product}`; if (!latest.has(k)) latest.set(k, l); }
+  const current = [...latest.values()].map((l) => ({ listingId: l.id, sellerId: l.sellerId, sellerName: l.seller.name, bazaar: l.seller.bazaar, product: l.product, region: l.seller.province, pricePerKg: l.pricePerKg, reportedAt: l.reportedAt }));
+  res.json({ method: "z-score > 2 within product × region, groups of ≥ 4", scanned: current.length, anomalies: explainAnomalies(current) });
+});
+
+/** Bazaar-admin dashboard data: anomalies, trends, reliability leaderboard, personalisation demo. */
+app.get("/admin/overview", async (req, res) => {
+  const province = (req.query.province as string) || "toshkent-shahri";
+  const since = new Date(Date.now() - 21 * 86_400_000);
+  const listings = await prisma.listing.findMany({ where: { reportedAt: { gte: since } }, include: { seller: true }, orderBy: { reportedAt: "desc" } });
+  const latest = new Map<string, (typeof listings)[number]>();
+  for (const l of listings) { const k = `${l.sellerId}:${l.product}`; if (!latest.has(k)) latest.set(k, l); }
+  const current = [...latest.values()].map((l) => ({ listingId: l.id, sellerId: l.sellerId, sellerName: l.seller.name, bazaar: l.seller.bazaar, product: l.product, region: l.seller.province, pricePerKg: l.pricePerKg, reportedAt: l.reportedAt }));
+
+  const productsHere = [...new Set(current.filter((c) => c.region === province).map((c) => c.product))];
+  const trends = await Promise.all(productsHere.map(async (product) => ({ product, region: province, ...(await forecastTrend(product, province)) })));
+
+  const sellers = await prisma.seller.findMany({ orderBy: { name: "asc" } });
+  const rel = await computeReliabilityBulk(sellers.map((s) => s.id));
+  const reliability = sellers.map((s) => ({ sellerId: s.id, name: s.name, bazaar: s.bazaar, province: s.province, ...rel.get(s.id)! })).sort((a, b) => b.score - a.score);
+
+  const demo = await Promise.all(["demo-cheap", "demo-quality", "anon"].map(async (id) => {
+    const p = await getPersonalWeights(id);
+    const r = await recommend({ product: "tomato", province, personalWeights: p.preference ? p.weights : undefined, maxResults: 3 });
+    return { buyer: id, preference: p.preference, weights: r.weights, top: r.results.map((x) => ({ sellerName: x.sellerName, score: x.score, pricePerKg: x.pricePerKg, rating: x.rating })) };
+  }));
+
+  res.json({
+    province,
+    anomalies: { method: "z-score > 2 within product × region, groups of ≥ 4", items: explainAnomalies(current) },
+    trends: { method: `least-squares line over ${FORECAST_WINDOW_DAYS} days of reports`, items: trends },
+    reliability,
+    personalization: { method: "rank of contacted listings vs. what was on offer → nudge weights ±0.15", product: "tomato", items: demo },
+    gate: { minReliability: 20, staleAfterHours: 48 },
+  });
 });
 
 /** Basket quote (Enterprise). Accepts `items` or free `text`. */

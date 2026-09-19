@@ -144,3 +144,80 @@ export function rankCandidates(
 
   return scored.slice(0, limit).map((c, i) => ({ ...c, rank: i + 1 }));
 }
+
+// ---------------------------------------------------------------- P4: personalised weights
+/**
+ * One past "contacted" listing, described by where it ranked among what the buyer could have
+ * chosen at the time: 0 = best (cheapest / highest quality / closest), 1 = worst.
+ */
+export interface Observation {
+  priceRank: number;
+  qualityRank: number;
+  distanceRank?: number;
+}
+
+/** Minimum contacts before we trust a pattern. */
+export const MIN_OBSERVATIONS = 3;
+/** How far a clear preference moves the weights. */
+export const PERSONAL_NUDGE = 0.15;
+/** How much better one factor's average rank must be than the runner-up to count as a preference. */
+export const PREFERENCE_MARGIN = 0.15;
+
+/**
+ * Infer which factor a buyer actually optimises for, from the ranks of what they contacted.
+ * Pure; the DB-backed getPersonalWeights() below feeds it. Returns DEFAULT_WEIGHTS when the
+ * history is thin or ambiguous.
+ */
+export function inferPersonalWeights(obs: Observation[]): { weights: Weights; preference: keyof Weights | null } {
+  if (obs.length < MIN_OBSERVATIONS) return { weights: { ...DEFAULT_WEIGHTS }, preference: null };
+  const avg = (k: keyof Observation) => {
+    const vals = obs.map((o) => o[k]).filter((v): v is number => typeof v === "number");
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0.5;
+  };
+  const ranks: Record<keyof Weights, number> = { price: avg("priceRank"), quality: avg("qualityRank"), distance: avg("distanceRank") };
+  const sorted = (Object.keys(ranks) as (keyof Weights)[]).sort((a, b) => ranks[a] - ranks[b]);
+  const [best, second] = sorted;
+  if (ranks[second] - ranks[best] < PREFERENCE_MARGIN) return { weights: { ...DEFAULT_WEIGHTS }, preference: null };
+  const w = { ...DEFAULT_WEIGHTS };
+  const others = (Object.keys(w) as (keyof Weights)[]).filter((k) => k !== best);
+  const pool = others.reduce((a, k) => a + w[k], 0);
+  w[best] = round(w[best] + PERSONAL_NUDGE, 2);
+  for (const k of others) w[k] = round(w[k] - PERSONAL_NUDGE * (w[k] / pool), 2);
+  return { weights: w, preference: best };
+}
+
+/**
+ * Look up a buyer's contacted listings and infer their weights. For each contact, the listing's
+ * rank is measured against what was on offer for that product in that province (latest listing
+ * per seller) — "did they pick the cheapest? the best-rated?". Default weights for no history.
+ */
+export async function getPersonalWeights(buyerTelegramUserId: string): Promise<{ weights: Weights; preference: keyof Weights | null; contacts: number }> {
+  const { prisma } = await import("./db.js"); // lazy so the pure part of this module stays DB-free
+  const buyer = await prisma.buyer.findUnique({ where: { telegramUserId: buyerTelegramUserId }, select: { id: true } });
+  if (!buyer) return { weights: { ...DEFAULT_WEIGHTS }, preference: null, contacts: 0 };
+  const contacts = await prisma.buyerInteraction.findMany({
+    where: { buyerId: buyer.id, action: "contacted" },
+    include: { listing: { include: { seller: true } } },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
+  if (contacts.length < MIN_OBSERVATIONS) return { weights: { ...DEFAULT_WEIGHTS }, preference: null, contacts: contacts.length };
+
+  const obs: Observation[] = [];
+  for (const c of contacts) {
+    const peers = await prisma.listing.findMany({
+      where: { product: c.listing.product, seller: { province: c.listing.seller.province } },
+      include: { seller: true },
+      orderBy: { reportedAt: "desc" },
+    });
+    const latest = new Map<number, (typeof peers)[number]>();
+    for (const p of peers) if (!latest.has(p.sellerId)) latest.set(p.sellerId, p);
+    const pool = [...latest.values()];
+    if (pool.length < 2) continue;
+    const rank = (sorted: number[], v: number) => sorted.indexOf(v) / (sorted.length - 1);
+    const prices = [...new Set(pool.map((p) => p.pricePerKg))].sort((a, b) => a - b);
+    const quals = [...new Set(pool.map((p) => qualityRaw(p.seller)))].sort((a, b) => b - a);
+    obs.push({ priceRank: rank(prices, c.listing.pricePerKg), qualityRank: rank(quals, qualityRaw(c.listing.seller)) });
+  }
+  return { ...inferPersonalWeights(obs), contacts: contacts.length };
+}

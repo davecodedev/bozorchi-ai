@@ -252,3 +252,14 @@ a { color: var(--primary); text-decoration: none; }
 .qtot { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 14px; color: var(--muted); }
 .qtot span:nth-child(even) { text-align: right; }
 .qtot .b { color: var(--text); font-weight: 800; font-size: 16px; }
+
+/* ---------- reliability tiers & trends ---------- */
+.tier { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; padding: 7px 12px; border-radius: 999px; }
+.tier svg { width: 14px; height: 14px; }
+.tier.gold { background: #FFF3C4; color: #7A5A00; } .tier.silver { background: #EEF0F5; color: #4A4F63; } .tier.bronze { background: #F6E3D3; color: #7A4A1E; } .tier.new { background: var(--primary-softer); color: var(--muted); }
+.tier-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin: 0 4px 0 0; vertical-align: middle; background: #C6CAD8; }
+.tier-dot.gold { background: #E4B300; } .tier-dot.silver { background: #A2A8BC; } .tier-dot.bronze { background: #C77A3A; }
+.trendline { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; margin: 8px 0 12px; color: var(--muted); flex-wrap: wrap; }
+.trendline svg { width: 14px; height: 14px; }
+.trendline.up { color: var(--alert); } .trendline.down { color: var(--positive); }
+.trendline .sub { font-weight: 500; }

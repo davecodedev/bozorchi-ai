@@ -116,6 +116,29 @@ Re-run any time with:
 npm run nlp:check --workspace backend
 ```
 
+## The five AI / data-quality components
+
+Each is a separate module with unit tests, plugged into the existing pipeline. The history and
+interaction data behind 2–5 is **seeded** (synthetic) until sellers and buyers generate real
+data — say so if a judge asks, same as the reviews.
+
+| # | What | Where | Method | Where a judge sees it |
+|---|---|---|---|---|
+| 1 | Query parsing | `backend/src/nlp.ts` → `POST /parse` | small LLM call, JSON-only prompt (Gemini or Claude) | bot: "🧠 Got it: pomidor · 500 kg · Chilanzar" |
+| 2 | Price anomalies | `backend/src/anomaly.ts` → `GET /anomalies` | z-score > 2 within product × region (sample σ, groups ≥ 4) | admin dashboard `/app/admin.html`: Parkent's 38 000 tomato, z ≈ 2.9 |
+| 3 | Price trends | `backend/src/forecast.ts` (`forecastTrend`) | least-squares line over 30 days of reports, one vote per seller per day | seller profile & price history: "Narx tendensiyasi: so'nggi 30 kunda +10%"; admin trend table |
+| 4 | Personal weights | `backend/src/scoring.ts` (`inferPersonalWeights`, `getPersonalWeights`) | rank of contacted listings vs. what was on offer → nudge the winning factor +0.15 | admin dashboard: `demo-cheap` vs `demo-quality` top-3 differ; results banner "Ranking tuned to your habits" |
+| 5 | Seller reliability | `backend/src/reliability.ts` | 0.4·recency + 0.3·frequency + 0.3·change-ratio over a rolling 30 days → Gold/Silver/Bronze/New; **a gate on the top-N, not a weight** (score ≥ 20 and last report ≤ 48h) | Gold badge on profiles; "1 listing hidden: stale or unreliable" under results; admin leaderboard |
+
+Seeded reporting patterns (`data/seed.ts`): most sellers report daily with varied prices (Gold);
+some every other day (Silver); **Sergeli Dehqon** files the identical price ten times a day (Silver,
+never Gold — the anti-farming check); **Parkent Sabzavot** went quiet 10 days ago (Bronze, gated out
+of top-3 as stale); **Andijon Dehqon** has never reported (New, gated out as unreliable). If everyone
+in a region fails the gate it is relaxed and the response says so (`gate.relaxed`).
+
+`/recommend` keeps its shape; it gains `weights`, `personalized`, `personalization`, `gate`,
+`excluded[]` and a `reliability` field per result.
+
 ## Tiers & paywall
 
 Identity comes from Telegram (the Mini App sends `Authorization: tma <initData>`, validated with

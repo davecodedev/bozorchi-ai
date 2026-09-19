@@ -18,11 +18,11 @@
       topPick: "Top pick", matchScore: "match score", viewProfile: "View seller profile", alsoMatching: "Also matching",
       price: "Price", quality: "Quality", distance: "Distance", dist: "Dist", cheapestNote: "Cheapest price — lower quality & distance score",
       noResults: "No sellers match this search yet.", tryAnother: "Try another product or region.",
-      sellerProfile: "Seller profile", verifiedBy: `Verified by ${BRAND} AI`, notVerified: "Not verified yet",
+      sellerProfile: "Seller profile", verifiedBy: `Verified by ${BRAND}`, notVerified: "Not verified yet",
       matchFor: (q, p) => `Match for ${q ? q + " kg " : ""}${p}`, priceNote: (s) => s >= 80 ? `Price competitiveness ${s}/100 — strong value for an order this size.` : s >= 50 ? `Price competitiveness ${s}/100 — fair for an order this size.` : `Price competitiveness ${s}/100 — pricier than alternatives nearby.`,
       requested: (q) => `~${q} kg requested`, currentPrices: "Current prices", minOrder: (kg) => `min. ${kg} kg`, perKg: "so'm/kg",
       viewHistory: "View 30-day price history", reviews: "Reviews", noReviews: "No public reviews yet",
-      noReviewsBody: `New sellers are quality-checked by the ${BRAND} AI team before crowd reviews open, so buyers still get a trust signal from day one.`,
+      noReviewsBody: `New sellers are quality-checked by the ${BRAND} team before crowd reviews open, so buyers still get a trust signal from day one.`,
       requestOffer: "Request this offer", requestTitle: "Request this offer", requestBody: (n) => `We'll pass your request to ${n}. You can also reach them directly:`,
       call: "Call seller", sendRequest: "Send request", requestSent: "Request sent — the seller will contact you.",
       sellers: "Sellers", browseAll: "Browse every registered seller", searchSellers: "Search sellers by name", allSellers: "All sellers",
@@ -53,6 +53,10 @@
       basket: "Basket quote", basketSub: "Paste your whole order — we find the cheapest single supplier and the cheapest split, delivery included.", basketPh: "500 kg pomidor\n200 kg piyoz\n100 kg sabzi", getQuote: "Get quote",
       singleSupplier: "Best single supplier", bestSplit: "Best split", sellers: (n) => `${n} sellers`, goods: "Goods", delivery: "Delivery", total: "Total", saves: (n) => `Saves ${n} so'm`, recommendedTag: "Recommended", noSingle: "No single seller carries everything.", unknownLines: (l) => `Not recognised: ${l}`, requestQuotes: "Request these offers", quotesRequested: "Requests sent to the sellers.",
       basketLockedBody: "Order lists, not single items: one quote for the whole basket.", deliveryNote: (b, k) => `Delivery estimate: ${b} + ${k} so'm/km per seller.`,
+      tierGold: "Gold reporter", tierSilver: "Silver reporter", tierBronze: "Bronze reporter", tierNew: "New seller", tierHint: "Reliability: how often and how honestly this seller reports prices (last 30 days).",
+      trendLine: (p) => `Price trend: ${p > 0 ? "+" : ""}${p}% over the last 30 days`, trendMarket: "market, seeded history",
+      hiddenNote: (n) => `${n} listing${n === 1 ? "" : "s"} hidden from the top results: stale or unreliable reporting.`, personalizedNote: (f) => `Ranking tuned to your habits: you tend to pick by ${f}.`,
+      adminLink: "Bazaar admin dashboard",
       myProducts: "My products", addProduct: "Add a product", addProductSub: "List what you sell so buyers nearby can find you.",
       productName: "Product name", productNamePh: "e.g. Pomidor", pricePerKg: "Price (so'm/kg)", location: "Location", placePh: "Bazaar or city, e.g. Chorsu bozori",
       useMyLocation: "Use my location", locationSet: "GPS location attached", saveProduct: "Add product", fillAll: "Please fill in every field.",
@@ -68,11 +72,11 @@
       topPick: "AI tanlovi", matchScore: "moslik bali", viewProfile: "Sotuvchi profili", alsoMatching: "Boshqa mos takliflar",
       price: "Narx", quality: "Sifat", distance: "Masofa", dist: "Masofa", cheapestNote: "Eng arzon narx — sifat va masofa bali pastroq",
       noResults: "Bu so'rov bo'yicha sotuvchi topilmadi.", tryAnother: "Boshqa mahsulot yoki hududni sinab ko'ring.",
-      sellerProfile: "Sotuvchi profili", verifiedBy: `${BRAND} AI tomonidan tasdiqlangan`, notVerified: "Hali tasdiqlanmagan",
+      sellerProfile: "Sotuvchi profili", verifiedBy: `${BRAND} tomonidan tasdiqlangan`, notVerified: "Hali tasdiqlanmagan",
       matchFor: (q, p) => `${q ? q + " kg " : ""}${p} uchun moslik`, priceNote: (s) => s >= 80 ? `Narx raqobatbardoshligi ${s}/100 — bu hajm uchun juda foydali.` : s >= 50 ? `Narx raqobatbardoshligi ${s}/100 — bu hajm uchun o'rtacha.` : `Narx raqobatbardoshligi ${s}/100 — yaqin atrofdagilardan qimmatroq.`,
       requested: (q) => `~${q} kg so'raldi`, currentPrices: "Joriy narxlar", minOrder: (kg) => `min. ${kg} kg`, perKg: "so'm/kg",
       viewHistory: "30 kunlik narx tarixi", reviews: "Sharhlar", noReviews: "Hali ochiq sharhlar yo'q",
-      noReviewsBody: `Yangi sotuvchilar sharhlar ochilishidan oldin ${BRAND} AI jamoasi tomonidan tekshiriladi — shuning uchun ishonch belgisi birinchi kundanoq mavjud.`,
+      noReviewsBody: `Yangi sotuvchilar sharhlar ochilishidan oldin ${BRAND} jamoasi tomonidan tekshiriladi — shuning uchun ishonch belgisi birinchi kundanoq mavjud.`,
       requestOffer: "Taklifni so'rash", requestTitle: "Taklifni so'rash", requestBody: (n) => `So'rovingizni ${n}ga yetkazamiz. To'g'ridan-to'g'ri bog'lanishingiz ham mumkin:`,
       call: "Qo'ng'iroq qilish", sendRequest: "So'rov yuborish", requestSent: "So'rov yuborildi — sotuvchi siz bilan bog'lanadi.",
       sellers: "Sotuvchilar", browseAll: "Barcha ro'yxatdan o'tgan sotuvchilar", searchSellers: "Sotuvchini nomi bo'yicha qidiring", allSellers: "Barcha sotuvchilar",
@@ -103,6 +107,10 @@
       basket: "Savat bo'yicha taklif", basketSub: "Butun buyurtmani kiriting — eng arzon bitta yetkazuvchi va eng arzon bo'lib olishni topamiz, yetkazib berish bilan.", basketPh: "500 kg pomidor\n200 kg piyoz\n100 kg sabzi", getQuote: "Taklif olish",
       singleSupplier: "Eng yaxshi bitta yetkazuvchi", bestSplit: "Eng yaxshi bo'lib olish", sellers: (n) => `${n} ta sotuvchi`, goods: "Mahsulot", delivery: "Yetkazib berish", total: "Jami", saves: (n) => `${n} so'm tejaladi`, recommendedTag: "Tavsiya", noSingle: "Hammasini sotadigan bitta sotuvchi yo'q.", unknownLines: (l) => `Tanilmadi: ${l}`, requestQuotes: "Takliflarni so'rash", quotesRequested: "So'rovlar sotuvchilarga yuborildi.",
       basketLockedBody: "Bitta mahsulot emas — butun ro'yxat uchun bitta taklif.", deliveryNote: (b, k) => `Yetkazib berish hisobi: har sotuvchi uchun ${b} + ${k} so'm/km.`,
+      tierGold: "Oltin sotuvchi", tierSilver: "Kumush sotuvchi", tierBronze: "Bronza sotuvchi", tierNew: "Yangi sotuvchi", tierHint: "Ishonchlilik: sotuvchi narxlarni qanchalik tez-tez va halol kiritadi (so'nggi 30 kun).",
+      trendLine: (p) => `Narx tendensiyasi: so'nggi 30 kunda ${p > 0 ? "+" : ""}${p}%`, trendMarket: "bozor bo'yicha, demo tarix",
+      hiddenNote: (n) => `${n} ta taklif eng yaxshilar ro'yxatidan yashirildi: eskirgan yoki ishonchsiz.`, personalizedNote: (f) => `Reyting odatlaringizga moslandi: siz ko'proq ${f === "price" ? "narxga" : f === "quality" ? "sifatga" : "masofaga"} qaraysiz.`,
+      adminLink: "Bozor ma'muriyati paneli",
       myProducts: "Mahsulotlarim", addProduct: "Mahsulot qo'shish", addProductSub: "Nima sotayotganingizni kiriting — yaqin atrofdagi xaridorlar sizni topadi.",
       productName: "Mahsulot nomi", productNamePh: "masalan, Pomidor", pricePerKg: "Narx (so'm/kg)", location: "Joylashuv", placePh: "Bozor yoki shahar, masalan, Chorsu bozori",
       useMyLocation: "Joylashuvimni aniqlash", locationSet: "GPS joylashuv biriktirildi", saveProduct: "Qo'shish", fillAll: "Iltimos, barcha maydonlarni to'ldiring.",
@@ -118,11 +126,11 @@
       topPick: "Выбор AI", matchScore: "балл", viewProfile: "Профиль продавца", alsoMatching: "Также подходят",
       price: "Цена", quality: "Качество", distance: "Расстояние", dist: "Расст.", cheapestNote: "Самая низкая цена — ниже балл качества и расстояния",
       noResults: "Продавцы по этому запросу пока не найдены.", tryAnother: "Попробуйте другой товар или регион.",
-      sellerProfile: "Профиль продавца", verifiedBy: `Проверен ${BRAND} AI`, notVerified: "Ещё не проверен",
+      sellerProfile: "Профиль продавца", verifiedBy: `Проверен ${BRAND}`, notVerified: "Ещё не проверен",
       matchFor: (q, p) => `Соответствие: ${q ? q + " кг " : ""}${p}`, priceNote: (s) => s >= 80 ? `Конкурентность цены ${s}/100 — отличная для такого объёма.` : s >= 50 ? `Конкурентность цены ${s}/100 — средняя для такого объёма.` : `Конкурентность цены ${s}/100 — дороже соседних предложений.`,
       requested: (q) => `~${q} кг запрошено`, currentPrices: "Текущие цены", minOrder: (kg) => `мин. ${kg} кг`, perKg: "сум/кг",
       viewHistory: "История цен за 30 дней", reviews: "Отзывы", noReviews: "Публичных отзывов пока нет",
-      noReviewsBody: `Новых продавцов проверяет команда ${BRAND} AI до открытия отзывов, поэтому сигнал доверия есть с первого дня.`,
+      noReviewsBody: `Новых продавцов проверяет команда ${BRAND} до открытия отзывов, поэтому сигнал доверия есть с первого дня.`,
       requestOffer: "Запросить предложение", requestTitle: "Запросить предложение", requestBody: (n) => `Мы передадим запрос продавцу ${n}. Также можно связаться напрямую:`,
       call: "Позвонить", sendRequest: "Отправить запрос", requestSent: "Запрос отправлен — продавец свяжется с вами.",
       sellers: "Продавцы", browseAll: "Все зарегистрированные продавцы", searchSellers: "Поиск продавца по имени", allSellers: "Все продавцы",
@@ -153,6 +161,10 @@
       basket: "Расчёт корзины", basketSub: "Вставьте весь заказ — найдём самого дешёвого поставщика и самую дешёвую разбивку, с доставкой.", basketPh: "500 кг помидор\n200 кг лук\n100 кг морковь", getQuote: "Рассчитать",
       singleSupplier: "Лучший единый поставщик", bestSplit: "Лучшая разбивка", sellers: (n) => `Продавцов: ${n}`, goods: "Товар", delivery: "Доставка", total: "Итого", saves: (n) => `Экономия ${n} сум`, recommendedTag: "Рекомендуем", noSingle: "Нет продавца со всеми позициями.", unknownLines: (l) => `Не распознано: ${l}`, requestQuotes: "Запросить предложения", quotesRequested: "Запросы отправлены продавцам.",
       basketLockedBody: "Не один товар, а весь список — одним расчётом.", deliveryNote: (b, k) => `Оценка доставки: ${b} + ${k} сум/км за продавца.`,
+      tierGold: "Золотой продавец", tierSilver: "Серебряный продавец", tierBronze: "Бронзовый продавец", tierNew: "Новый продавец", tierHint: "Надёжность: как часто и честно продавец сообщает цены (последние 30 дней).",
+      trendLine: (p) => `Тренд цены: ${p > 0 ? "+" : ""}${p}% за 30 дней`, trendMarket: "по рынку, демо-история",
+      hiddenNote: (n) => `Скрыто из топа: ${n} — устаревшие или ненадёжные.`, personalizedNote: (f) => `Рейтинг подстроен под ваши привычки: вы выбираете по ${f === "price" ? "цене" : f === "quality" ? "качеству" : "расстоянию"}.`,
+      adminLink: "Панель администрации базара",
       myProducts: "Мои товары", addProduct: "Добавить товар", addProductSub: "Укажите, что продаёте, — покупатели рядом вас найдут.",
       productName: "Название товара", productNamePh: "например, Помидор", pricePerKg: "Цена (сум/кг)", location: "Локация", placePh: "Базар или город, например, Чорсу",
       useMyLocation: "Определить моё местоположение", locationSet: "GPS-локация добавлена", saveProduct: "Добавить", fillAll: "Заполните все поля.",
@@ -349,8 +361,14 @@
   const bmBtn = (id) => `<button class="bm ${isSaved(id) ? "on" : ""}" data-bm="${id}" aria-label="Save">${isSaved(id) ? I.bookmarkFill : I.bookmark}</button>`;
   const sellerRow = (s) => `
     <div class="card row"><button class="row grow" data-go="seller/${s.id}" style="text-align:left">${avatar(s.name)}
-      <div class="grow"><div class="name">${esc(s.name)}</div><div class="sub">${esc(s.region)} · <span class="star">★ ${s.rating.toFixed(1)}</span></div></div></button>${bmBtn(s.id)}</div>`;
+      <div class="grow"><div class="name">${esc(s.name)}</div><div class="sub">${esc(s.region)} · <span class="star">★ ${s.rating.toFixed(1)}</span>${s.reliability ? ` · <span class="tier-dot ${s.reliability.tier}"></span>${t({ gold: "tierGold", silver: "tierSilver", bronze: "tierBronze", new: "tierNew" }[s.reliability.tier])}` : ""}</div></div></button>${bmBtn(s.id)}</div>`;
   const sellerCats = (s) => (s.categories || []).map((c) => t("catLabel", c)).join(" & ") || "—";
+  const tierBadge = (rel) => {
+    if (!rel) return "";
+    const k = { gold: "tierGold", silver: "tierSilver", bronze: "tierBronze", new: "tierNew" }[rel.tier] || "tierNew";
+    return `<span class="tier ${rel.tier}" title="${esc(t("tierHint"))}">${I.shield}${t(k)}</span>`;
+  };
+  const trendLine = (tr) => tr ? `<div class="trendline ${tr.direction}">${tr.direction === "down" ? I.trendDown : I.trend}<span>${esc(t("trendLine", tr.changePercent))}</span><span class="sub">· ${t("trendMarket")}</span></div>` : "";
   const lockTag = () => `<span class="lock-tag">${I.lock}${t("lockedTag")}</span>`;
   const usagePill = () => {
     if (!S.me) return "";
@@ -400,9 +418,10 @@
       return `
         ${header(t("topMatches"), sub)}
         ${has("weights") ? weightsCard(S.weights || w) : `<div class="banner">${I.sliders}<span>${t("formula", Math.round(w.price * 100), Math.round(w.quality * 100), Math.round(w.distance * 100))}</span></div>`}
+        ${d.personalization && d.personalization.preference ? `<div class="banner">${I.user}<span>${esc(t("personalizedNote", d.personalization.preference))}</span></div>` : ""}
         ${!top ? `<div class="card">${empty(I.search, t("noResults") + " " + t("tryAnother"))}</div>` : `
         <div class="card soft">
-          <span class="badge" style="margin-bottom:12px">${t("topPick")}</span>
+          <div class="row" style="margin-bottom:12px"><span class="badge">${t("topPick")}</span>${tierBadge(top.reliability)}</div>
           <div class="row" style="margin-bottom:14px">${avatar(top.sellerName, "md")}
             <div class="grow"><div class="name">${esc(top.sellerName)}</div><div class="sub">${esc(top.region)}</div></div>
             <div style="text-align:right"><div class="big">${Math.round(top.score)}</div><div class="sub">${t("matchScore")}</div></div></div>
@@ -418,6 +437,7 @@
             <div class="legend"><span><i class="dot"></i>${t("price")} <b>${Math.round(r.breakdown.priceScore)}</b></span><span><i class="dot q"></i>${t("quality")} <b>${Math.round(r.breakdown.qualityScore)}</b></span><span><i class="dot d"></i>${t("dist")} <b>${Math.round(r.breakdown.distanceScore)}</b></span></div>
             ${r.sellerId === cheapestId ? `<div class="hint">${t("cheapestNote")}</div>` : ""}
           </button>`).join("")}
+        ${d.excluded && d.excluded.length ? `<p class="sub wrap" style="margin:4px 0 12px">${I.shield.replace("<svg", '<svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"')}${esc(t("hiddenNote", d.excluded.length))}</p>` : ""}
         ${!has("top10") ? `<button class="link-row feature" data-act="upgrade"><span class="ic">${I.lock}</span><span class="grow"><b>${t("moreResultsLocked")}</b><span class="sub wrap" style="display:block">${t("showingTop", 3)}</span></span>${lockTag()}</button>` : ""}`}`;
     },
 
@@ -471,7 +491,7 @@
           ${avatar(s.name, "lg")}
           <div class="name" style="font-size:20px;margin-top:12px">${esc(s.name)}</div>
           <div class="sub">${esc(s.region)}, ${esc(provLabel(s.province))}</div>
-          <div style="margin-top:12px"><span class="verified ${s.verified ? "" : "off"}">${I.shield}${s.verified ? t("verifiedBy") : t("notVerified")}</span></div>
+          <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><span class="verified ${s.verified ? "" : "off"}">${I.shield}${s.verified ? t("verifiedBy") : t("notVerified")}</span>${tierBadge(s.reliability)}</div>
         </div>
         ${match ? `
         <div class="card">
@@ -479,10 +499,11 @@
           ${bars(match.breakdown)}
           <p class="sub" style="margin:12px 0 0">${esc(t("priceNote", Math.round(match.breakdown.priceScore)))}</p>
         </div>
-        <div class="chips"><span class="tag">${esc(plabel(product))}</span>${S.q.qty ? `<span class="tag">${esc(t("requested", S.q.qty))}</span>` : ""}<span class="tag">${fmt(match.pricePerKg)} ${t("perKg")}</span></div>`
+        <div class="chips"><span class="tag">${esc(plabel(product))}</span>${S.q.qty ? `<span class="tag">${esc(t("requested", S.q.qty))}</span>` : ""}<span class="tag">${fmt(match.pricePerKg)} ${t("perKg")}</span></div>
+        ${trendLine((s.products.find((p) => p.product === product) || {}).trend)}`
         : `
         <div class="card"><p class="label caps" style="margin-bottom:12px">${t("currentPrices")}</p>
-          ${s.products.length ? s.products.map((p) => `<div class="row" style="padding:8px 0;border-top:1px solid var(--border)"><div class="grow"><b>${esc(plabel(p.product))}</b><div class="sub">${t("minOrder", p.minOrderKg)} · ${t("ago", daysBetween(p.reportedAt))}</div></div><b>${fmt(p.pricePerKg)} ${t("perKg")}</b></div>`).join("") : `<div class="sub">—</div>`}
+          ${s.products.length ? s.products.map((p) => `<div style="padding:8px 0;border-top:1px solid var(--border)"><div class="row"><div class="grow"><b>${esc(plabel(p.product))}</b><div class="sub">${t("minOrder", p.minOrderKg)} · ${t("ago", daysBetween(p.reportedAt))}</div></div><b>${fmt(p.pricePerKg)} ${t("perKg")}</b></div>${trendLine(p.trend)}</div>`).join("") : `<div class="sub">—</div>`}
         </div>`}
         ${product ? `<button class="link-row soft" data-go="history/${s.id}/${product}">${I.trend.replace("<svg", '<svg style="width:18px;height:18px"')}<span class="grow">${t("viewHistory")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>` : ""}
         <p class="label caps">${t("reviews")}</p>
@@ -524,6 +545,7 @@
         <button class="link-row" data-go="requests"><span class="ic">${I.list}</span><span class="grow">${t("myRequests")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <button class="link-row" data-go="saved"><span class="ic">${I.bookmark}</span><span class="grow">${t("savedSellers")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <button class="link-row" data-go="notifications"><span class="ic">${I.bell}</span><span class="grow">${t("notifications")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
+        <a class="link-row" href="admin.html" target="_blank" rel="noopener"><span class="ic">${I.sliders}</span><span class="grow">${t("adminLink")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</a>
         <p class="label caps" style="margin-top:20px">${t("myProducts")}</p>
         ${store.myProducts.length ? store.myProducts.map((p, i) => `
           <div class="card mp-row" style="padding:12px 14px"><span class="mp-ic">${I.bag}</span>
@@ -604,6 +626,7 @@
           <div class="axis"><span>${fmt(min)}</span></div>
           <div class="axis" style="margin-top:6px"><span>${t("daysAgo30")}</span><span>${t("todayLbl")}</span>${fc.length ? `<span style="color:var(--distance)">${t("nextWeek")}</span>` : ""}</div>
         </div>
+        ${trendLine(h.trend)}
         <p class="sub wrap" style="margin:0 0 4px">${t("sample")}</p>
         ${h.forecast ? `
           <div class="callout ${v === "down" ? "good" : v === "up" ? "bad" : "neutral"}">${I.thumb}<div><b>${t("forecastTitle")} · ${fmt(fc[fc.length - 1])} ${t("perKg")}</b>${esc(verdictText)}</div></div>`

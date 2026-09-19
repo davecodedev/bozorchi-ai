@@ -1,6 +1,8 @@
 import { prisma } from "./db.js";
 import { productDef, type Category } from "./products.js";
 import { MAX_LISTING_AGE_DAYS } from "./recommend.js";
+import { computeReliability, computeReliabilityBulk } from "./reliability.js";
+import { forecastTrend } from "./forecast.js";
 
 export interface SellerFilter {
   province?: string;
@@ -20,6 +22,7 @@ export async function listSellers(f: SellerFilter) {
     orderBy: [{ rating: "desc" }, { reviewCount: "desc" }],
   });
 
+  const rel = await computeReliabilityBulk(sellers.map((s) => s.id));
   return sellers
     .map((s) => {
       const latest = new Map<string, (typeof s.listings)[number]>();
@@ -33,7 +36,8 @@ export async function listSellers(f: SellerFilter) {
       }));
       const categories = [...new Set(products.map((p) => p.category).filter(Boolean))] as Category[];
       const { listings: _l, ...seller } = s;
-      return { ...seller, products, categories };
+      const r = rel.get(s.id)!;
+      return { ...seller, products, categories, reliability: { score: r.score, tier: r.tier, lastReportAt: r.lastReportAt } };
     })
     .filter((s) => !f.category || f.category === "all" || s.categories.includes(f.category));
 }
@@ -51,14 +55,16 @@ export async function getSeller(id: number) {
   const latest = new Map<string, (typeof s.listings)[number]>();
   for (const l of s.listings) if (!latest.has(l.product)) latest.set(l.product, l);
   const { listings: _l, ...seller } = s;
-  return {
-    ...seller,
-    products: [...latest.values()].map((l) => ({
+  const reliability = await computeReliability(s.id);
+  const products = await Promise.all(
+    [...latest.values()].map(async (l) => ({
       product: l.product,
       category: productDef(l.product)?.category ?? null,
       pricePerKg: l.pricePerKg,
       minOrderKg: l.minOrderKg,
       reportedAt: l.reportedAt,
+      trend: await forecastTrend(l.product, s.province), // P3: "Narx tendensiyasi: so'nggi 30 kunda +15%"
     })),
-  };
+  );
+  return { ...seller, products, reliability };
 }

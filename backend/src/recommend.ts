@@ -1,6 +1,7 @@
 import { prisma } from "./db.js";
 import { distanceKm, resolveProvince, resolveRegion } from "./geo.js";
 import { productLabel, resolveProduct } from "./products.js";
+import { computeReliabilityBulk, type Tier } from "./reliability.js";
 import { rankCandidates, type Candidate, type Weights } from "./scoring.js";
 
 /** Listings older than this are ignored — a 3-week-old price is not a price. */
@@ -10,6 +11,9 @@ export const MAX_LISTING_AGE_DAYS = 21;
  * 1000 km outlier stretches the distance scale and a 260 km seller looks "fairly close".
  */
 export const DEFAULT_RADIUS_KM = 80;
+/** Trust gate (P5): a listing only competes for the top-N if its seller clears both bars. */
+export const MIN_RELIABILITY_SCORE = 20;
+export const STALE_AFTER_HOURS = 48;
 
 export interface RecommendRequest {
   product: string;
@@ -25,6 +29,10 @@ export interface RecommendRequest {
   maxResults?: number;
   /** Whether custom weights may be honoured (Enterprise). */
   allowWeights?: boolean;
+  /** Learned per-buyer weights (P4); used when the caller didn't pass explicit weights. */
+  personalWeights?: Weights;
+  /** Set to false to skip the reliability/staleness gate (admin views). */
+  gate?: boolean;
   lat?: number;
   lng?: number;
   limit?: number;
@@ -79,7 +87,7 @@ export async function recommend(req: RecommendRequest) {
         ? Infinity
         : DEFAULT_RADIUS_KM;
 
-  const candidates: Candidate[] = [...latestBySeller.values()].map((l) => ({
+  const allCandidates: Candidate[] = [...latestBySeller.values()].map((l) => ({
     listingId: l.id,
     sellerId: l.sellerId,
     sellerName: l.seller.name,
@@ -96,9 +104,27 @@ export async function recommend(req: RecommendRequest) {
     reportedAt: l.reportedAt,
   })).filter((c) => c.distanceKm <= radiusKm);
 
+  // ---- P5 trust gate: reliability + staleness. Not a weight — a filter on who may enter the top-N.
+  const reliability = await computeReliabilityBulk(allCandidates.map((c) => c.sellerId));
+  const excluded: { sellerId: number; sellerName: string; reason: "stale" | "low_reliability"; tier: Tier; score: number; reportedHoursAgo: number }[] = [];
+  let candidates = allCandidates;
+  if (req.gate !== false) {
+    candidates = allCandidates.filter((c) => {
+      const r = reliability.get(c.sellerId)!;
+      const hours = (Date.now() - c.reportedAt.getTime()) / 3_600_000;
+      const reason = hours > STALE_AFTER_HOURS ? "stale" : r.score < MIN_RELIABILITY_SCORE ? "low_reliability" : null;
+      if (reason) excluded.push({ sellerId: c.sellerId, sellerName: c.sellerName, reason, tier: r.tier, score: r.score, reportedHoursAgo: Math.round(hours) });
+      return !reason;
+    });
+  }
+  // never return an empty top-N just because everyone failed the gate — relax it and say so
+  const gateRelaxed = candidates.length === 0 && allCandidates.length > 0;
+  if (gateRelaxed) candidates = allCandidates;
+
   const cap = req.maxResults ?? 3;
   const limit = Math.min(req.limit ?? 3, cap);
-  const weights = req.allowWeights === false ? undefined : req.weights;
+  const explicit = req.allowWeights === false ? undefined : req.weights;
+  const weights = explicit ?? req.personalWeights;
   let ranked;
   try {
     ranked = rankCandidates(candidates, { weights, limit });
@@ -112,12 +138,17 @@ export async function recommend(req: RecommendRequest) {
     province: province?.key ?? null,
     quantityKg: quantityKg ?? null,
     radiusKm: Number.isFinite(radiusKm) ? radiusKm : null,
-    weightsApplied: Boolean(weights),
+    weightsApplied: Boolean(explicit),
+    personalized: !explicit && Boolean(req.personalWeights),
+    weights: weights ?? null,
     maxResults: cap,
+    gate: { applied: req.gate !== false && !gateRelaxed, relaxed: gateRelaxed, minReliability: MIN_RELIABILITY_SCORE, staleAfterHours: STALE_AFTER_HOURS },
+    excluded,
     buyerLocation: buyer,
     candidates: candidates.length,
     results: ranked.map((r) => ({
       ...r,
+      reliability: { score: reliability.get(r.sellerId)?.score ?? 0, tier: reliability.get(r.sellerId)?.tier ?? "new" },
       aiPick: r.rank === 1,
       reportedDaysAgo: Math.floor((Date.now() - r.reportedAt.getTime()) / 86_400_000),
     })),

@@ -24,6 +24,7 @@ model Seller {
   phone       String?
   listings    Listing[]
   reviews     Review[]
+  reports     PriceHistory[]
 }
 
 model Listing {
@@ -34,11 +35,39 @@ model Listing {
   pricePerKg Int      // UZS
   minOrderKg Int      @default(1)
   reportedAt DateTime @default(now()) // for staleness decay
+  interactions BuyerInteraction[]
 
   @@index([product])
   @@index([sellerId, product])
 }
 
+
+/** One price report by a seller. Drives forecasting (P3) and reliability (P5). `region` = province key. */
+model PriceHistory {
+  id         Int      @id @default(autoincrement())
+  seller     Seller   @relation(fields: [sellerId], references: [id])
+  sellerId   Int
+  product    String
+  region     String
+  price      Int      // UZS per kg
+  reportedAt DateTime
+
+  @@index([product, region, reportedAt])
+  @@index([sellerId, reportedAt])
+}
+
+/** What a buyer did with a listing. Drives personalised weights (P4). */
+model BuyerInteraction {
+  id        Int      @id @default(autoincrement())
+  buyer     Buyer    @relation(fields: [buyerId], references: [id])
+  buyerId   Int
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  listingId Int
+  action    String   // "viewed" | "contacted"
+  createdAt DateTime @default(now())
+
+  @@index([buyerId, action])
+}
 
 model Buyer {
   id             Int       @id @default(autoincrement())
@@ -53,6 +82,7 @@ model Buyer {
   credits        Int       @default(0) // extra searches bought as packs
   createdAt      DateTime  @default(now())
   reviews        Review[]
+  interactions   BuyerInteraction[]
 }
 
 model Review {
