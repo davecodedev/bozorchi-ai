@@ -212,8 +212,10 @@ Endpoints: `POST /deals {listingId, quantity, pricePerKg}`, `GET /deals`, `GET /
 anyone in demo mode (`DEMO_SELLER_ACTIONS=0` turns that off); the deal screen shows a clearly
 labelled "Demo: act as the seller" panel. `My deals` lives in the Profile tab.
 
-Listings carry a `photoUrl` (placeholder picsum.photos images in the seed); the Mini App shows a
-basket icon when a listing has none, never a broken image.
+Listings carry a `photoUrl` — a real photo of the product from Wikipedia / Wikimedia Commons
+(`backend/src/photos.json`, regenerated with `npm run photos:find --workspace backend`, hand-pinned
+where the automatic pick was poor). The Mini App shows a basket icon when a listing has none, never
+a broken image.
 
 ## The bot (`bot/`)
 

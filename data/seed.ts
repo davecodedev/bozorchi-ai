@@ -6,6 +6,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { CATEGORIES, PRODUCTS, type Category } from "../backend/src/products.js";
+import { photoFor } from "../backend/src/photos.js";
 
 const prisma = new PrismaClient();
 
@@ -203,8 +204,8 @@ async function main() {
       historyBatch.push(...rows);
       if (historyBatch.length >= 2000) await flushHistory();
       const last = rows.length ? new Date(Math.max(...rows.map((r) => r.reportedAt.getTime()))) : daysAgo(ago);
-      // placeholder photo per seller+product (picsum.photos, deterministic by seed) — real uploads later
-      listingRows.push({ sellerId: seller.id, product, pricePerKg, minOrderKg, reportedAt: last, photoUrl: `https://picsum.photos/seed/${encodeURIComponent(`${product}-${seller.id}`)}/640/400` });
+      // a real photo of the product (Wikimedia Commons); sellers rotate through 3 pictures — real uploads later
+      listingRows.push({ sellerId: seller.id, product, pricePerKg, minOrderKg, reportedAt: last, photoUrl: photoFor(product, seller.id) });
     }
     await prisma.listing.createMany({ data: listingRows });
     const created = await prisma.listing.findMany({ where: { sellerId: seller.id }, select: { id: true, product: true } });

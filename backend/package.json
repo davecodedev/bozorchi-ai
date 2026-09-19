@@ -12,7 +12,8 @@
     "db:seed": "prisma db seed",
     "db:setup": "prisma db push && prisma db seed",
     "db:studio": "prisma studio",
-    "nlp:check": "tsx scripts/nlp-check.ts"
+    "nlp:check": "tsx scripts/nlp-check.ts",
+    "photos:find": "tsx scripts/find-photos.mts"
   },
   "prisma": {
     "seed": "tsx ../data/seed.ts"
