@@ -14,6 +14,8 @@ import { getPersonalWeights } from "./scoring.js";
 import { marketChartPng, marketChartSvg, marketView } from "./market.js";
 import { hotFeed } from "./feed.js";
 import { photoFor } from "./photos.js";
+import { transcribeAudio, transcribeAvailable } from "./transcribe.js";
+import { sellerDashboard, WINDOWS } from "./dashboard.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -25,6 +27,7 @@ import { getSeller, listSellers } from "./sellers.js";
 
 const app = express();
 app.use(express.json());
+app.use("/transcribe", express.raw({ type: ["audio/*", "video/*", "application/octet-stream"], limit: "8mb" }));
 
 // Mini App may be served from another origin (e.g. Vercel) — allow it.
 app.use((req, res, next) => {
@@ -227,6 +230,32 @@ app.post("/deals/:id/decline", async (req, res) => {
     const { actor } = await actorFor(req, req.params.id);
     res.json({ deal: presentDeal(await declineDeal(req.params.id, actor), "buyer") });
   } catch (e) { dealErr(res, e); }
+});
+
+/** Voice → text via Gemini audio. Body = raw audio bytes (content-type = the recording's mime type). */
+app.get("/transcribe", (_req, res) => res.json({ available: transcribeAvailable() }));
+app.post("/transcribe", async (req, res) => {
+  if (!transcribeAvailable()) return res.status(503).json({ error: "speech recognition not configured", available: false });
+  const buf = req.body as Buffer;
+  if (!Buffer.isBuffer(buf) || buf.length < 500) return res.status(400).json({ error: "no audio" });
+  try {
+    const mime = (req.header("content-type") || "audio/webm").split(";")[0];
+    const text = await transcribeAudio(buf, mime);
+    res.json({ text, available: true });
+  } catch (e) {
+    console.error("transcribe failed:", e);
+    res.status(502).json({ error: "transcription failed" });
+  }
+});
+
+/** Seller dashboard: sales, revenue, commission, net and vs-list gain/loss over a window (12h | 24h | 7d | 30d). */
+app.get("/sellers/:id/dashboard", async (req, res) => {
+  const id = Number(req.params.id);
+  const w = String(req.query.window || "7d");
+  if (!Number.isInteger(id) || !WINDOWS[w]) return res.status(400).json({ error: "bad id or window" });
+  const d = await sellerDashboard(id, w);
+  if (!d) return res.status(404).json({ error: "seller not found" });
+  res.json(d);
 });
 
 /** Hot-sales feed: best-priced fresh listings across products (For-You style, paginated). */

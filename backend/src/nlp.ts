@@ -20,7 +20,13 @@ export interface ParsedQuery {
 }
 
 export const ANTHROPIC_MODEL = "claude-haiku-4-5"; // fast + cheap; right size for structured extraction
-export const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-3.6-flash"; // gemini-2.5-flash is closed to new accounts
+/**
+ * Free-tier quotas are PER MODEL (e.g. 20 requests/day on gemini-3.6-flash), so we try a chain of
+ * models and move to the next on 429 — lite models first, they have the largest allowances.
+ * GEMINI_MODEL (single) or GEMINI_MODELS (comma list) override.
+ */
+export const GEMINI_MODELS: string[] = (process.env.GEMINI_MODELS ?? process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite,gemini-3.1-flash-lite,gemini-2.5-flash-lite,gemini-3.6-flash,gemini-3.7-flash").split(",").map((m) => m.trim()).filter(Boolean);
+export const GEMINI_MODEL = GEMINI_MODELS[0];
 export const NLP_MAX_TOKENS = 200;
 
 export const SYSTEM_PROMPT =
@@ -72,20 +78,31 @@ export function geminiProvider(client?: GenAIClient, apiKey = realKey(process.en
   return {
     name: "gemini",
     async call(text) {
-      const res = await c.models.generateContent({
-        model: GEMINI_MODEL,
-        contents: text,
-        config: {
-          systemInstruction: SYSTEM_PROMPT,
-          maxOutputTokens: NLP_MAX_TOKENS,
-          responseMimeType: "application/json",
-          temperature: 0,
-          // Gemini 3.x "thinks" by default and would spend the whole 200-token cap on it — this is a
-          // simple extraction, so turn thinking off.
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      });
-      return res.text ?? "";
+      let lastErr: unknown;
+      for (const model of GEMINI_MODELS) {
+        try {
+          const res = await c.models.generateContent({
+            model,
+            contents: text,
+            config: {
+              systemInstruction: SYSTEM_PROMPT,
+              maxOutputTokens: NLP_MAX_TOKENS,
+              responseMimeType: "application/json",
+              temperature: 0,
+              // Gemini 3.x "thinks" by default and would spend the whole 200-token cap on it — this is a
+              // simple extraction, so turn thinking off.
+              thinkingConfig: { thinkingBudget: 0 },
+            },
+          });
+          return res.text ?? "";
+        } catch (e) {
+          lastErr = e;
+          const status = (e as { status?: number }).status;
+          if (status === 429 || status === 404 || status === 400) { console.warn(`nlp(gemini): ${model} unavailable (${status}), trying next`); continue; }
+          throw e;
+        }
+      }
+      throw lastErr;
     },
   };
 }

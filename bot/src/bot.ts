@@ -106,13 +106,19 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
   bot.on("message:voice", async (ctx) => {
     const lang = pickLang(ctx.from.language_code);
     const s = t(lang);
-    if (!sttAvailable()) return ctx.reply(s.voiceNoStt);
+    if (!(await sttAvailable(backendUrl))) return ctx.reply(s.voiceNoStt);
 
     await ctx.replyWithChatAction("typing");
-    const file = await ctx.getFile();
-    const url = `https://api.telegram.org/file/bot${token}/${file.file_path}`;
-    const audio = Buffer.from(await (await fetch(url)).arrayBuffer());
-    const text = await transcribe(audio);
+    let text = "";
+    try {
+      const file = await ctx.getFile();
+      const url = `https://api.telegram.org/file/bot${token}/${file.file_path}`;
+      const audio = Buffer.from(await (await fetch(url)).arrayBuffer());
+      text = await transcribe(backendUrl, audio, "audio/ogg"); // Telegram voice notes are OGG/Opus
+    } catch (e) {
+      console.error("voice transcription failed:", e);
+      return ctx.reply(s.backendDown);
+    }
     if (!text) return ctx.reply(s.voiceNoStt);
     await ctx.reply(s.voiceHeard(text), { parse_mode: "HTML" });
     await handleQuery(ctx, text);

@@ -230,8 +230,10 @@ a broken image.
   `2 tonna kartoshka`) → `POST /recommend` → top 3 as a formatted message with the score breakdown,
   plus an inline **Open in Mini App** button that carries `?product=&region=&lat=&lng=` for step 5.
 - 📍 Location messages are remembered per user (in memory) and used for exact distances.
-- 🎤 Voice: if `OPENAI_API_KEY` is set, the audio is transcribed (Whisper, plain `fetch`) and
-  handled like text; otherwise the bot asks the user to type. Swap providers in `bot/src/stt.ts`.
+- 🎤 Voice: voice notes are sent to the backend's `POST /transcribe`, which uses Gemini's
+  dedicated `gemini-3.5-transcribe` model (Uzbek, Russian, mixed) — the same endpoint powers the
+  Mini App's mic button, which records with MediaRecorder since Telegram's WebView has no built-in
+  speech engine. Without `GEMINI_API_KEY` both fall back to "please type".
 - Replies in Uzbek by default, Russian or English when Telegram reports that language.
 - The Mini App button only appears when `MINIAPP_URL` is `https://` — Telegram rejects anything else.
 - `bot/src/bot.ts` exports `createBot()` so tests drive it with fake updates and no token.

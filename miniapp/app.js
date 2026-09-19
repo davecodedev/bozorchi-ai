@@ -73,6 +73,11 @@
       bioPh: "Tell buyers who you are — e.g. Bahor Restaurant, Tashkent", displayName: "Name", profilePhoto: "Profile photo", choosePhoto: "Choose photo", removePhoto: "Remove", saveProfile: "Save",
       noPosts: "No products posted yet. Tap + to add one.", noSaved: "Nothing saved yet.", edit: "Edit", delete: "Delete", postDetails: "Your listing", updated: "Saved", deleted: "Deleted",
       plansTitle: "Subscription", feedEnd: "That's everything for now.", settings: "Settings", region: "Region",
+      dashboard: "Seller dashboard", dashSub: "Sales, revenue and commission for your seller account", linkSeller: "Link a seller account", linkSellerSub: "Sellers don't have logins yet — pick which seller you are for the demo.", noSellerLinked: "No seller account linked yet.",
+      sold: "Sold", revenue: "Revenue", commissionPaid: "Commission paid", netEarned: "Net earned", vsListPrice: "vs list price", dealsWon: "Deals won", dealsLost: "Declined", openDeals: "Open", avgDeal: "Avg deal",
+      w12h: "12h", w24h: "24h", w7d: "7 days", w30d: "30 days", byProduct: "By product", recentDeals: "Recent deals", noSales: "No sales in this period.", gainNote: "Sold above your list prices", lossNote: "Discounts given below your list prices",
+      productPhoto: "Photo", addPhoto: "Add photo", changePhoto: "Change photo",
+      listening: "Listening… tap again to stop", transcribing: "Recognising…", micDenied: "Microphone access was denied.", micUnsupported: "Voice recording isn't supported in this browser — send a voice message to the bot instead.", heard: (t) => `Heard: “${t}”`, nothingHeard: "Didn't catch that — try again closer to the mic.",
       myProducts: "My products", addProduct: "Add a product", addProductSub: "List what you sell so buyers nearby can find you.",
       productName: "Product name", productNamePh: "e.g. Pomidor", pricePerKg: "Price (so'm/kg)", location: "Location", placePh: "Bazaar or city, e.g. Chorsu bozori",
       useMyLocation: "Use my location", locationSet: "GPS location attached", saveProduct: "Add product", fillAll: "Please fill in every field.",
@@ -143,6 +148,11 @@
       bioPh: "O'zingiz haqingizda — masalan, Bahor Restaurant, Toshkent", displayName: "Ism", profilePhoto: "Profil rasmi", choosePhoto: "Rasm tanlash", removePhoto: "O'chirish", saveProfile: "Saqlash",
       noPosts: "Hali e'lon yo'q. + tugmasini bosing.", noSaved: "Hali saqlanganlar yo'q.", edit: "Tahrirlash", delete: "O'chirish", postDetails: "Sizning e'loningiz", updated: "Saqlandi", deleted: "O'chirildi",
       plansTitle: "Obuna", feedEnd: "Hozircha shu.", settings: "Sozlamalar", region: "Hudud",
+      dashboard: "Sotuvchi paneli", dashSub: "Sotuvchi hisobingiz bo'yicha savdo, tushum va komissiya", linkSeller: "Sotuvchi hisobini bog'lash", linkSellerSub: "Sotuvchilarda hali login yo'q — demo uchun qaysi sotuvchi ekaningizni tanlang.", noSellerLinked: "Hali sotuvchi hisobi bog'lanmagan.",
+      sold: "Sotildi", revenue: "Tushum", commissionPaid: "To'langan komissiya", netEarned: "Sof daromad", vsListPrice: "e'lon narxiga nisbatan", dealsWon: "Yakunlangan", dealsLost: "Rad etilgan", openDeals: "Ochiq", avgDeal: "O'rtacha kelishuv",
+      w12h: "12 soat", w24h: "24 soat", w7d: "7 kun", w30d: "30 kun", byProduct: "Mahsulot bo'yicha", recentDeals: "So'nggi kelishuvlar", noSales: "Bu davrda savdo yo'q.", gainNote: "E'lon narxidan yuqori sotildi", lossNote: "E'lon narxidan past chegirmalar berildi",
+      productPhoto: "Rasm", addPhoto: "Rasm qo'shish", changePhoto: "Rasmni almashtirish",
+      listening: "Tinglayapman… to'xtatish uchun yana bosing", transcribing: "Tanilmoqda…", micDenied: "Mikrofonga ruxsat berilmadi.", micUnsupported: "Bu brauzerda ovoz yozish ishlamaydi — botga ovozli xabar yuboring.", heard: (t) => `Eshitdim: “${t}”`, nothingHeard: "Tushunolmadim — mikrofonga yaqinroq gapiring.",
       myProducts: "Mahsulotlarim", addProduct: "Mahsulot qo'shish", addProductSub: "Nima sotayotganingizni kiriting — yaqin atrofdagi xaridorlar sizni topadi.",
       productName: "Mahsulot nomi", productNamePh: "masalan, Pomidor", pricePerKg: "Narx (so'm/kg)", location: "Joylashuv", placePh: "Bozor yoki shahar, masalan, Chorsu bozori",
       useMyLocation: "Joylashuvimni aniqlash", locationSet: "GPS joylashuv biriktirildi", saveProduct: "Qo'shish", fillAll: "Iltimos, barcha maydonlarni to'ldiring.",
@@ -213,6 +223,11 @@
       bioPh: "О себе — например, Bahor Restaurant, Ташкент", displayName: "Имя", profilePhoto: "Фото профиля", choosePhoto: "Выбрать фото", removePhoto: "Удалить", saveProfile: "Сохранить",
       noPosts: "Пока нет товаров. Нажмите +.", noSaved: "Пока ничего не сохранено.", edit: "Изменить", delete: "Удалить", postDetails: "Ваше объявление", updated: "Сохранено", deleted: "Удалено",
       plansTitle: "Подписка", feedEnd: "Пока это всё.", settings: "Настройки", region: "Регион",
+      dashboard: "Панель продавца", dashSub: "Продажи, выручка и комиссия по вашему аккаунту продавца", linkSeller: "Привязать аккаунт продавца", linkSellerSub: "У продавцов пока нет логинов — выберите, кто вы, для демо.", noSellerLinked: "Аккаунт продавца ещё не привязан.",
+      sold: "Продано", revenue: "Выручка", commissionPaid: "Комиссия", netEarned: "Чистыми", vsListPrice: "к цене объявления", dealsWon: "Закрыто", dealsLost: "Отклонено", openDeals: "Открыто", avgDeal: "Средняя сделка",
+      w12h: "12 ч", w24h: "24 ч", w7d: "7 дней", w30d: "30 дней", byProduct: "По товарам", recentDeals: "Последние сделки", noSales: "Продаж за период нет.", gainNote: "Продано выше цены объявления", lossNote: "Скидки ниже цены объявления",
+      productPhoto: "Фото", addPhoto: "Добавить фото", changePhoto: "Заменить фото",
+      listening: "Слушаю… нажмите ещё раз, чтобы остановить", transcribing: "Распознаю…", micDenied: "Доступ к микрофону запрещён.", micUnsupported: "Запись голоса здесь не поддерживается — отправьте голосовое боту.", heard: (t) => `Услышал: «${t}»`, nothingHeard: "Не расслышал — говорите ближе к микрофону.",
       myProducts: "Мои товары", addProduct: "Добавить товар", addProductSub: "Укажите, что продаёте, — покупатели рядом вас найдут.",
       productName: "Название товара", productNamePh: "например, Помидор", pricePerKg: "Цена (сум/кг)", location: "Локация", placePh: "Базар или город, например, Чорсу",
       useMyLocation: "Определить моё местоположение", locationSet: "GPS-локация добавлена", saveProduct: "Добавить", fillAll: "Заполните все поля.",
@@ -259,7 +274,7 @@
   // ---------------------------------------------------------------- storage (localStorage + Telegram CloudStorage mirror)
   const KEY = "bazarcha:v1";
   const defaults = () => ({
-    lang: null, province: DEFAULT_PROVINCE, saved: [], requests: [], alerts: [], myProducts: [], guestId: null, profile: { name: "", bio: "", photo: "" },
+    lang: null, province: DEFAULT_PROVINCE, saved: [], requests: [], alerts: [], myProducts: [], guestId: null, profile: { name: "", bio: "", photo: "", sellerId: null },
     notif: { priceDrop: true, newSellers: true, orderUpdates: false },
   });
   const store = { ...defaults() };
@@ -284,7 +299,7 @@
     q: { text: "", qty: null }, category: "all", province: DEFAULT_PROVINCE, location: null,
     results: null, sellerQ: "", sellersCat: "all", sellersProv: null, loading: false, listening: false,
     me: null, weights: null, basketText: "", quote: null,
-    feed: { items: [], next: 0, category: "all", loading: false, key: "" }, hot: [], pick: null, profileTab: "posts", dealsCount: null,
+    feed: { items: [], next: 0, category: "all", loading: false, key: "" }, hot: [], pick: null, profileTab: "posts", dealsCount: null, dashWindow: "7d", rec: null,
   };
   const has = () => true; // search, ranking, weights, forecast and basket are free for every tier
   const tierLabel = (t) => t === "pro" ? "Pro" : t === "max" ? "Max" : "Free";
@@ -377,7 +392,7 @@
   const route = () => { const h = location.hash.replace(/^#\/?/, ""); const [name, ...rest] = h.split("/"); return { name: name || "search", args: rest }; };
   const TABS = ["search", "hot", "sellers", "profile"];
   /** Which tab lights up for each sub-screen. */
-  const TAB_OF = { results: "search", history: "search", market: "search", basket: "search", seller: "sellers", saved: "profile", plans: "profile", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
+  const TAB_OF = { results: "search", history: "search", market: "search", basket: "search", seller: "sellers", saved: "profile", plans: "profile", dashboard: "profile", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
   window.addEventListener("hashchange", render);
 
   let lastRouteKey = "";
@@ -650,18 +665,45 @@
         </div>
         <div class="ig-name">${esc(name)} ${S.me ? `<span class="badge ${S.me.tier === "max" ? "gold" : ""}" style="font-size:10px;padding:3px 8px;${S.me.tier === "free" ? "background:var(--chip);color:var(--muted)" : ""}">${tierLabel(S.me.tier)}</span>` : ""}${S.me && S.me.verifiedBuyer ? `<span class="vbuyer">✅ ${t("verifiedBuyer")}</span>` : ""}</div>
         <p class="ig-bio">${esc(store.profile.bio || provLabel(store.province))}</p>
-        <div class="row" style="gap:8px;margin:12px 0 16px">
-          <button class="btn ghost sm" style="flex:1" data-act="editProfile">${t("editProfile")}</button>
-          <button class="btn ghost sm" style="flex:1" data-go="plans">${I.star}${t("subscription")}</button>
+        <div class="ig-actions">
+          <button class="btn ghost sm" data-act="editProfile">${t("editProfile")}</button>
+          <button class="btn ghost sm" data-go="plans">${t("subscription")}</button>
+          <button class="btn ghost sm" data-go="dashboard">${I.trend}${t("dashboard")}</button>
           <button class="icon-btn" data-act="settings" aria-label="${t("menu")}">${I.menu}</button>
         </div>
         <div class="ig-tabs"><button class="${S.profileTab === "posts" ? "on" : ""}" data-ptab="posts">${I.grid}${t("posts")}</button><button class="${S.profileTab === "saved" ? "on" : ""}" data-ptab="saved">${I.bookmark}${t("savedStat")}</button></div>
         ${S.profileTab === "posts" ? (store.myProducts.length ? `<div class="ig-grid">${store.myProducts.map((p, i) => `
-            <button class="ig-cell" data-act="openPost" data-i="${i}">${photo(postPhoto(p), "photo cell")}<div class="cell-cap"><b>${esc(p.name)}</b><span>${fmt(p.price)}</span></div></button>`).join("")}</div>`
+            <button class="ig-cell" data-act="openPost" data-i="${i}">${photo(p.photo || postPhoto(p), "photo cell")}<div class="cell-cap"><b>${esc(p.name)}</b><span>${fmt(p.price)}</span></div></button>`).join("")}</div>`
           : `<div class="empty">${I.bag}<div>${t("noPosts")}</div></div>`)
         : (savedSellers.length ? `<div class="ig-grid">${savedSellers.map((x) => `
             <button class="ig-cell" data-go="seller/${x.id}">${photo((x.products[0] || {}).photoUrl, "photo cell")}<div class="cell-cap"><b>${esc(x.name)}</b><span>★ ${x.rating.toFixed(1)}</span></div></button>`).join("")}</div>`
           : `<div class="empty">${I.bookmark}<div>${t("noSaved")}</div></div>`)}`;
+    },
+
+    async dashboard() {
+      const sid = store.profile.sellerId;
+      if (!sid) return `
+        ${header(t("dashboard"), t("dashSub"))}
+        <div class="card soft" style="text-align:center;padding:26px 16px">${I.store.replace("<svg", '<svg style="width:40px;height:40px;color:var(--primary)"')}<p class="wrap" style="margin:10px 0 4px"><b>${t("noSellerLinked")}</b></p><p class="sub wrap" style="margin:0 0 14px">${t("linkSellerSub")}</p><button class="btn" data-act="linkSeller">${t("linkSeller")}</button></div>`;
+      const d = await api(`/sellers/${sid}/dashboard?window=${S.dashWindow}`);
+      const money = (n) => `${fmt(n)} so'm`;
+      const kpi = (label, value, cls = "") => `<div class="kpi ${cls}"><span>${label}</span><b>${value}</b></div>`;
+      const max = Math.max(1, ...d.series.map((x) => x.value));
+      const bars = d.series.map((x) => `<div class="bar-col" title="${money(x.value)}"><i style="height:${Math.max(4, (x.value / max) * 100)}%"></i><span>${new Date(x.at).toLocaleDateString(undefined, d.bucketHours === 1 ? { hour: "2-digit" } : { day: "2-digit", month: "short" })}</span></div>`).join("");
+      return `
+        ${header(t("dashboard"), `${esc(d.seller.name)} · ${esc(d.seller.bazaar)}`, `<button class="icon-btn" data-act="linkSeller" title="${t("linkSeller")}">${I.user}</button>`)}
+        <div class="chips" style="margin-bottom:12px">${["12h", "24h", "7d", "30d"].map((w) => `<button class="chip sm ${S.dashWindow === w ? "on" : ""}" data-win="${w}">${t("w" + w)}</button>`).join("")}</div>
+        <div class="kpis">
+          ${kpi(t("revenue"), money(d.revenue), "big")}
+          ${kpi(t("netEarned"), money(d.net), "good")}
+          ${kpi(t("commissionPaid"), money(d.commission))}
+          ${kpi(t("sold"), `${fmt(d.quantity)}`)}
+          ${kpi(t("dealsWon"), d.deals.accepted)}${kpi(t("dealsLost"), d.deals.declined)}${kpi(t("openDeals"), d.deals.open)}${kpi(t("avgDeal"), money(d.avgDeal))}
+        </div>
+        <div class="callout ${d.vsList >= 0 ? "good" : "bad"}">${d.vsList >= 0 ? I.trend : I.trendDown}<div><b>${d.vsList >= 0 ? "+" : "−"}${fmt(Math.abs(d.vsList))} so'm ${t("vsListPrice")}</b>${d.vsList >= 0 ? t("gainNote") : t("lossNote")}</div></div>
+        ${d.series.length ? `<div class="card"><p class="label caps" style="margin-bottom:8px">${t("revenue")}</p><div class="bars-chart">${bars}</div></div>` : `<p class="foot-note">${t("noSales")}</p>`}
+        ${d.products.length ? `<p class="label caps">${t("byProduct")}</p><div class="card">${d.products.map((p) => `<div class="row" style="padding:7px 0;border-top:1px solid var(--border)"><div class="grow"><b>${esc(plabel(p.product))}</b><div class="sub">${fmt(p.quantity)} ${per(p.product).split("/")[1]} · ${p.deals} ${t("dealsStat").toLowerCase()}</div></div><b>${money(p.revenue)}</b></div>`).join("")}</div>` : ""}
+        ${d.recent.length ? `<p class="label caps">${t("recentDeals")}</p><div class="card">${d.recent.map((r) => `<div class="row" style="padding:7px 0;border-top:1px solid var(--border)"><div class="grow"><b>${esc(plabel(r.product))}</b> <span class="sub">× ${r.quantity}</span><div class="sub">${esc(r.buyer || "—")}${r.verifiedBuyer ? " ✅" : ""} · ${t("ago", daysBetween(r.at))}</div></div><b style="color:${r.status === "accepted" ? "var(--positive)" : r.status === "declined" ? "var(--alert)" : "var(--muted)"}">${r.status === "accepted" ? money(r.totalValue) : r.status === "declined" ? t("dealsLost") : t("openDeals")}</b></div>`).join("")}</div>` : ""}`;
     },
 
     plans() {
@@ -1008,11 +1050,17 @@
       ctx.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, size, size); store.profile.photo = c.toDataURL("image/jpeg", 0.8); URL.revokeObjectURL(url);
       const pv = document.getElementById("ep-preview"); if (pv) pv.innerHTML = `<img src="${store.profile.photo}" alt="" />`; }; img.src = url; };
   }
+  async function linkSellerSheet() {
+    const all = (await loadSellers()).filter((x) => x.province === store.province).slice(0, 40);
+    sheet(`<h3>${t("linkSeller")}</h3><p class="sub wrap">${t("linkSellerSub")}</p>
+      ${all.map((x) => `<button class="opt ${store.profile.sellerId === x.id ? "on" : ""}" data-linksel="${x.id}"><span class="row" style="gap:10px">${avatar(x.name)}<span><b>${esc(x.name)}</b><div class="sub">${esc(x.bazaar)}</div></span></span>${store.profile.sellerId === x.id ? "✓" : ""}</button>`).join("")}`);
+  }
   function settingsSheet() {
     const row = (icon, label, attrs) => `<button class="opt" ${attrs}><span class="row" style="gap:10px">${icon}${label}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>`;
     sheet(`
       <h3>${t("settings")}</h3>
       ${row("🤝", t("myDeals"), 'data-go="deals"')}
+      ${row(I.trend, t("dashboard"), 'data-go="dashboard"')}
       ${row(I.list, t("myRequests"), 'data-go="requests"')}
       ${row(I.bell, t("notifications"), 'data-go="notifications"')}
       ${row(I.pin, `${t("region")} · <b>${esc(provLabel(store.province))}</b>`, 'data-act="chooseRegion"')}
@@ -1024,7 +1072,7 @@
     const p = store.myProducts[i]; if (!p) return;
     sheet(`
       <h3>${t("postDetails")}</h3>
-      <div class="card mp-row"><span class="mp-ic">${I.bag}</span><div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(catLabelOf(p.category))} · ${esc(p.place || provLabel(p.province))}</div></div><div class="price">${fmt(p.price)}<small>${t("perKgShort")}</small></div></div>
+      <div class="card mp-row">${p.photo ? photo(p.photo, "photo thumb") : `<span class="mp-ic">${I.bag}</span>`}<div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(catLabelOf(p.category))} · ${esc(p.place || provLabel(p.province))}</div></div><div class="price">${fmt(p.price)}<small>${t("perKgShort")}</small></div></div>
       <div class="row" style="gap:8px"><button class="btn ghost sm" style="flex:1" data-act="deletePost" data-i="${i}">${t("delete")}</button><button class="btn sm" style="flex:1" data-act="editPost" data-i="${i}">${t("edit")}</button></div>`);
   }
 
@@ -1037,6 +1085,7 @@
     const cats = S.meta.categories;
     sheet(`
       <h3>${ex ? t("edit") : t("addProduct")}</h3><p class="sub wrap">${t("addProductSub")}</p>
+      <div class="field"><span>${t("productPhoto")}</span><div class="row" style="gap:10px"><div class="photo thumb" id="ap-preview" style="width:72px;height:72px">${ex && ex.photo ? `<img src="${esc(ex.photo)}" alt="" />` : ""}<span class="ph">${I.bag}</span></div><label class="btn ghost sm" style="flex:1">${I.camera}${ex && ex.photo ? t("changePhoto") : t("addPhoto")}<input type="file" accept="image/*" capture="environment" id="ap-file" hidden /></label></div></div>
       <label class="field"><span>${t("productName")}</span><input id="ap-name" list="ap-list" autocomplete="off" placeholder="${t("productNamePh")}" value="${esc(ex ? ex.name : "")}" /><datalist id="ap-list">${S.meta.products.map((p) => `<option value="${esc(p.label[S.lang] || p.label.en)}">`).join("")}</datalist></label>
       <div class="field"><span>${t("category")}</span><div class="seg" id="ap-cat">${cats.map((c, i) => `<button type="button" class="chip sm ${(ex ? ex.category === c.key : i === 0) ? "on" : ""}" data-apcat="${c.key}">${esc(c.label[S.lang] || c.label.en)}</button>`).join("")}</div></div>
       <label class="field"><span>${t("pricePerKg")}</span><input id="ap-price" type="number" inputmode="numeric" placeholder="12000" value="${ex ? ex.price : ""}" /></label>
@@ -1044,7 +1093,14 @@
       <label class="field" style="margin-top:8px"><input id="ap-place" placeholder="${t("placePh")}" autocomplete="off" value="${esc(ex ? ex.place || "" : "")}" /></label>
       <button type="button" class="btn ghost" style="margin-top:10px" data-act="apLocate" id="ap-locate">${I.pin}<span>${t("useMyLocation")}</span></button>
       <button type="button" class="btn" data-act="saveProduct">${ex ? t("saveProfile") : t("saveProduct")}</button>`);
+    draftPhoto = ex ? ex.photo || "" : "";
+    const f = document.getElementById("ap-file");
+    if (f) f.onchange = () => { const file = f.files && f.files[0]; if (!file) return; const img = new Image(); const url = URL.createObjectURL(file); img.onload = () => {
+      const W = 640; const scale = Math.min(1, W / img.width); const c = document.createElement("canvas"); c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); draftPhoto = c.toDataURL("image/jpeg", 0.72); URL.revokeObjectURL(url);
+      const pv = document.getElementById("ap-preview"); if (pv) pv.innerHTML = `<img src="${draftPhoto}" alt="" /><span class="ph">${I.bag}</span>`; }; img.src = url; };
   }
+  let draftPhoto = "";
   function popup(title, body, onOk) {
     if (tg && tg.showPopup && tg.isVersionAtLeast && tg.isVersionAtLeast("6.2")) {
       try { tg.showPopup({ title, message: body, buttons: [{ id: "ok", type: "ok" }] }, () => onOk && onOk()); return; } catch { /* fall through */ }
@@ -1062,10 +1118,10 @@
     const place = document.getElementById("ap-place").value.trim();
     if (!name || !price || !catBtn) return toast(t("fillAll"));
     if (editingIndex != null && store.myProducts[editingIndex]) {
-      Object.assign(store.myProducts[editingIndex], { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc });
+      Object.assign(store.myProducts[editingIndex], { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto });
       editingIndex = null; save(); closeSheet(); haptic(); toast(t("updated")); return render();
     }
-    store.myProducts.unshift({ id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, at: new Date().toISOString() });
+    store.myProducts.unshift({ id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, at: new Date().toISOString() });
     save(); closeSheet(); haptic("medium");
     try { tg.HapticFeedback.notificationOccurred("success"); } catch {}
     popup(t("productAdded"), t("productAddedBody", name), () => { if (route().name !== "profile") go("profile"); else render(); });
@@ -1087,16 +1143,38 @@
   }
 
   // ---------------------------------------------------------------- voice (Web Speech API where the WebView supports it)
-  function mic() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return toast(t("voiceUnsupported"));
-    const rec = new SR();
-    rec.lang = { uz: "uz-UZ", ru: "ru-RU", en: "en-US" }[S.lang]; rec.interimResults = false;
-    S.listening = true; render(); toast(t("listening"));
-    rec.onresult = (e) => { S.listening = false; const txt = e.results[0][0].transcript; runSearch(txt); };
-    rec.onerror = () => { S.listening = false; render(); toast(t("voiceUnsupported")); };
-    rec.onend = () => { if (S.listening) { S.listening = false; render(); } };
-    try { rec.start(); } catch { S.listening = false; render(); toast(t("voiceUnsupported")); }
+  /**
+   * Voice search. Telegram's WebView has no built-in speech engine (and none for Uzbek anyway), so we
+   * record with MediaRecorder and let the backend transcribe via Gemini audio. Tap to start, tap to stop.
+   */
+  async function mic() {
+    if (S.rec) { S.rec.stop(); return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === "undefined") return toast(t("micUnsupported"));
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch { return toast(t("micDenied")); }
+    const mime = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"].find((m) => MediaRecorder.isTypeSupported(m)) || "";
+    const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+    const chunks = [];
+    rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = async () => {
+      S.rec = null; S.listening = false; render();
+      stream.getTracks().forEach((tr) => tr.stop());
+      const blob = new Blob(chunks, { type: rec.mimeType || mime || "audio/webm" });
+      if (blob.size < 800) return toast(t("nothingHeard"));
+      toast(t("transcribing"));
+      try {
+        const res = await fetch(`${API}/transcribe`, { method: "POST", headers: { "content-type": blob.type, ...authHeaders() }, body: blob });
+        const j = await res.json().catch(() => ({}));
+        if (!res.ok) return toast(res.status === 503 ? t("micUnsupported") : t("offline"));
+        if (!j.text) return toast(t("nothingHeard"));
+        toast(t("heard", j.text)); haptic("medium");
+        runSearch(j.text, { provinceExplicit: true });
+      } catch { toast(t("offline")); }
+    };
+    S.rec = rec; S.listening = true; render(); toast(t("listening")); haptic();
+    rec.start();
+    setTimeout(() => { if (S.rec === rec && rec.state === "recording") rec.stop(); }, 12_000); // hard stop after 12 s
   }
 
   // ---------------------------------------------------------------- events (delegated)
@@ -1143,12 +1221,14 @@
     if (e.target.id === "deal-product") { const o = e.target.selectedOptions[0]; const p = document.getElementById("deal-price"); const q = document.getElementById("deal-qty"); p.value = o.dataset.price; q.min = o.dataset.min; if (Number(q.value) < Number(o.dataset.min)) q.value = o.dataset.min; document.getElementById("deal-list").textContent = t("listPrice", fmt(Number(o.dataset.price))); updateDealTotal(); }
   });
   document.addEventListener("click", async (e) => {
-    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat],[data-fcat],[data-ptab],[data-pick]");
+    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat],[data-fcat],[data-ptab],[data-pick],[data-win],[data-linksel]");
     if (!el) return;
     const d = el.dataset;
     if (d.go !== undefined) { haptic(); closeSheet(); return go(d.go); }
     if (d.cat) { S.category = d.cat; return render(); }
     if (d.ptab) { S.profileTab = d.ptab; return render(); }
+    if (d.win) { S.dashWindow = d.win; return render(); }
+    if (d.linksel) { store.profile.sellerId = Number(d.linksel); save(); closeSheet(); return route().name === "dashboard" ? render() : go("dashboard"); }
     if (d.fcat) { S.feed = { items: [], next: 0, category: d.fcat, loading: false, key: "" }; return render(); }
     if (d.pick) { const [sid, prod] = d.pick.split(":"); S.pick = { sellerId: Number(sid), product: prod }; }
     if (d.prov !== undefined) { S.province = d.prov; S.location = null; return render(); }
@@ -1174,6 +1254,7 @@
       case "saveProfile": store.profile.name = document.getElementById("ep-name").value.trim(); store.profile.bio = document.getElementById("ep-bio").value.trim(); save(); closeSheet(); toast(t("updated")); return render();
       case "removePhoto": store.profile.photo = ""; save(); return editProfileSheet();
       case "settings": haptic(); return settingsSheet();
+      case "linkSeller": haptic(); return linkSellerSheet();
       case "openPost": haptic(); return postSheet(Number(d.i));
       case "editPost": closeSheet(); return addProductSheet(Number(d.i));
       case "deletePost": store.myProducts.splice(Number(d.i), 1); save(); closeSheet(); haptic(); toast(t("deleted")); return render();

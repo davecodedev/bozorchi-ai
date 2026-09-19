@@ -7,6 +7,7 @@
 import { PrismaClient } from "@prisma/client";
 import { CATEGORIES, PRODUCTS, type Category } from "../backend/src/products.js";
 import { photoFor } from "../backend/src/photos.js";
+import { calculateCommission } from "../backend/src/commission.js";
 
 const prisma = new PrismaClient();
 
@@ -276,7 +277,36 @@ async function main() {
     interactionCount += 2;
   }
 
-  console.log(`Seeded ${allSeeds.length} sellers, ${listingCount} listings, ${historyCount} price reports, ${buyers.length + 2} buyers, ${reviewCount} reviews, ${interactionCount} interactions.`);
+  // ---- sales history: accepted (and a few declined) deals over the last 30 days for the named sellers,
+  //      so a seller dashboard has something to show. Deterministic.
+  const named = await prisma.seller.findMany({ where: { name: { in: sellers.map((x) => x.name) } }, include: { listings: true } });
+  const allBuyers = await prisma.buyer.findMany();
+  const dealRows = [];
+  for (const [si, sel] of named.entries()) {
+    const rnd = prng("deals:" + sel.name);
+    const n = 18 + Math.floor(rnd() * 30); // 18–47 deals per named seller in 30 days
+    for (let k = 0; k < n; k++) {
+      const l = sel.listings[Math.floor(rnd() * sel.listings.length)];
+      if (!l) continue;
+      // front-loaded so every window (12h / 24h / 7d / 30d) has something: 15 % in the last 12h, 15 % in 12–24h, 30 % in the last week
+      const r = rnd();
+      const hoursAgoV = r < 0.15 ? rnd() * 12 : r < 0.3 ? 12 + rnd() * 12 : r < 0.6 ? 24 + rnd() * 6 * 24 : 7 * 24 + rnd() * 23 * 24;
+      const qty = l.minOrderKg * (1 + Math.floor(rnd() * 6));
+      const agreed = Math.round((l.pricePerKg * (0.9 + rnd() * 0.16)) / 50) * 50; // −10 % … +6 % vs list
+      const accepted = rnd() < 0.82;
+      const total = agreed * qty;
+      const at = hoursAgo(hoursAgoV);
+      dealRows.push({
+        listingId: l.id, buyerId: allBuyers[(si + k) % allBuyers.length].id, sellerId: sel.id, quantity: qty,
+        status: accepted ? "accepted" : "declined", initialOffer: Math.round(agreed * 0.97 / 50) * 50, counterOffer: rnd() < 0.5 ? agreed : null,
+        agreedPrice: accepted ? agreed : null, totalValue: accepted ? total : null, commissionAmt: accepted ? calculateCommission(total).totalCommission : null,
+        createdAt: new Date(at.getTime() - 3_600_000), updatedAt: at,
+      });
+    }
+  }
+  for (let i = 0; i < dealRows.length; i += 500) await prisma.deal.createMany({ data: dealRows.slice(i, i + 500) });
+
+  console.log(`Seeded ${allSeeds.length} sellers, ${listingCount} listings, ${historyCount} price reports, ${buyers.length + 2} buyers, ${reviewCount} reviews, ${interactionCount} interactions, ${dealRows.length} past deals.`);
 }
 
 main()
