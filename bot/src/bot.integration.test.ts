@@ -177,6 +177,15 @@ test("/upgrade max → verified buyer; the seller-facing notice carries the ✅ 
   assert.match(contact, /unlimited contacts/);
 });
 
+test("a multi-product message → assistant answer with one contact button per item", { skip: !backendUp && "backend not running" }, async () => {
+  const { bot, sent } = harness();
+  await bot.handleUpdate(textUpdate("500 kg pomidor, 200 kg piyoz va 100 kg sabzi kerak, arzon bo'lsin", "uz") as never);
+  const m = messages(sent)[0];
+  assert.match(String(m.payload.text), /^🎙️ Sizga 3 ta mahsulot kerak/);
+  const rows = (m.payload.reply_markup as { inline_keyboard: { text: string; callback_data?: string }[][] }).inline_keyboard;
+  assert.equal(rows.filter((r) => r[0].callback_data?.startsWith("unlock:")).length, 3);
+});
+
 test("backend down → friendly message", async () => {
   const bot = createBot({ token: "000:fake", backendUrl: "http://127.0.0.1:9" });
   const sent: Sent[] = [];

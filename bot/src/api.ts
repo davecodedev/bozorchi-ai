@@ -126,3 +126,11 @@ export async function marketChart(backendUrl: string, product: string, province:
   if (!pngRes.ok || !jsonRes.ok) throw new ApiError(pngRes.status, "chart failed");
   return { png: Buffer.from(await pngRes.arrayBuffer()), view: (await jsonRes.json()) as never };
 }
+
+export interface AssistantResult { answer: string; lang: "uz" | "ru" | "en"; items: { product: string; quantity: number | null; best: (Result & { photoUrl?: string }) | null }[]; plan: { priority: string; maxDistanceKm: number | null; source: string } }
+export async function assistant(backendUrl: string, text: string, opts: { region?: string; lat?: number; lng?: number }, caller?: Caller): Promise<AssistantResult> {
+  const res = await fetch(`${backendUrl}/assistant`, { method: "POST", headers: { "content-type": "application/json", ...callerHeaders(caller) }, body: JSON.stringify({ text, ...opts }), signal: AbortSignal.timeout(40_000) });
+  const body = (await res.json().catch(() => ({}))) as AssistantResult & { error?: string };
+  if (!res.ok) throw new ApiError(res.status, body.error ?? `HTTP ${res.status}`);
+  return body;
+}

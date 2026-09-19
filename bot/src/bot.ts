@@ -1,5 +1,5 @@
 import { Bot, InlineKeyboard, InputFile, Keyboard, type Context } from "grammy";
-import { ApiError, marketChart, parse, recommend, setTier, unlockContact, type ParsedQuery, type Tier } from "./api.js";
+import { ApiError, assistant, marketChart, parse, recommend, setTier, unlockContact, type ParsedQuery, type Tier } from "./api.js";
 import { formatRecommendation } from "./format.js";
 import { pickLang, t } from "./i18n.js";
 import { extractRegion } from "./region.js";
@@ -140,8 +140,21 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
     const userId = ctx.from?.id;
     const loc = userId !== undefined ? locations.get(userId) : undefined;
 
-    // 1. Understand the message (LLM). Keep the "typing…" indicator alive while we wait.
+    // 0. Several products in one message ("500 kg pomidor, 200 kg piyoz va 100 kg sabzi…") → the assistant plans it all
     await ctx.replyWithChatAction("typing");
+    if (looksMultiItem(text)) {
+      try {
+        const a = await assistant(backendUrl, text, { region: extractRegion(text), lat: loc?.lat, lng: loc?.lng }, callerOf(ctx));
+        if (a.items.length >= 2) {
+          const kb = new InlineKeyboard();
+          for (const it of a.items) if (it.best) kb.text(s.contactBtn(`${it.best.sellerName} · ${it.product}`), `unlock:${it.best.sellerId}`).row();
+          if (miniAppUrl) kb.webApp(s.openApp, `${miniAppUrl}${miniAppUrl.includes("?") ? "&" : "?"}screen=assistant`);
+          return ctx.reply(`🎙️ ${a.answer}`, { reply_markup: kb });
+        }
+      } catch (e) { console.warn("assistant failed, falling back to single-product flow:", e); }
+    }
+
+    // 1. Understand the message (LLM). Keep the "typing…" indicator alive while we wait.
     const parsed = await parse(backendUrl, text);
     const q = resolveQuery(text, parsed, userId !== undefined ? lastRegions.get(userId) : undefined);
 
@@ -194,6 +207,13 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
   });
 
   return bot;
+}
+
+/** Two or more quantities, or list separators, usually mean a multi-product request. */
+export function looksMultiItem(text: string): boolean {
+  const qtys = (text.match(/\d+(?:[.,]\d+)?\s*(kg|кг|t|tonna|тонн|т|dona|шт|qop|мешок|litr|л|metr|м)\b/gi) || []).length;
+  const seps = (text.match(/,|\bva\b|\bи\b|\band\b|\n/gi) || []).length;
+  return qtys >= 2 || (qtys >= 1 && seps >= 1);
 }
 
 export interface ResolvedQuery {

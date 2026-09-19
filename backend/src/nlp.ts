@@ -43,7 +43,7 @@ export const EMPTY: ParsedQuery = Object.freeze({ product: null, quantity: null,
 /** A provider takes the raw text and returns the model's text output. */
 export interface Provider {
   name: "anthropic" | "gemini";
-  call(text: string): Promise<string>;
+  call(text: string, system?: string): Promise<string>;
 }
 
 const realKey = (k: string | undefined) => (k && !k.includes("FAKE") ? k : undefined);
@@ -54,11 +54,11 @@ export type MessagesClient = { messages: { create: (params: Anthropic.MessageCre
 export function anthropicProvider(client: MessagesClient = new Anthropic({ maxRetries: 0, timeout: 10_000 })): Provider {
   return {
     name: "anthropic",
-    async call(text) {
+    async call(text, system = SYSTEM_PROMPT) {
       const res = await client.messages.create({
         model: ANTHROPIC_MODEL,
-        max_tokens: NLP_MAX_TOKENS,
-        system: SYSTEM_PROMPT,
+        max_tokens: system === SYSTEM_PROMPT ? NLP_MAX_TOKENS : 600,
+        system,
         messages: [{ role: "user", content: text }],
       });
       return res.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
@@ -77,7 +77,7 @@ export function geminiProvider(client?: GenAIClient, apiKey = realKey(process.en
     new GoogleGenAI({ apiKey, vertexai: process.env.GEMINI_VERTEX === "1", httpOptions: { timeout: 10_000 } });
   return {
     name: "gemini",
-    async call(text) {
+    async call(text, system = SYSTEM_PROMPT) {
       let lastErr: unknown;
       for (const model of GEMINI_MODELS) {
         try {
@@ -85,8 +85,8 @@ export function geminiProvider(client?: GenAIClient, apiKey = realKey(process.en
             model,
             contents: text,
             config: {
-              systemInstruction: SYSTEM_PROMPT,
-              maxOutputTokens: NLP_MAX_TOKENS,
+              systemInstruction: system,
+              maxOutputTokens: system === SYSTEM_PROMPT ? NLP_MAX_TOKENS : 600,
               responseMimeType: "application/json",
               temperature: 0,
               // Gemini 3.x "thinks" by default and would spend the whole 200-token cap on it — this is a
@@ -126,6 +126,14 @@ function getProvider(): Provider | null {
   const name = selectProviderName();
   if (!name) return null;
   return (defaultProvider = name === "gemini" ? geminiProvider() : anthropicProvider());
+}
+
+/** Raw JSON call with a custom system prompt through the same provider chain (used by the assistant). */
+export async function callJson(rawText: string, system: string, provider: Provider | null = getProvider()): Promise<unknown | null> {
+  const text = (rawText ?? "").trim();
+  if (!text || !provider) return null;
+  try { return extractJson(await provider.call(text, system)); }
+  catch (e) { console.warn(`nlp(${provider.name}): callJson failed:`, e instanceof Error ? e.message : e); return null; }
 }
 
 export async function parseQuery(rawText: string, provider: Provider | null = getProvider()): Promise<ParsedQuery> {

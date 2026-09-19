@@ -16,6 +16,7 @@ import { hotFeed } from "./feed.js";
 import { photoFor } from "./photos.js";
 import { transcribeAudio, transcribeAvailable } from "./transcribe.js";
 import { sellerDashboard, WINDOWS } from "./dashboard.js";
+import { runAssistant } from "./assistant.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -230,6 +231,18 @@ app.post("/deals/:id/decline", async (req, res) => {
     const { actor } = await actorFor(req, req.params.id);
     res.json({ deal: presentDeal(await declineDeal(req.params.id, actor), "buyer") });
   } catch (e) { dealErr(res, e); }
+});
+
+/** AI assistant: multi-item request + preferences → per-item picks, basket quote and a spoken answer. */
+app.post("/assistant", async (req, res) => {
+  try {
+    const text = typeof req.body?.text === "string" ? req.body.text.trim() : "";
+    if (!text) return res.status(400).json({ error: "text is required" });
+    const b = await buyerOf(req);
+    const personal = await getPersonalWeights(b.telegramUserId);
+    const { province, region, lat, lng } = req.body ?? {};
+    res.json(await runAssistant({ text, province, region, lat, lng, personalWeights: personal.preference ? personal.weights : undefined }));
+  } catch (e) { console.error(e); res.status(500).json({ error: "internal error" }); }
 });
 
 /** Voice → text via Gemini audio. Body = raw audio bytes (content-type = the recording's mime type). */

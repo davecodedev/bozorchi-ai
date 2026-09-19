@@ -344,3 +344,16 @@ a { color: var(--primary); text-decoration: none; }
 .bar-col i { display: block; width: 100%; max-width: 28px; background: var(--primary); border-radius: 6px 6px 2px 2px; }
 .bar-col span { font-size: 9px; color: var(--muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .icon-btn.listening { color: #fff; background: var(--alert); border-color: var(--alert); }
+
+/* ---------- AI assistant ---------- */
+.asst-card { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: linear-gradient(135deg, #3E5CF6, #6B4DF6); color: #fff; border-radius: var(--radius-lg); padding: 14px 16px; margin: -6px 0 16px; }
+.asst-card .sub { color: rgba(255,255,255,.85); }
+.asst-card .chev { color: rgba(255,255,255,.8); }
+.asst-mic { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; flex: none; }
+.asst-mic svg { width: 22px; height: 22px; }
+.asst-mic.sm { width: 32px; height: 32px; background: var(--primary); color: #fff; } .asst-mic.sm svg { width: 16px; height: 16px; }
+.asst-stage { text-align: center; padding: 18px 0 4px; }
+.asst-big { width: 112px; height: 112px; border-radius: 50%; background: var(--primary); color: #fff; display: inline-grid; place-items: center; box-shadow: 0 10px 30px rgba(62,92,246,.35); transition: transform .15s; }
+.asst-big svg { width: 44px; height: 44px; }
+.asst-big:active { transform: scale(.96); }
+.asst-big.rec { background: var(--alert); box-shadow: 0 0 0 10px rgba(194,59,50,.15); animation: pulse 1s infinite; }

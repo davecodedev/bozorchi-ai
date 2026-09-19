@@ -78,6 +78,10 @@
       w12h: "12h", w24h: "24h", w7d: "7 days", w30d: "30 days", byProduct: "By product", recentDeals: "Recent deals", noSales: "No sales in this period.", gainNote: "Sold above your list prices", lossNote: "Discounts given below your list prices",
       productPhoto: "Photo", addPhoto: "Add photo", changePhoto: "Change photo",
       listening: "Listening… tap again to stop", transcribing: "Recognising…", micDenied: "Microphone access was denied.", micUnsupported: "Voice recording isn't supported in this browser — send a voice message to the bot instead.", heard: (t) => `Heard: “${t}”`, nothingHeard: "Didn't catch that — try again closer to the mic.",
+      assistant: "AI assistant", assistantSub: "Say everything at once — products, amounts, how far you'll go, how good it must be — and I'll plan it.", tapToTalk: "Tap and speak", tapToStop: "Tap to stop", orType: "…or type it", askBtn: "Ask", thinking: "Planning…",
+      youSaid: "You said", yourPlan: "Your plan", prefPrice: "cheapest", prefQuality: "best quality", prefDistance: "nearest", prefBalanced: "balanced", within: (k) => `within ${k} km`, bestFor: "Best for", noneFor: "No offer found", speak: "Read aloud", tryExample: "Try: “500 kg tomatoes, 200 kg onions and 100 kg carrots, good quality, not more than 5 km”",
+      openInBasket: "Open in basket", dictateList: "Dictate your list",
+      score: "score",
       myProducts: "My products", addProduct: "Add a product", addProductSub: "List what you sell so buyers nearby can find you.",
       productName: "Product name", productNamePh: "e.g. Pomidor", pricePerKg: "Price (so'm/kg)", location: "Location", placePh: "Bazaar or city, e.g. Chorsu bozori",
       useMyLocation: "Use my location", locationSet: "GPS location attached", saveProduct: "Add product", fillAll: "Please fill in every field.",
@@ -153,6 +157,10 @@
       w12h: "12 soat", w24h: "24 soat", w7d: "7 kun", w30d: "30 kun", byProduct: "Mahsulot bo'yicha", recentDeals: "So'nggi kelishuvlar", noSales: "Bu davrda savdo yo'q.", gainNote: "E'lon narxidan yuqori sotildi", lossNote: "E'lon narxidan past chegirmalar berildi",
       productPhoto: "Rasm", addPhoto: "Rasm qo'shish", changePhoto: "Rasmni almashtirish",
       listening: "Tinglayapman… to'xtatish uchun yana bosing", transcribing: "Tanilmoqda…", micDenied: "Mikrofonga ruxsat berilmadi.", micUnsupported: "Bu brauzerda ovoz yozish ishlamaydi — botga ovozli xabar yuboring.", heard: (t) => `Eshitdim: “${t}”`, nothingHeard: "Tushunolmadim — mikrofonga yaqinroq gapiring.",
+      assistant: "AI yordamchi", assistantSub: "Hammasini birdaniga ayting — mahsulotlar, miqdor, qancha uzoqqa borasiz, sifati qanday bo'lsin — men reja tuzaman.", tapToTalk: "Bosing va gapiring", tapToStop: "To'xtatish uchun bosing", orType: "…yoki yozing", askBtn: "So'rash", thinking: "Reja tuzilmoqda…",
+      youSaid: "Siz aytdingiz", yourPlan: "Sizning rejangiz", prefPrice: "eng arzon", prefQuality: "eng sifatli", prefDistance: "eng yaqin", prefBalanced: "muvozanatli", within: (k) => `${k} km radiusda`, bestFor: "Eng mosi", noneFor: "Taklif topilmadi", speak: "Ovozli o'qish", tryExample: "Masalan: “500 kg pomidor, 200 kg piyoz va 100 kg sabzi kerak, sifatli bo'lsin, 5 km dan uzoq bo'lmasin”",
+      openInBasket: "Savatda ochish", dictateList: "Ro'yxatni ayting",
+      score: "ball",
       myProducts: "Mahsulotlarim", addProduct: "Mahsulot qo'shish", addProductSub: "Nima sotayotganingizni kiriting — yaqin atrofdagi xaridorlar sizni topadi.",
       productName: "Mahsulot nomi", productNamePh: "masalan, Pomidor", pricePerKg: "Narx (so'm/kg)", location: "Joylashuv", placePh: "Bozor yoki shahar, masalan, Chorsu bozori",
       useMyLocation: "Joylashuvimni aniqlash", locationSet: "GPS joylashuv biriktirildi", saveProduct: "Qo'shish", fillAll: "Iltimos, barcha maydonlarni to'ldiring.",
@@ -228,6 +236,10 @@
       w12h: "12 ч", w24h: "24 ч", w7d: "7 дней", w30d: "30 дней", byProduct: "По товарам", recentDeals: "Последние сделки", noSales: "Продаж за период нет.", gainNote: "Продано выше цены объявления", lossNote: "Скидки ниже цены объявления",
       productPhoto: "Фото", addPhoto: "Добавить фото", changePhoto: "Заменить фото",
       listening: "Слушаю… нажмите ещё раз, чтобы остановить", transcribing: "Распознаю…", micDenied: "Доступ к микрофону запрещён.", micUnsupported: "Запись голоса здесь не поддерживается — отправьте голосовое боту.", heard: (t) => `Услышал: «${t}»`, nothingHeard: "Не расслышал — говорите ближе к микрофону.",
+      assistant: "AI-ассистент", assistantSub: "Скажите всё сразу — товары, количество, как далеко готовы ехать, какое нужно качество — и я составлю план.", tapToTalk: "Нажмите и говорите", tapToStop: "Нажмите, чтобы остановить", orType: "…или напишите", askBtn: "Спросить", thinking: "Составляю план…",
+      youSaid: "Вы сказали", yourPlan: "Ваш план", prefPrice: "подешевле", prefQuality: "качество", prefDistance: "поближе", prefBalanced: "сбалансированно", within: (k) => `в радиусе ${k} км`, bestFor: "Лучший вариант", noneFor: "Предложений нет", speak: "Озвучить", tryExample: "Например: «500 кг помидоров, 200 кг лука и 100 кг моркови, хорошего качества, не дальше 5 км»",
+      openInBasket: "Открыть в корзине", dictateList: "Продиктовать список",
+      score: "балл",
       myProducts: "Мои товары", addProduct: "Добавить товар", addProductSub: "Укажите, что продаёте, — покупатели рядом вас найдут.",
       productName: "Название товара", productNamePh: "например, Помидор", pricePerKg: "Цена (сум/кг)", location: "Локация", placePh: "Базар или город, например, Чорсу",
       useMyLocation: "Определить моё местоположение", locationSet: "GPS-локация добавлена", saveProduct: "Добавить", fillAll: "Заполните все поля.",
@@ -300,6 +312,7 @@
     results: null, sellerQ: "", sellersCat: "all", sellersProv: null, loading: false, listening: false,
     me: null, weights: null, basketText: "", quote: null,
     feed: { items: [], next: 0, category: "all", loading: false, key: "" }, hot: [], pick: null, profileTab: "posts", dealsCount: null, dashWindow: "7d", rec: null,
+    asst: { text: "", result: null, loading: false, recording: false }, basketRec: false,
   };
   const has = () => true; // search, ranking, weights, forecast and basket are free for every tier
   const tierLabel = (t) => t === "pro" ? "Pro" : t === "max" ? "Max" : "Free";
@@ -392,7 +405,7 @@
   const route = () => { const h = location.hash.replace(/^#\/?/, ""); const [name, ...rest] = h.split("/"); return { name: name || "search", args: rest }; };
   const TABS = ["search", "hot", "sellers", "profile"];
   /** Which tab lights up for each sub-screen. */
-  const TAB_OF = { results: "search", history: "search", market: "search", basket: "search", seller: "sellers", saved: "profile", plans: "profile", dashboard: "profile", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
+  const TAB_OF = { results: "search", history: "search", market: "search", basket: "search", assistant: "search", seller: "sellers", saved: "profile", plans: "profile", dashboard: "profile", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
   window.addEventListener("hashchange", render);
 
   let lastRouteKey = "";
@@ -497,11 +510,40 @@
           <button type="submit" class="icon-btn primary" aria-label="Search" ${S.loading ? "disabled" : ""}>${I.arrow}</button>
         </form>
         ${usagePill()}
+        <button class="asst-card" data-go="assistant"><span class="asst-mic">${I.mic}</span><span class="grow" style="text-align:left"><b>🎙️ ${t("assistant")}</b><span class="sub wrap" style="display:block">${t("assistantSub")}</span></span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <div class="row" style="margin:4px 0 10px"><p class="label" style="margin:0" >🔥 ${t("hotSales")} · ${esc(provLabel(S.province))}</p><span class="grow"></span><button class="sub" style="color:var(--primary);font-weight:700" data-go="hot">${t("seeAll")} ›</button></div>
         ${S.hot.length ? `<div class="hstrip">${S.hot.map((it) => productCard(it, "pcard pcard-sm")).join("")}</div>` : empty(I.fire, t("noResults"))}
         <button class="link-row feature" style="margin-top:14px" data-go="basket"><span class="ic">${I.basket}</span><span class="grow"><b>${t("basket")}</b><span class="sub wrap" style="display:block">${t("basketLockedBody")}</span></span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <p class="foot-note">${t("footNote")}</p>
         ${S.loading ? spinner() : ""}`;
+    },
+
+    assistant() {
+      const a = S.asst, r = a.result;
+      const prefLbl = (p) => ({ price: t("prefPrice"), quality: t("prefQuality"), distance: t("prefDistance"), balanced: t("prefBalanced") })[p] || p;
+      const itemCard = (i) => `
+        <div class="card" style="padding:12px 14px">
+          <div class="row">${photo(i.best && i.best.photoUrl, "photo thumb")}<div class="grow"><div class="name">${esc(plabel(i.product))}${i.quantity ? ` <span class="sub">× ${fmt(i.quantity)} ${per(i.product).split("/")[1]}</span>` : ""}</div>
+            ${i.best ? `<div class="sub wrap">${t("bestFor")}: <b style="color:var(--text)">${esc(i.best.sellerName)}</b> · ${esc(i.best.region)} · ${i.best.distanceKm} km ${i.best.reliability ? `<span class="tier-dot ${i.best.reliability.tier}"></span>` : ""}</div>` : `<div class="sub">${t("noneFor")}</div>`}</div>
+            ${i.best ? `<div style="text-align:right;flex:none"><div class="price">${fmt(i.best.pricePerKg)}<small>/${per(i.product).split("/")[1]}</small></div><div class="sub">${t("score")} ${Math.round(i.best.score)}</div></div>` : ""}</div>
+          ${i.best ? `<div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost sm" style="flex:1" data-pick="${i.best.sellerId}:${esc(i.product)}" data-go="seller/${i.best.sellerId}">${t("viewProfile")}</button><button class="btn sm" style="flex:1" data-act="makeDeal" data-id="${i.best.sellerId}" data-product="${esc(i.product)}">🤝 ${t("makeDeal")}</button></div>` : ""}
+        </div>`;
+      return `
+        ${header(t("assistant"), t("assistantSub"))}
+        <div class="asst-stage">
+          <button class="asst-big ${a.recording ? "rec" : ""}" data-act="asstMic" aria-label="${t("tapToTalk")}">${I.mic}</button>
+          <div class="sub" style="font-weight:700;margin-top:10px">${a.recording ? t("tapToStop") : t("tapToTalk")}</div>
+        </div>
+        <form class="search" data-form="assistant" style="margin-top:12px"><input id="asst-text" type="text" placeholder="${t("orType")}" value="${esc(a.text)}" enterkeyhint="send" /><button type="submit" class="icon-btn primary" aria-label="${t("askBtn")}">${I.arrow}</button></form>
+        ${!r && !a.loading ? `<p class="sub wrap" style="text-align:center">${esc(t("tryExample"))}</p>` : ""}
+        ${a.loading ? spinner() : ""}
+        ${r ? `
+          <p class="label caps">${t("youSaid")}</p><div class="card" style="padding:12px 14px"><i>“${esc(r.transcript)}”</i></div>
+          <div class="callout neutral">${I.sliders}<div><b>${t("yourPlan")}: ${prefLbl(r.plan.priority)}${r.plan.maxDistanceKm ? ` · ${t("within", r.plan.maxDistanceKm)}` : ""}</b>${r.plan.source === "keywords" ? `<span class="sub"> · offline parse</span>` : ""}</div></div>
+          <div class="card soft" style="padding:14px"><div class="row" style="gap:10px;align-items:flex-start"><span class="asst-mic sm">${I.mic}</span><p class="wrap" style="margin:0;font-weight:600;line-height:1.5">${esc(r.answer)}</p></div><button class="btn ghost sm" style="margin-top:10px" data-act="speak">🔊 ${t("speak")}</button></div>
+          ${r.items.map(itemCard).join("")}
+          ${r.quote ? `<p class="label caps">${t("basket")}</p><div class="card"><div class="row"><b class="grow">${t("singleSupplier")}</b><b>${r.quote.single ? fmt(r.quote.single.total) + " so'm" : "—"}</b></div>${r.quote.single ? `<div class="sub">${esc(r.quote.single.sellerName)} · ${r.quote.single.distanceKm} km</div>` : ""}<div class="row" style="margin-top:8px"><b class="grow">${t("bestSplit")} · ${t("sellers", r.quote.split.sellerCount)}</b><b style="color:var(--positive)">${fmt(r.quote.split.total)} so'm</b></div>${r.quote.savings ? `<div class="sub">${t("saves", fmt(r.quote.savings))}</div>` : ""}<button class="btn ghost sm" style="margin-top:10px" data-act="asstToBasket">${I.basket}${t("openInBasket")}</button></div>` : ""}
+          ${r.unknown && r.unknown.length ? `<div class="banner">${I.search}<span>${esc(t("unknownLines", r.unknown.join(", ")))}</span></div>` : ""}` : ""}`;
     },
 
     async hot() {
@@ -572,7 +614,7 @@
         ${header(t("basket"), "")}
         <p class="sub wrap" style="margin:0 0 10px">${t("basketSub")}</p>
         <textarea id="basket" class="ta" rows="4" placeholder="${t("basketPh")}">${esc(S.basketText)}</textarea>
-        <button class="btn" style="margin:10px 0 18px" data-act="quote" ${S.loading ? "disabled" : ""}>${I.basket}${t("getQuote")}</button>
+        <div class="row" style="gap:8px;margin:10px 0 18px"><button class="icon-btn ${S.basketRec ? "listening" : ""}" style="width:48px;height:48px" data-act="basketMic" aria-label="${t("dictateList")}">${I.mic}</button><button class="btn" style="flex:1" data-act="quote" ${S.loading ? "disabled" : ""}>${I.basket}${t("getQuote")}</button></div>
         ${S.loading ? spinner() : ""}
         ${q ? `
           ${q.unknown && q.unknown.length ? `<div class="banner">${I.search}<span>${esc(t("unknownLines", q.unknown.join(", ")))}</span></div>` : ""}
@@ -1144,10 +1186,11 @@
 
   // ---------------------------------------------------------------- voice (Web Speech API where the WebView supports it)
   /**
-   * Voice search. Telegram's WebView has no built-in speech engine (and none for Uzbek anyway), so we
+   * Voice capture. Telegram's WebView has no built-in speech engine (and none for Uzbek anyway), so we
    * record with MediaRecorder and let the backend transcribe via Gemini audio. Tap to start, tap to stop.
+   * onState(recording) lets screens show their own indicator; onText gets the transcript.
    */
-  async function mic() {
+  async function recordVoice(onText, onState) {
     if (S.rec) { S.rec.stop(); return; }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === "undefined") return toast(t("micUnsupported"));
     let stream;
@@ -1158,7 +1201,7 @@
     const chunks = [];
     rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
     rec.onstop = async () => {
-      S.rec = null; S.listening = false; render();
+      S.rec = null; onState && onState(false);
       stream.getTracks().forEach((tr) => tr.stop());
       const blob = new Blob(chunks, { type: rec.mimeType || mime || "audio/webm" });
       if (blob.size < 800) return toast(t("nothingHeard"));
@@ -1168,13 +1211,35 @@
         const j = await res.json().catch(() => ({}));
         if (!res.ok) return toast(res.status === 503 ? t("micUnsupported") : t("offline"));
         if (!j.text) return toast(t("nothingHeard"));
-        toast(t("heard", j.text)); haptic("medium");
-        runSearch(j.text, { provinceExplicit: true });
+        haptic("medium"); onText(j.text);
       } catch { toast(t("offline")); }
     };
-    S.rec = rec; S.listening = true; render(); toast(t("listening")); haptic();
+    S.rec = rec; onState && onState(true); toast(t("listening")); haptic();
     rec.start();
-    setTimeout(() => { if (S.rec === rec && rec.state === "recording") rec.stop(); }, 12_000); // hard stop after 12 s
+    setTimeout(() => { if (S.rec === rec && rec.state === "recording") rec.stop(); }, 20_000); // hard stop after 20 s
+  }
+  function mic() {
+    recordVoice((text) => { toast(t("heard", text)); runSearch(text, { provinceExplicit: true }); }, (on) => { S.listening = on; render(); });
+  }
+
+  // ---------------------------------------------------------------- AI assistant
+  async function askAssistant(text) {
+    S.asst.text = text; S.asst.loading = true; S.asst.result = null;
+    if (route().name !== "assistant") go("assistant"); else render();
+    try {
+      S.asst.result = await api("/assistant", { method: "POST", body: JSON.stringify({ text, province: S.province, lat: S.location && S.location.lat, lng: S.location && S.location.lng }) });
+      haptic("medium");
+    } catch (e) { toast(e.body && e.body.error ? e.body.error : t("offline")); }
+    S.asst.loading = false; render();
+  }
+  function speak(text) {
+    if (!("speechSynthesis" in window)) return toast(t("micUnsupported"));
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = { uz: "uz-UZ", ru: "ru-RU", en: "en-US" }[S.lang] || "ru-RU";
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find((x) => x.lang.toLowerCase().startsWith(u.lang.slice(0, 2).toLowerCase())) || voices.find((x) => x.lang.startsWith("ru")) || null;
+    if (v) u.voice = v;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
   }
 
   // ---------------------------------------------------------------- events (delegated)
@@ -1209,6 +1274,7 @@
   document.addEventListener("submit", (e) => {
     const f = e.target.closest("[data-form]"); if (!f) return; e.preventDefault();
     if (f.dataset.form === "search") submitSearch();
+    if (f.dataset.form === "assistant") { const v = document.getElementById("asst-text").value.trim(); if (v) askAssistant(v); }
   });
   // Some WebViews don't fire submit for the keyboard's "search"/Enter key — handle it explicitly.
   document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "q") { e.preventDefault(); submitSearch(); } });
@@ -1246,6 +1312,10 @@
     switch (d.act) {
       case "back": return back();
       case "mic": return mic();
+      case "asstMic": return recordVoice((text) => askAssistant(text), (on) => { S.asst.recording = on; render(); });
+      case "basketMic": return recordVoice((text) => { const ta = document.getElementById("basket"); S.basketText = (S.basketText ? S.basketText + "\n" : "") + text.replace(/\s*(,|\bva\b|\bи\b|\band\b)\s*/gi, "\n"); if (ta) ta.value = S.basketText; toast(t("heard", text)); getQuote(); }, (on) => { S.basketRec = on; render(); });
+      case "speak": return S.asst.result && speak(S.asst.result.answer);
+      case "asstToBasket": { const r = S.asst.result; S.basketText = r.items.filter((i) => i.best).map((i) => `${i.quantity || i.best.minOrderKg} ${per(i.product).split("/")[1]} ${plabel(i.product)}`).join("\n"); return go("basket"); }
       case "request": haptic(); return requestSheet(d.id);
       case "sendRequest": closeSheet(); haptic("medium"); try { tg.HapticFeedback.notificationOccurred("success"); } catch {} return toast(t("requestSent"));
       case "chooseRegion": return regionSheet();
