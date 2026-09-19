@@ -12,9 +12,10 @@ const S = {
   uz: {
     start:
       "👋 <b>Bozorchi AI</b>ga xush kelibsiz!\n\n" +
-      "Qaysi mahsulot kerak? Yozing (masalan, <i>pomidor</i>, <i>2 tonna kartoshka</i>) " +
-      "yoki pastdagi tugmalardan tanlang.\n\n" +
-      "📍 Joylashuvingizni yuborsangiz, eng yaqin sotuvchilarni topaman.",
+      "Bozorlardagi eng yaxshi narx, sifat va masofani siz uchun solishtiramiz.\n\n" +
+      "Ilovani oching yoki shu yerga nima kerakligini yozing.",
+    openAppBtn: "🚀 Ilovani ochish",
+    locationPrompt: "📍 Yaqin sotuvchilarni topish uchun joylashuvingizni yuborishingiz mumkin.",
     help:
       "Mahsulot nomini yozing: pomidor / kartoshka / piyoz.\n" +
       "Tuman qo'shsangiz ham bo'ladi: <i>pomidor Chilonzor</i>.\n" +
@@ -50,9 +51,10 @@ const S = {
   ru: {
     start:
       "👋 Добро пожаловать в <b>Bozorchi AI</b>!\n\n" +
-      "Какой товар нужен? Напишите (например, <i>помидоры</i>, <i>2 тонны картошки</i>) " +
-      "или выберите кнопкой ниже.\n\n" +
-      "📍 Отправьте геолокацию — найду ближайших продавцов.",
+      "Сравниваем цену, качество и расстояние по базарам за вас.\n\n" +
+      "Откройте приложение или просто напишите, что вам нужно.",
+    openAppBtn: "🚀 Открыть приложение",
+    locationPrompt: "📍 Можете отправить геолокацию — найду ближайших продавцов.",
     help:
       "Напишите название: помидор / картошка / лук.\n" +
       "Можно добавить район: <i>помидор Чиланзар</i>.\n" +
@@ -88,9 +90,10 @@ const S = {
   en: {
     start:
       "👋 Welcome to <b>Bozorchi AI</b>!\n\n" +
-      "What do you need? Type it (e.g. <i>tomatoes</i>, <i>2 tons of potatoes</i>) " +
-      "or pick a button below.\n\n" +
-      "📍 Share your location and I'll find the nearest sellers.",
+      "We compare price, quality and distance across the bazaars for you.\n\n" +
+      "Open the app, or just type what you need here.",
+    openAppBtn: "🚀 Open the app",
+    locationPrompt: "📍 You can share your location and I'll find the nearest sellers.",
     help:
       "Type a product: tomato / potato / onion.\n" +
       "Add a district if you like: <i>tomato Chilanzar</i>.\n" +
@@ -127,10 +130,3 @@ const S = {
 
 export type Strings = (typeof S)[Lang];
 export const t = (lang: Lang): Strings => S[lang];
-
-/** Quick-pick product buttons shown on /start (reply keyboard). */
-export const PRODUCT_BUTTONS: Record<Lang, string[]> = {
-  uz: ["🍅 Pomidor", "🥔 Kartoshka", "🧅 Piyoz"],
-  ru: ["🍅 Помидор", "🥔 Картошка", "🧅 Лук"],
-  en: ["🍅 Tomato", "🥔 Potato", "🧅 Onion"],
-};

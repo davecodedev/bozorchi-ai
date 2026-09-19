@@ -43,17 +43,22 @@ const textUpdate = (text: string, lang?: string) => ({
 // Result messages only — the bot may first send a "🧠 Got it: …" line when the LLM parser is on.
 const messages = (sent: Sent[]) => sent.filter((s) => s.method === "sendMessage" && !String(s.payload.text).startsWith("🧠"));
 
-test("/start replies with welcome + quick-pick keyboard", { skip: !backendUp && "backend not running" }, async () => {
+test("/start greets with an Open-the-app button, then a share-location keyboard — no product buttons", { skip: !backendUp && "backend not running" }, async () => {
   const { bot, sent } = harness();
   await bot.handleUpdate({
     ...textUpdate("/start"),
     message: { ...textUpdate("/start").message, entities: [{ type: "bot_command", offset: 0, length: 6 }] },
   } as never);
-  const [m] = messages(sent);
-  assert.match(String(m.payload.text), /Bozorchi AI/);
-  const kb = (m.payload.reply_markup as { keyboard: { text: string }[][] }).keyboard;
-  assert.equal(kb[0].length, 3);
-  assert.match(kb[0][0].text, /Pomidor/);
+  const [greet, loc] = messages(sent);
+  assert.match(String(greet.payload.text), /Bozorchi AI/);
+  const inline = (greet.payload.reply_markup as { inline_keyboard: { text: string; web_app: { url: string } }[][] }).inline_keyboard;
+  assert.match(inline[0][0].text, /Ilovani ochish/);
+  assert.equal(inline[0][0].web_app.url, "https://bazarcha.example/miniapp");
+  const kb = (loc.payload.reply_markup as { keyboard: { text: string; request_location?: boolean }[][] }).keyboard;
+  assert.equal(kb.length, 1);
+  assert.equal(kb[0].length, 1);
+  assert.equal(kb[0][0].request_location, true);
+  assert.doesNotMatch(JSON.stringify(sent), /Pomidor|Kartoshka|Piyoz/);
 });
 
 test("'pomidor Chilonzor' → 3 ranked sellers with Mini App button", { skip: !backendUp && "backend not running" }, async () => {

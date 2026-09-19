@@ -1,7 +1,7 @@
 import { Bot, InlineKeyboard, Keyboard, type Context } from "grammy";
 import { ApiError, parse, recommend, type ParsedQuery } from "./api.js";
 import { formatRecommendation } from "./format.js";
-import { PRODUCT_BUTTONS, pickLang, t } from "./i18n.js";
+import { pickLang, t } from "./i18n.js";
 import { extractRegion } from "./region.js";
 import { sttAvailable, transcribe } from "./stt.js";
 
@@ -21,15 +21,16 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
   /** Last district a user searched in — the default when a new message doesn't name one. */
   const lastRegions = new Map<number, string>();
 
-  const startKeyboard = (lang: ReturnType<typeof pickLang>) => {
-    const kb = new Keyboard();
-    for (const b of PRODUCT_BUTTONS[lang]) kb.text(b);
-    return kb.row().requestLocation(t(lang).locationBtn).resized();
-  };
-
   bot.command("start", async (ctx) => {
     const lang = pickLang(ctx.from?.language_code);
-    await ctx.reply(t(lang).start, { parse_mode: "HTML", reply_markup: startKeyboard(lang) });
+    const s = t(lang);
+    // 1. greeting with the app link (inline button — Telegram needs an https URL for web_app)
+    await ctx.reply(s.start, {
+      parse_mode: "HTML",
+      reply_markup: miniAppUrl ? new InlineKeyboard().webApp(s.openAppBtn, miniAppUrl) : undefined,
+    });
+    // 2. a persistent "share location" key under the keyboard (reply keyboards can't be combined with inline ones)
+    await ctx.reply(s.locationPrompt, { reply_markup: new Keyboard().requestLocation(s.locationBtn).resized() });
   });
 
   bot.command("help", async (ctx) => {
@@ -60,7 +61,7 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
   });
 
   bot.on("message:text", async (ctx) => {
-    // Strip the emoji from quick-pick buttons: "🍅 Pomidor" → "Pomidor"
+    // Strip any leading emoji/punctuation: "🍅 Pomidor" → "Pomidor"
     const text = ctx.message.text.replace(/^[^\p{L}\p{N}]+/u, "").trim();
     if (!text) return;
     await handleQuery(ctx, text);

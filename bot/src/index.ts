@@ -16,6 +16,13 @@ if (!miniAppUrl) console.warn("MINIAPP_URL is not an https:// URL — Mini App b
 
 const bot = createBot({ token: BOT_TOKEN, backendUrl: BACKEND_URL, miniAppUrl });
 
+// Persistent menu button (bottom-left in the chat) opens the Mini App from any screen.
+if (miniAppUrl) {
+  bot.api
+    .setChatMenuButton({ menu_button: { type: "web_app", text: "Bozorchi AI", web_app: { url: miniAppUrl } } })
+    .catch((e) => console.warn("could not set menu button:", e.message));
+}
+
 bot.api
   .setMyCommands([
     { command: "start", description: "Bozorchi AI — start" },
