@@ -22,6 +22,8 @@
       statsTab: "Stats", contactBtn: "Contact", memberSince: (d) => `On ${BRAND} since ${d}`, levelLbl: "Level", nextLevel: (n) => `${n} pts to the next level`, maxLevel: "Top level reached", priceReports: "Price reports", reliabilityScore: "Reliability score", avgRating: "Average rating",
       lvl_starter: "Starter", lvl_bronze: "Bronze", lvl_silver: "Silver", lvl_gold: "Gold", lvl_platinum: "Platinum",
       b_top_seller: "🏆 Top seller", b_experienced: "🤝 Experienced", b_five_star: "⭐ 5-star service", b_consistent: "📈 Consistent prices",
+      buyerPays: "You pay (½)", sellerPays: "Seller pays (½)", commissionOff: "Commission is switched off", commissionNote: "1% under 1 mln · 3% under 10 mln · 5% above. Charged only when the deal is accepted.",
+      yourListing: "Your listing", yourListingSub: "Buyers searching this product see you ranked with everyone else.", listingSynced: "Published — buyers can find it in search", listingSyncFailed: "Saved on this phone only — could not publish to search",
       feeDealTitle: "Deal opening fee", feeDealBody: (n, name) => `Opening a deal with ${name} costs ${n} so'm. The fee is charged when you send the offer.`, feeContactTitle: "Contact fee", feeContactBody: (n) => `Revealing this seller's phone number costs ${n} so'm.`, continueBtn: "Continue", postSheet: "Listing", minOrder: (n, u) => `Min. order ${n} ${u}`,
       matchFor: (q, p) => `Match for ${q ? q + " kg " : ""}${p}`, priceNote: (s) => s >= 80 ? `Price competitiveness ${s}/100 — strong value for an order this size.` : s >= 50 ? `Price competitiveness ${s}/100 — fair for an order this size.` : `Price competitiveness ${s}/100 — pricier than alternatives nearby.`,
       requested: (q) => `~${q} kg requested`, currentPrices: "Current prices", minOrder: (kg) => `min. ${kg} kg`, perKg: "so'm/kg",
@@ -106,6 +108,8 @@
       statsTab: "Statistika", contactBtn: "Kontakt", memberSince: (d) => `${BRAND}da ${d} dan beri`, levelLbl: "Daraja", nextLevel: (n) => `Keyingi darajaga ${n} ball`, maxLevel: "Eng yuqori daraja", priceReports: "Narx hisobotlari", reliabilityScore: "Ishonchlilik bali", avgRating: "O'rtacha reyting",
       lvl_starter: "Yangi", lvl_bronze: "Bronza", lvl_silver: "Kumush", lvl_gold: "Oltin", lvl_platinum: "Platina",
       b_top_seller: "🏆 Top sotuvchi", b_experienced: "🤝 Tajribali", b_five_star: "⭐ 5 yulduzli xizmat", b_consistent: "📈 Barqaror narxlar",
+      buyerPays: "Siz to'laysiz (½)", sellerPays: "Sotuvchi to'laydi (½)", commissionOff: "Komissiya o'chirilgan", commissionNote: "1 mln gacha 1% · 10 mln gacha 3% · undan yuqori 5%. Faqat kelishuv qabul qilinganda olinadi.",
+      yourListing: "Sizning e'loningiz", yourListingSub: "Bu mahsulotni qidirgan xaridorlar sizni ham boshqalar qatori ko'radi.", listingSynced: "E'lon chiqdi — xaridorlar qidiruvda topadi", listingSyncFailed: "Faqat shu telefonda saqlandi — qidiruvga chiqarib bo'lmadi",
       feeDealTitle: "Kelishuv ochish to'lovi", feeDealBody: (n, name) => `${name} bilan kelishuv ochish ${n} so'm turadi. To'lov taklif yuborilganda olinadi.`, feeContactTitle: "Kontakt to'lovi", feeContactBody: (n) => `Bu sotuvchining telefon raqamini ochish ${n} so'm turadi.`, continueBtn: "Davom etish", postSheet: "E'lon", minOrder: (n, u) => `Min. buyurtma ${n} ${u}`,
       matchFor: (q, p) => `${q ? q + " kg " : ""}${p} uchun moslik`, priceNote: (s) => s >= 80 ? `Narx raqobatbardoshligi ${s}/100 — bu hajm uchun juda foydali.` : s >= 50 ? `Narx raqobatbardoshligi ${s}/100 — bu hajm uchun o'rtacha.` : `Narx raqobatbardoshligi ${s}/100 — yaqin atrofdagilardan qimmatroq.`,
       requested: (q) => `~${q} kg so'raldi`, currentPrices: "Joriy narxlar", minOrder: (kg) => `min. ${kg} kg`, perKg: "so'm/kg",
@@ -190,6 +194,8 @@
       statsTab: "Статистика", contactBtn: "Контакт", memberSince: (d) => `На ${BRAND} с ${d}`, levelLbl: "Уровень", nextLevel: (n) => `${n} очков до следующего уровня`, maxLevel: "Максимальный уровень", priceReports: "Отчёты о ценах", reliabilityScore: "Балл надёжности", avgRating: "Средний рейтинг",
       lvl_starter: "Новичок", lvl_bronze: "Бронза", lvl_silver: "Серебро", lvl_gold: "Золото", lvl_platinum: "Платина",
       b_top_seller: "🏆 Топ-продавец", b_experienced: "🤝 Опытный", b_five_star: "⭐ Сервис на 5 звёзд", b_consistent: "📈 Стабильные цены",
+      buyerPays: "Платите вы (½)", sellerPays: "Платит продавец (½)", commissionOff: "Комиссия отключена", commissionNote: "1% до 1 млн · 3% до 10 млн · 5% выше. Списывается только при принятии сделки.",
+      yourListing: "Ваше объявление", yourListingSub: "Покупатели, ищущие этот товар, видят вас наравне с остальными.", listingSynced: "Опубликовано — покупатели найдут его в поиске", listingSyncFailed: "Сохранено только на этом телефоне — не удалось опубликовать в поиск",
       feeDealTitle: "Плата за открытие сделки", feeDealBody: (n, name) => `Открытие сделки с ${name} стоит ${n} сум. Плата списывается при отправке предложения.`, feeContactTitle: "Плата за контакт", feeContactBody: (n) => `Открытие номера телефона этого продавца стоит ${n} сум.`, continueBtn: "Продолжить", postSheet: "Объявление", minOrder: (n, u) => `Мин. заказ ${n} ${u}`,
       matchFor: (q, p) => `Соответствие: ${q ? q + " кг " : ""}${p}`, priceNote: (s) => s >= 80 ? `Конкурентность цены ${s}/100 — отличная для такого объёма.` : s >= 50 ? `Конкурентность цены ${s}/100 — средняя для такого объёма.` : `Конкурентность цены ${s}/100 — дороже соседних предложений.`,
       requested: (q) => `~${q} кг запрошено`, currentPrices: "Текущие цены", minOrder: (kg) => `мин. ${kg} кг`, perKg: "сум/кг",
@@ -339,7 +345,11 @@
   const avatar = (name, cls = "") => `<span class="avatar ${cls}" style="background:${color(name)}">${esc(initials(name))}</span>`;
   const unitOf = (key) => { const p = S.meta && S.meta.products.find((x) => x.key === key); return p ? p.unit : "kg"; };
   const per = (keyOrUnit) => { const u = ["kg", "l", "dona", "qop", "m"].includes(keyOrUnit) ? keyOrUnit : unitOf(keyOrUnit); const lbl = S.meta && S.meta.units && S.meta.units[u] ? (S.meta.units[u][S.lang] || S.meta.units[u].en) : u; return `${S.lang === "ru" ? "сум" : "so'm"}/${lbl}`; };
-  const plabel = (key) => { const p = S.meta && S.meta.products.find((x) => x.key === key); return p ? p.label[S.lang] || p.label.en : key; };
+  const plabel = (key) => {
+    const p = S.meta && S.meta.products.find((x) => x.key === key); if (p) return p.label[S.lang] || p.label.en;
+    if (S.results && S.results.product === key && S.results.label) return S.results.label[S.lang] || S.results.label.en;
+    const mine = store.myProducts.find((x) => x.productKey === key); return mine ? mine.name : key;
+  };
   const provLabel = (key) => { const p = S.meta && S.meta.provinces.find((x) => x.key === key); return p ? p.label[S.lang] || p.label.en : key || ""; };
   const isSaved = (id) => store.saved.includes(Number(id));
   const daysBetween = (iso) => Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
@@ -584,6 +594,9 @@
         ${header(t("topMatches"), sub)}
         ${weightsCard(S.weights || w)}
         ${d.personalization && d.personalization.preference ? `<div class="banner">${I.user}<span>${esc(t("personalizedNote", d.personalization.preference))}</span></div>` : ""}
+        ${d.own ? `<button class="card own" style="width:100%;text-align:left" data-go="seller/${d.own.sellerId}">
+          <div class="row">${photo(d.own.photoUrl, "photo thumb")}<div class="grow"><div class="row" style="gap:6px"><span class="badge">${t("yourListing")}</span></div><div class="name" style="margin-top:4px">${esc(d.own.title || plabel(d.product))} · ${esc(d.own.sellerName)}</div><div class="sub">${esc(d.own.region)} · ${t("ago", daysBetween(d.own.reportedAt))}</div></div><div class="price" style="font-size:15px;flex:none">${fmt(d.own.pricePerKg)}<small>/${per(d.product).split("/")[1]}</small></div></div>
+          <p class="sub wrap" style="margin:8px 0 0">${t("yourListingSub")}</p></button>` : ""}
         ${!top ? `<div class="card">${empty(I.search, t("noResults") + " " + t("tryAnother"))}</div>` : `
         <div class="card soft">
           ${photo(top.photoUrl, "photo hero")}
@@ -1046,12 +1059,33 @@
       <label class="field"><span>${t("quantityKg")}</span><div class="row" style="gap:8px"><button type="button" class="icon-btn" data-step="-10">−</button><input id="deal-qty" type="number" inputmode="numeric" min="${sel.minOrderKg}" step="10" value="${Math.max(sel.minOrderKg, 100)}" style="text-align:center" /><button type="button" class="icon-btn" data-step="10">+</button></div></label>
       <label class="field"><span>${t("offerPrice")}</span><input id="deal-price" type="number" inputmode="numeric" value="${sel.pricePerKg}" /><span class="sub" id="deal-list" style="margin-top:4px">${esc(t("listPrice", fmt(sel.pricePerKg)))}</span></label>
       <div class="price-row" style="margin-top:14px"><span class="sub">${t("runningTotal")}</span><span class="price" id="deal-total"></span></div>
-      <button class="btn" data-act="sendOffer" data-seller="${s.id}">${t("sendOffer")}</button>`);
+      <div id="deal-tax"></div>
+      <button class="btn" style="margin-top:12px" data-act="sendOffer" data-seller="${s.id}">${t("sendOffer")}</button>`);
     updateDealTotal();
+  }
+  /** Same brackets as backend/src/commission.ts (served in /meta): whole-order rate, split 50/50. */
+  function commissionFor(total) {
+    const c = S.meta && S.meta.commission; const brackets = (c && c.brackets) || [{ upTo: 1000000, rate: 0.01 }, { upTo: 10000000, rate: 0.03 }, { upTo: null, rate: 0.05 }];
+    const b = brackets.find((x) => x.upTo == null || total < x.upTo) || brackets[brackets.length - 1];
+    const totalCommission = Math.round(total * b.rate), buyer = Math.round(totalCommission / 2);
+    return { rate: b.rate, total: totalCommission, buyer, seller: totalCommission - buyer };
   }
   function updateDealTotal() {
     const q = Number((document.getElementById("deal-qty") || {}).value), p = Number((document.getElementById("deal-price") || {}).value);
-    const el = document.getElementById("deal-total"); if (el) el.textContent = Number.isFinite(q * p) ? `${fmt(q * p)} so'm` : "—";
+    const total = q * p, ok = Number.isFinite(total) && total > 0;
+    const el = document.getElementById("deal-total"); if (el) el.textContent = ok ? `${fmt(total)} so'm` : "—";
+    const box = document.getElementById("deal-tax"); if (!box) return;
+    const on = !(S.meta && S.meta.settings && S.meta.settings.commissionEnabled === false);
+    if (!ok) { box.innerHTML = ""; return; }
+    if (!on) { box.innerHTML = `<p class="sub wrap" style="margin:8px 0 0">${t("commissionOff")}</p>`; return; }
+    const c = commissionFor(total);
+    box.innerHTML = `
+      <div class="tax">
+        <div class="row"><b class="grow">${t("commissionTitle")}</b><span class="badge">${esc(t("commissionRate", Math.round(c.rate * 100)))}</span></div>
+        <div class="tax-row"><span>${t("commissionTotal")}</span><b>${fmt(c.total)} so'm</b></div>
+        <div class="tax-split"><div><span>${t("buyerPays")}</span><b>${fmt(c.buyer)} so'm</b></div><div><span>${t("sellerPays")}</span><b>${fmt(c.seller)} so'm</b></div></div>
+        <p class="sub wrap" style="margin:8px 0 0;font-size:12px">${t("commissionNote")}</p>
+      </div>`;
   }
   async function sendOffer() {
     const listingId = Number(document.getElementById("deal-product").value);
@@ -1248,16 +1282,30 @@
         if (warns.length) return; // user confirms with "post anyway"
       }
     }
+    const body = { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto || null, shopName: store.profile.name || undefined };
     if (editingIndex != null && store.myProducts[editingIndex]) {
-      Object.assign(store.myProducts[editingIndex], { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, verified: !!(verdict && verdict.ok && verdict.aiChecked) });
-      editingIndex = null; save(); closeSheet(); haptic(); toast(t("updated")); return render();
+      const ex = store.myProducts[editingIndex];
+      Object.assign(ex, { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, verified: !!(verdict && verdict.ok && verdict.aiChecked) });
+      editingIndex = null; save(); closeSheet(); haptic(); toast(t("updated")); render();
+      await publishListing(ex, body); return;
     }
-    store.myProducts.unshift({ id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, verified: !!(verdict && verdict.ok && verdict.aiChecked), at: new Date().toISOString() });
+    const item = { id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, verified: !!(verdict && verdict.ok && verdict.aiChecked), at: new Date().toISOString(), listingId: null, productKey: null };
+    store.myProducts.unshift(item);
     save(); closeSheet(); haptic("medium");
     try { tg.HapticFeedback.notificationOccurred("success"); } catch {}
     popup(t("productAdded"), t("productAddedBody", name), () => { if (route().name !== "profile") go("profile"); else render(); });
     render();
+    await publishListing(item, body);
   }
+  /** Mirror a local post to the backend so it shows up in everyone's search (and the poster's own results). */
+  async function publishListing(item, body) {
+    try {
+      const r = item.listingId ? await api(`/listings/${item.listingId}`, { method: "PATCH", body: JSON.stringify(body) }) : await api("/listings", { method: "POST", body: JSON.stringify(body) });
+      item.listingId = r.listingId; item.productKey = r.product; if (r.sellerId) { store.profile.sellerId = r.sellerId; S.sellerCache = {}; }
+      save(); toast(t("listingSynced"));
+    } catch { toast(t("listingSyncFailed")); }
+  }
+  async function unpublishListing(item) { if (item && item.listingId) { try { await api(`/listings/${item.listingId}`, { method: "DELETE" }); } catch {} } }
   function locateForProduct() {
     const btn = document.getElementById("ap-locate");
     const done = (lat, lng) => { draftLoc = { lat, lng }; if (btn) { btn.classList.add("soft"); btn.querySelector("span").textContent = t("locationSet"); } haptic(); };
@@ -1459,7 +1507,7 @@
       case "linkSeller": haptic(); return linkSellerSheet();
       case "openPost": haptic(); return postSheet(Number(d.i));
       case "editPost": closeSheet(); return addProductSheet(Number(d.i));
-      case "deletePost": store.myProducts.splice(Number(d.i), 1); save(); closeSheet(); haptic(); toast(t("deleted")); return render();
+      case "deletePost": { const [gone] = store.myProducts.splice(Number(d.i), 1); save(); closeSheet(); haptic(); toast(t("deleted")); render(); return unpublishListing(gone); }
       case "upgrade": haptic(); return go("profile");
       case "makeDeal": haptic(); return feeSheet("deal", d.id, d.product);
       case "sendOffer": return sendOffer();
@@ -1479,7 +1527,7 @@
       case "saveProduct": return saveProduct(false);
       case "saveProductForce": return saveProduct(true);
       case "apLocate": return locateForProduct();
-      case "removeProduct": store.myProducts.splice(Number(d.i), 1); save(); haptic(); return render();
+      case "removeProduct": { const [gone] = store.myProducts.splice(Number(d.i), 1); save(); haptic(); render(); return unpublishListing(gone); }
       case "addAlert": return alertSheet(S.results ? S.results.product : S.meta.products[0].key);
       case "quickAlert": return alertSheet(d.product, Number(d.price));
       case "saveAlert": {

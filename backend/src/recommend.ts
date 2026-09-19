@@ -1,6 +1,7 @@
 import { prisma } from "./db.js";
 import { distanceKm, resolveProvince, resolveRegion } from "./geo.js";
 import { productLabel, productUnit, resolveProduct } from "./products.js";
+import { resolveCustomProduct } from "./listings.js";
 import { computeReliabilityBulk, type Tier } from "./reliability.js";
 import { rankCandidates, type Candidate, type Weights } from "./scoring.js";
 
@@ -49,7 +50,12 @@ export async function recommend(req: RecommendRequest) {
   if (!req.product || typeof req.product !== "string") {
     throw new RecommendError(400, "product is required");
   }
-  const productKey = resolveProduct(req.product);
+  let productKey = resolveProduct(req.product);
+  let customTitle: string | null = null;
+  if (!productKey) {
+    const custom = await resolveCustomProduct(req.product); // a product somebody posted from the app
+    if (custom) { productKey = custom.key; customTitle = custom.title; }
+  }
   if (!productKey) {
     throw new RecommendError(404, `Unknown product "${req.product}"`, {
       hint: "Try: pomidor / kartoshka / piyoz",
@@ -134,7 +140,7 @@ export async function recommend(req: RecommendRequest) {
 
   return {
     product: productKey,
-    label: productLabel(productKey),
+    label: productLabel(productKey) ?? { uz: customTitle ?? productKey, ru: customTitle ?? productKey, en: customTitle ?? productKey },
     unit: productUnit(productKey),
     province: province?.key ?? null,
     quantityKg: quantityKg ?? null,

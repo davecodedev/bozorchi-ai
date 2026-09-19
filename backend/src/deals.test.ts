@@ -40,7 +40,7 @@ test("seller counters, buyer accepts → countered price drives totalValue and c
   assert.equal(a.status, "accepted");
   assert.equal(a.agreedPrice, 13_500);
   assert.equal(a.totalValue, 2_700_000);
-  assert.equal(a.commissionAmt, 54_000); // 2% bracket
+  assert.equal(a.commissionAmt, 81_000); // 3% bracket (1M–10M)
 });
 
 test("buyer declines the counter → declined, no commission, no contact", async () => {
@@ -65,7 +65,7 @@ test("a second counter is rejected by the API (409), and the wrong side can't ac
   assert.equal((await acceptDeal(d.id, "buyer")).status, "accepted");
 });
 
-test("order value exactly on a bracket boundary uses the higher bracket (5 000 000 → 3%)", async () => {
+test("order value in the middle bracket (5 000 000 → 3%)", async () => {
   const d = await createDeal(fresh(), { listingId: listing.id, quantity: 500, pricePerKg: 10_000 }); // exactly 5 000 000
   const a = await acceptDeal(d.id, "seller");
   assert.equal(a.totalValue, 5_000_000);

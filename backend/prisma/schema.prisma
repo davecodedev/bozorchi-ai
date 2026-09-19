@@ -35,7 +35,8 @@ model Listing {
   id         Int      @id @default(autoincrement())
   seller     Seller   @relation(fields: [sellerId], references: [id])
   sellerId   Int
-  product    String   // canonical product key, e.g. "tomato"
+  product    String   // canonical product key, e.g. "tomato" — or a slug for a seller-defined product
+  title      String?  // display name for seller-defined products that are not in the catalog
   pricePerKg Int      // UZS
   minOrderKg Int      @default(1)
   photoUrl   String?  // placeholder images for the demo; real uploads later

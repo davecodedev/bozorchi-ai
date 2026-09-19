@@ -22,6 +22,8 @@ import { logEvent } from "./events.js";
 import { getSettings } from "./settings.js";
 import { adminCatalog, adminAuth, adminDeals, adminEvents, adminListings, adminSellers, adminStats, adminUpdateUser, adminUsers, DEFAULT_SETTINGS, setSetting } from "./admin.js";
 import { BannedError } from "./auth.js";
+import { createOwnListing, deleteOwnListing, ListingError, ownListingFor, updateOwnListing } from "./listings.js";
+import { COMMISSION_BRACKETS } from "./commission.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -87,7 +89,8 @@ app.post("/sellers/:id/unlock", async (req, res) => {
 /** Everything the Mini App needs to draw its chips. */
 app.get("/meta", async (_req, res) =>
   res.json({
-    settings: (({ features, announcement, fees }) => ({ features, announcement, fees }))(await getSettings()),
+    settings: (({ features, announcement, fees, commissionEnabled }) => ({ features, announcement, fees, commissionEnabled }))(await getSettings()),
+    commission: { brackets: COMMISSION_BRACKETS.map((b) => ({ upTo: Number.isFinite(b.upTo) ? b.upTo : null, rate: b.rate })), split: 0.5 },
     products: PRODUCTS.map(({ key, category, unit, label, aliases }) => ({ key, category, unit, label, aliases, photoUrl: photoFor(key) })),
     categories: CATEGORIES,
     units: UNIT_LABEL,
@@ -152,6 +155,7 @@ app.post("/recommend", async (req, res) => {
       personalWeights: personal.preference ? personal.weights : undefined,
     });
     (data as Record<string, unknown>).personalization = { preference: personal.preference, contacts: personal.contacts };
+    (data as Record<string, unknown>).own = await ownListingFor(b, data.product); // the buyer's own post for this product, if any
     logEvent("search", { buyerId: b.id, meta: { product: data.product, province: data.province, candidates: data.candidates } });
     res.json({ ...data, usage: await usageOf(b) });
   } catch (e) {
@@ -254,8 +258,29 @@ app.post("/deals/:id/decline", async (req, res) => {
 });
 
 /** AI verification of a listing before it is posted (photo ↔ name, category, price sanity, inappropriate content). */
+// ---------------------------------------------------------------- listings posted from the app ("+" button)
+app.post("/listings", async (req, res) => {
+  try {
+    const b = await buyerOf(req);
+    const r = await createOwnListing(b, req.body ?? {});
+    logEvent("listing_created", { buyerId: b.id, sellerId: r.seller.id, meta: { listing: r.listing.id, product: r.product, price: r.listing.pricePerKg } });
+    res.status(201).json({ listingId: r.listing.id, sellerId: r.seller.id, product: r.product, inCatalog: Boolean(r.catalogKey) });
+  } catch (e) { if (e instanceof ListingError) return res.status(e.status).json({ error: e.message }); console.error(e); res.status(500).json({ error: "internal error" }); }
+});
+app.patch("/listings/:id", async (req, res) => {
+  try {
+    const b = await buyerOf(req);
+    const r = await updateOwnListing(b, Number(req.params.id), req.body ?? {});
+    res.json({ listingId: r.listing.id, product: r.product, inCatalog: Boolean(r.catalogKey) });
+  } catch (e) { if (e instanceof ListingError) return res.status(e.status).json({ error: e.message }); console.error(e); res.status(500).json({ error: "internal error" }); }
+});
+app.delete("/listings/:id", async (req, res) => {
+  try { await deleteOwnListing(await buyerOf(req), Number(req.params.id)); res.json({ ok: true }); }
+  catch (e) { if (e instanceof ListingError) return res.status(e.status).json({ error: e.message }); console.error(e); res.status(500).json({ error: "internal error" }); }
+});
+
 app.post("/listings/verify", async (req, res) => {
-  if (!(await getSettings()).features.verification) return res.json({ ok: true, issues: [], skipped: "disabled by admin" });
+  if (!(await getSettings()).features.verification) return res.json({ ok: true, issues: [], detected: {}, aiChecked: false, skipped: "disabled by admin" });
   try { const v = await verifyListing(req.body ?? {}); logEvent("verify", { meta: { name: req.body?.name, ok: v.ok, issues: v.issues.map((i) => i.code) } }); res.json(v); }
   catch (e) { console.error(e); res.status(500).json({ error: "internal error" }); }
 });

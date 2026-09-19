@@ -174,7 +174,7 @@ const PAGES = {
         <div class="card"><h3>Commission per day</h3><canvas id="cRev"></canvas></div>
         <div class="card"><h3>GMV per day</h3><canvas id="cGmv"></canvas></div>
       </div>
-      <div class="card"><h3>Commission brackets (split 50/50 buyer & seller)</h3><table><thead><tr><th>Deal value</th><th class="num">Rate</th></tr></thead><tbody><tr><td>&lt; 1,000,000 UZS</td><td class="num">1%</td></tr><tr><td>1M – 5M</td><td class="num">2%</td></tr><tr><td>5M – 10M</td><td class="num">3%</td></tr><tr><td>≥ 10M</td><td class="num">5%</td></tr></tbody></table><p class="tiny">Commission ${st.settings.commissionEnabled ? "is enabled" : "is DISABLED"} — change it under Settings.</p></div>`;
+      <div class="card"><h3>Commission brackets (split 50/50 buyer & seller)</h3><table><thead><tr><th>Deal value</th><th class="num">Rate</th></tr></thead><tbody><tr><td>&lt; 1,000,000 UZS</td><td class="num">1%</td></tr><tr><td>1M – 10M</td><td class="num">3%</td></tr><tr><td>≥ 10M</td><td class="num">5%</td></tr></tbody></table><p class="tiny">Commission ${st.settings.commissionEnabled ? "is enabled" : "is DISABLED"} — change it under Settings.</p></div>`;
     bindWindow(main, () => go("revenue"));
     const labels = s.series.map((d) => d.day.slice(5));
     lineChart($("#cRev"), labels, [{ label: "Commission (UZS)", data: s.series.map((d) => d.commission), borderColor: C.green, backgroundColor: rgba(C.green, .15) }]);

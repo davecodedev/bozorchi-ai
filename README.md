@@ -214,7 +214,8 @@ confirmation screen shows the full breakdown (rate, total commission, buyer's an
 plus a note that payment currently happens between the parties — the app moved no money.
 
 Commission brackets apply to the **whole** order value (deliberately not marginal, so it's checkable
-by hand): `< 1M → 1%`, `< 5M → 2%`, `< 10M → 3%`, `≥ 10M → 5%`, split 50/50.
+by hand): `< 1M → 1%`, `< 10M → 3%`, `≥ 10M → 5%`, split 50/50. The deal sheet shows the commission
+(total, buyer half, seller half) live while the buyer types quantity and price.
 
 Endpoints: `POST /deals {listingId, quantity, pricePerKg}`, `GET /deals`, `GET /deals/:id`,
 `POST /deals/:id/counter {actor:"seller", pricePerKg}`, `POST /deals/:id/accept {actor}`,
@@ -257,6 +258,17 @@ Pages (left sidebar):
 Every user-facing route calls `logEvent()` (`backend/src/events.ts`, fire-and-forget) so the
 Activity page and the AI-usage counters are real. `Buyer.banned`, `Buyer.lastSeenAt`,
 `Seller.suspended`, `Event` and `Setting` were added to the Prisma schema for this.
+
+## Posting products from the app (`backend/src/listings.ts`)
+
+The **+** button saves the product on the phone *and* publishes it: `POST /listings` gives the
+poster their own `Seller` row (linked by Telegram id, created on first post) and a real `Listing`
++ price report, so the product ranks in `/recommend` like everyone else's. Names that match the
+catalog map to the catalog key (`Kartoshka` → `potato`); anything else becomes a custom product
+(`x-led-lampa` with the original name as `title`) that searches resolve by name. The poster's own
+listing is pinned at the top of their results as **"Your listing"**. Editing → `PATCH`, deleting →
+`DELETE` (refused if the listing has accepted deals). The poster's dashboard automatically points
+at their own shop.
 
 ## Seller profile (Mini App)
 

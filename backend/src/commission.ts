@@ -6,7 +6,6 @@
  */
 export const COMMISSION_BRACKETS: { upTo: number; rate: number }[] = [
   { upTo: 1_000_000, rate: 0.01 },
-  { upTo: 5_000_000, rate: 0.02 },
   { upTo: 10_000_000, rate: 0.03 },
   { upTo: Infinity, rate: 0.05 },
 ];
