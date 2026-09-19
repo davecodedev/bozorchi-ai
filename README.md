@@ -82,6 +82,27 @@ npx cloudflared tunnel --url http://localhost:3000
 bot, and the "Open in Mini App" button appears under every result. Optionally register the same URL
 in @BotFather → Bot Settings → Menu Button so the app opens from the chat's menu button too.
 
+## LLM query parsing (`backend/src/nlp.ts`)
+
+The bot no longer keyword-matches the raw message. Every text or transcribed voice message goes
+through `parseQuery()` first — one `claude-haiku-4-5` call (200 max tokens, JSON-only system prompt)
+that returns `{product, quantity, unit, region}` from messy Uzbek / Russian / mixed input, typos and
+voice-transcript run-ons. It is exposed as `POST /parse` and the bot calls it right before `/recommend`.
+
+Rules in the bot (`resolveQuery()` in `bot/src/bot.ts`):
+
+- **No product found** → the bot asks what they need; it never calls `/recommend` blind.
+- **No region** → the district named anywhere in the text, else the user's last used region, else Tashkent.
+- **No quantity** → no minimum-order filter. Weight units are normalised to kg (`2 tonna` → 2000).
+- **No `ANTHROPIC_API_KEY`** (or any API failure) → `parseQuery` returns all nulls and the bot falls back
+  to the old keyword path, so the demo never breaks mid-conversation.
+
+Set `ANTHROPIC_API_KEY` in `backend/.env`, then verify against realistic inputs:
+
+```bash
+npm run nlp:check --workspace backend
+```
+
 ## Tiers & paywall
 
 Identity comes from Telegram (the Mini App sends `Authorization: tma <initData>`, validated with

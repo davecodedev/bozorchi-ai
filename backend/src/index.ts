@@ -4,10 +4,11 @@ import { getOrCreateBuyer, identify } from "./auth.js";
 import { parseBasket, quoteBasket } from "./basket.js";
 import { forecast, sampleSeries } from "./history.js";
 import { consumeSearch, CREDIT_PACK_SIZE, hasFeature, MAX_RESULTS, usageOf, type Tier } from "./limits.js";
+import { nlpAvailable, parseQuery, toKg } from "./nlp.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
-import { CATEGORIES, PRODUCTS } from "./products.js";
+import { CATEGORIES, PRODUCTS, resolveProduct } from "./products.js";
 import { prisma } from "./db.js";
 import { recommend, RecommendError } from "./recommend.js";
 import { DEFAULT_WEIGHTS } from "./scoring.js";
@@ -80,6 +81,23 @@ app.get("/sellers/:id", async (req, res) => {
   const seller = await getSeller(id);
   if (!seller) return res.status(404).json({ error: "seller not found" });
   res.json({ seller });
+});
+
+/**
+ * LLM parsing of a raw buyer message (see nlp.ts). Never fails: without a key it reports
+ * `available: false` so the bot can keep using keyword matching.
+ */
+app.post("/parse", async (req, res) => {
+  const text = typeof req.body?.text === "string" ? req.body.text : "";
+  if (!nlpAvailable()) return res.json({ available: false, product: null, quantity: null, unit: null, region: null, productKey: null, quantityKg: null });
+  const parsed = await parseQuery(text);
+  res.json({
+    available: true,
+    ...parsed,
+    // canonical key if the model's product name is one we sell ("помидоры" → "tomato"); null otherwise
+    productKey: parsed.product ? resolveProduct(parsed.product) : null,
+    quantityKg: toKg(parsed.quantity, parsed.unit),
+  });
 });
 
 app.post("/recommend", async (req, res) => {

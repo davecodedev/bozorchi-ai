@@ -43,6 +43,8 @@ const S = {
     breakdown: (p: number, q: number, d: number) => `narx ${p} · sifat ${q} · masofa ${d}`,
     limitReached: "⛔ Bugungi bepul qidiruvlar tugadi (5 ta/kun).\nMini App'da qo'shimcha paket oling yoki Enterprise'ga o'ting — cheksiz qidiruv, 7 kunlik narx prognozi va savat bo'yicha taklif.",
     upgradeBtn: "⭐ Enterprise'ga o'tish",
+    askProduct: "🤔 Qaysi mahsulot kerakligini tushunmadim. Masalan: <i>500 kg pomidor, Chilonzor</i>",
+    understood: (p: string, q: number | null, r: string | null) => `🧠 Tushundim: <b>${p}</b>${q ? ` · ${q} kg` : ""}${r ? ` · ${r}` : ""}`,
     usageLine: (used: number, limit: number) => `\n\n<i>Bugun: ${used}/${limit} bepul qidiruv</i>`,
   },
   ru: {
@@ -79,6 +81,8 @@ const S = {
     breakdown: (p: number, q: number, d: number) => `цена ${p} · качество ${q} · расстояние ${d}`,
     limitReached: "⛔ Бесплатные поиски на сегодня закончились (5 в день).\nКупите пакет в Mini App или перейдите на Enterprise — безлимит, прогноз цен на 7 дней и расчёт корзины.",
     upgradeBtn: "⭐ Перейти на Enterprise",
+    askProduct: "🤔 Не понял, какой товар нужен. Например: <i>500 кг помидор, Чиланзар</i>",
+    understood: (p: string, q: number | null, r: string | null) => `🧠 Понял: <b>${p}</b>${q ? ` · ${q} кг` : ""}${r ? ` · ${r}` : ""}`,
     usageLine: (used: number, limit: number) => `\n\n<i>Сегодня: ${used}/${limit} бесплатных поисков</i>`,
   },
   en: {
@@ -115,6 +119,8 @@ const S = {
     breakdown: (p: number, q: number, d: number) => `price ${p} · quality ${q} · distance ${d}`,
     limitReached: "⛔ You've used today's free searches (5/day).\nBuy a pack in the Mini App or go Enterprise — unlimited searches, 7-day price forecasts and basket quotes.",
     upgradeBtn: "⭐ Go Enterprise",
+    askProduct: "🤔 I couldn't tell which product you need. For example: <i>500 kg tomatoes, Chilanzar</i>",
+    understood: (p: string, q: number | null, r: string | null) => `🧠 Got it: <b>${p}</b>${q ? ` · ${q} kg` : ""}${r ? ` · ${r}` : ""}`,
     usageLine: (used: number, limit: number) => `\n\n<i>Today: ${used}/${limit} free searches</i>`,
   },
 } as const;

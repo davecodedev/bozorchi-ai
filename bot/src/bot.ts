@@ -1,5 +1,5 @@
 import { Bot, InlineKeyboard, Keyboard, type Context } from "grammy";
-import { ApiError, recommend } from "./api.js";
+import { ApiError, parse, recommend, type ParsedQuery } from "./api.js";
 import { formatRecommendation } from "./format.js";
 import { PRODUCT_BUTTONS, pickLang, t } from "./i18n.js";
 import { extractRegion } from "./region.js";
@@ -18,6 +18,8 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
 
   /** Last shared location per user. In-memory is fine for the demo. */
   const locations = new Map<number, { lat: number; lng: number }>();
+  /** Last district a user searched in — the default when a new message doesn't name one. */
+  const lastRegions = new Map<number, string>();
 
   const startKeyboard = (lang: ReturnType<typeof pickLang>) => {
     const kb = new Keyboard();
@@ -68,20 +70,29 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
     const lang = pickLang(ctx.from?.language_code);
     const s = t(lang);
     const userId = ctx.from?.id;
-
-    const region = extractRegion(text);
     const loc = userId !== undefined ? locations.get(userId) : undefined;
-    const where = loc ? s.nearMe : (region ?? s.tashkent);
 
+    // 1. Understand the message (LLM). Keep the "typing…" indicator alive while we wait.
+    await ctx.replyWithChatAction("typing");
+    const parsed = await parse(backendUrl, text);
+    const q = resolveQuery(text, parsed, userId !== undefined ? lastRegions.get(userId) : undefined);
+
+    // 2. No product → ask, don't guess.
+    if (!q.product) return ctx.reply(s.askProduct, { parse_mode: "HTML" });
+    if (userId !== undefined && q.region) lastRegions.set(userId, q.region);
+    const where = loc ? s.nearMe : (q.region ?? s.tashkent);
+    if (parsed.available) await ctx.reply(s.understood(parsed.product ?? q.product, q.quantityKg ?? null, q.region ?? null), { parse_mode: "HTML" });
+
+    // 3. Rank — exactly the same /recommend call as before, just with structured input.
     await ctx.replyWithChatAction("typing");
     try {
       const data = await recommend(
         backendUrl,
-        { product: text, region, lat: loc?.lat, lng: loc?.lng, limit: 3 },
+        { product: q.product, region: q.region, quantityKg: q.quantityKg, lat: loc?.lat, lng: loc?.lng, limit: 3 },
         ctx.from ? { telegramUserId: ctx.from.id, name: [ctx.from.first_name, ctx.from.last_name].filter(Boolean).join(" ") } : undefined,
       );
 
-      const reply_markup = miniAppUrl ? miniAppKeyboard(miniAppUrl, s.openApp, data.product, region, loc) : undefined;
+      const reply_markup = miniAppUrl ? miniAppKeyboard(miniAppUrl, s.openApp, data.product, q.region, loc) : undefined;
       const usageLine = data.usage && data.usage.limit != null ? s.usageLine(data.usage.used, data.usage.limit) : "";
       await ctx.reply(formatRecommendation(data, lang, s, where) + usageLine, {
         parse_mode: "HTML",
@@ -93,7 +104,7 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
         return ctx.reply(s.limitReached, { reply_markup });
       }
       if (e instanceof ApiError && e.status === 404) {
-        return ctx.reply(s.unknownProduct(text), { parse_mode: "HTML" });
+        return ctx.reply(s.unknownProduct(parsed.product ?? text), { parse_mode: "HTML" });
       }
       if (e instanceof ApiError && e.status === 400) {
         return ctx.reply(s.help, { parse_mode: "HTML" });
@@ -125,4 +136,27 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
   });
 
   return bot;
+}
+
+export interface ResolvedQuery {
+  /** What to send as `product` to /recommend, or null to ask the buyer. */
+  product: string | null;
+  quantityKg: number | undefined;
+  /** Tashkent district key, or undefined. */
+  region: string | undefined;
+}
+
+/**
+ * Merge the LLM's structured fields with our fallbacks:
+ *  - parser unavailable (no API key) → old behaviour: raw text + keyword district extraction
+ *  - parser ran but found no product   → null (bot asks)
+ *  - region: parsed region → district alias map; else district named anywhere in the raw text; else the user's last region
+ */
+export function resolveQuery(rawText: string, parsed: ParsedQuery, lastRegion?: string): ResolvedQuery {
+  if (!parsed.available) {
+    return { product: rawText, quantityKg: undefined, region: extractRegion(rawText) ?? lastRegion };
+  }
+  if (!parsed.product) return { product: null, quantityKg: undefined, region: undefined };
+  const region = (parsed.region ? extractRegion(parsed.region) : undefined) ?? extractRegion(rawText) ?? lastRegion;
+  return { product: parsed.productKey ?? parsed.product, quantityKg: parsed.quantityKg ?? undefined, region };
 }
