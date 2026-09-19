@@ -1,6 +1,6 @@
 /**
  * Buyer subscription tiers. The ONLY thing a tier gates is how many sellers' contact details
- * (phone + exact location) a buyer may reveal in a rolling 30-day window. Search, ranking,
+ * (phone + exact location) a buyer may reveal per day (rolling 24 hours). Search, ranking,
  * prices, forecasts and basket quotes are free and unmetered for everyone.
  *
  * Prices are placeholders — confirm before this goes anywhere near investors.
@@ -10,10 +10,10 @@ import { prisma } from "./db.js";
 
 export type Tier = "free" | "pro" | "max";
 
-export const UNLOCK_WINDOW_DAYS = 30;
+export const UNLOCK_WINDOW_HOURS = 24;
 
 export const TIERS: Record<Tier, { quota: number; priceUsd: number; unlimited: boolean; verified: boolean }> = {
-  free: { quota: 5, priceUsd: 0, unlimited: false, verified: false },
+  free: { quota: 3, priceUsd: 0, unlimited: false, verified: false },
   pro: { quota: 20, priceUsd: 7, unlimited: false, verified: false },
   // 500 is an anti-abuse ceiling, shown to users as "unlimited"
   max: { quota: 500, priceUsd: 79, unlimited: true, verified: true },

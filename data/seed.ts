@@ -135,7 +135,8 @@ async function main() {
       if (rows.length) { await prisma.priceHistory.createMany({ data: rows }); historyCount += rows.length; }
       const last = rows.length ? new Date(Math.max(...rows.map((r) => r.reportedAt.getTime()))) : daysAgo(ago);
       const listing = await prisma.listing.create({
-        data: { sellerId: seller.id, product, pricePerKg, minOrderKg, reportedAt: last },
+        // placeholder photo per seller+product (picsum.photos, deterministic by seed) — real uploads later
+        data: { sellerId: seller.id, product, pricePerKg, minOrderKg, reportedAt: last, photoUrl: `https://picsum.photos/seed/${encodeURIComponent(`${product}-${seller.id}`)}/640/400` },
       });
       listingIds.set(`${seller.name}:${product}`, listing.id);
       listingCount++;

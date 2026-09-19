@@ -148,21 +148,21 @@ const cbUpdate = (sellerId: number, id: number, lang = "en") => ({
 });
 const sellerIds = backendUp ? ((await (await fetch(`${BACKEND_URL}/sellers`)).json()) as { sellers: { id: number }[] }).sellers.map((s) => s.id) : [];
 
-test("free buyer: 5 contact unlocks succeed, the 6th gets the upgrade prompt naming Pro / 20", { skip: !backendUp && "backend not running" }, async () => {
+test("free buyer: 3 contact unlocks a day succeed, the 4th gets the upgrade prompt naming Pro / 20", { skip: !backendUp && "backend not running" }, async () => {
   const { bot, sent } = harness();
   const id = UID + 10;
-  for (let i = 0; i < 5; i++) await bot.handleUpdate(cbUpdate(sellerIds[i], id) as never);
+  for (let i = 0; i < 3; i++) await bot.handleUpdate(cbUpdate(sellerIds[i], id) as never);
   const msgs = messages(sent);
   assert.match(String(msgs[0].payload.text), /☎️ \+998/);
   assert.match(String(msgs[0].payload.text), /maps\.google\.com/);
-  assert.match(String(msgs[4].payload.text), /5\/5 contacts used/);
-  await bot.handleUpdate(cbUpdate(sellerIds[5], id) as never);
-  const sixth = String(messages(sent)[5].payload.text);
-  assert.match(sixth, /Free plan: 5\/5/);
-  assert.match(sixth, /Upgrade to <b>Pro<\/b> — 20 contacts/);
+  assert.match(String(msgs[2].payload.text), /3\/3 contacts used/);
+  await bot.handleUpdate(cbUpdate(sellerIds[3], id) as never);
+  const fourth = String(messages(sent)[3].payload.text);
+  assert.match(fourth, /Free plan: 3\/3/);
+  assert.match(fourth, /Upgrade to <b>Pro<\/b> — 20 contacts\/day/);
   // re-requesting an earlier seller still works and is not charged
   await bot.handleUpdate(cbUpdate(sellerIds[1], id) as never);
-  assert.match(String(messages(sent)[6].payload.text), /Already unlocked/);
+  assert.match(String(messages(sent)[4].payload.text), /Already unlocked/);
 });
 
 test("/upgrade max → verified buyer; the seller-facing notice carries the ✅ tag", { skip: !backendUp && "backend not running" }, async () => {

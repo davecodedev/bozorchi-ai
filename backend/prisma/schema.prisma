@@ -27,6 +27,7 @@ model Seller {
   reviews     Review[]
   reports     PriceHistory[]
   unlocks     ContactUnlock[]
+  deals       Deal[]
 }
 
 model Listing {
@@ -36,8 +37,10 @@ model Listing {
   product    String   // canonical product key, e.g. "tomato"
   pricePerKg Int      // UZS
   minOrderKg Int      @default(1)
+  photoUrl   String?  // placeholder images for the demo; real uploads later
   reportedAt DateTime @default(now()) // for staleness decay
   interactions BuyerInteraction[]
+  deals      Deal[]
 
   @@index([product])
   @@index([sellerId, product])
@@ -83,9 +86,36 @@ model Buyer {
   reviews        Review[]
   interactions   BuyerInteraction[]
   unlocks        ContactUnlock[]
+  deals          Deal[]
 }
 
-/** A buyer revealed a seller's phone + exact location. One row per pair; counted in a rolling 30-day window. */
+/**
+ * A negotiated deal between a buyer and a seller for one listing.
+ * status: offered → countered | accepted | declined ; countered → accepted | declined. One counter max.
+ */
+model Deal {
+  id            String   @id @default(cuid())
+  listing       Listing  @relation(fields: [listingId], references: [id])
+  listingId     Int
+  buyer         Buyer    @relation(fields: [buyerId], references: [id])
+  buyerId       Int
+  seller        Seller   @relation(fields: [sellerId], references: [id])
+  sellerId      Int
+  quantity      Float    // kg
+  status        String   // "offered" | "countered" | "accepted" | "declined"
+  initialOffer  Float    // buyer's first offer, per kg
+  counterOffer  Float?   // seller's one allowed counter, per kg
+  agreedPrice   Float?   // per kg, set on acceptance
+  totalValue    Float?   // agreedPrice * quantity
+  commissionAmt Float?   // total commission (buyer + seller shares), see commission.ts
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([buyerId, createdAt])
+  @@index([sellerId, status])
+}
+
+/** A buyer revealed a seller's phone + exact location. One row per pair; counted in a rolling window. */
 model ContactUnlock {
   id         String   @id @default(cuid())
   buyer      Buyer    @relation(fields: [buyerId], references: [id])

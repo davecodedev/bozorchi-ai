@@ -1,10 +1,11 @@
 import "dotenv/config";
-import express, { type Request } from "express";
+import express, { type Request, type Response } from "express";
 import { getOrCreateBuyer, identify } from "./auth.js";
 import { parseBasket, quoteBasket } from "./basket.js";
 import { forecast } from "./history.js";
 import { isUnlocked, unlockContact, usageOf } from "./contactUnlock.js";
 import { setTier, TIERS, tierOf, type Tier } from "./tiers.js";
+import { acceptDeal, counterDeal, createDeal, declineDeal, DealError, getDeal, listDeals, mayActAsSeller, presentDeal, type Actor } from "./deals.js";
 import { nlpAvailable, parseQuery, toKg } from "./nlp.js";
 import { explainAnomalies } from "./anomaly.js";
 import { forecastTrend, FORECAST_WINDOW_DAYS } from "./forecast.js";
@@ -167,6 +168,62 @@ app.get("/history/:sellerId/:product", async (req, res) => {
   };
   body.forecast = forecast(series); // free for every tier
   res.json(body);
+});
+
+// ---------------------------------------------------------------- deals
+const dealErr = (res: Response, e: unknown) => {
+  if (e instanceof DealError) return res.status(e.status).json({ error: e.message });
+  console.error(e);
+  return res.status(500).json({ error: "internal error" });
+};
+/** Which side the caller is acting as. Buyers are identified by their Telegram id; the seller side is the
+ *  seller's linked Telegram account, or anyone in demo mode (sellers have no accounts yet). */
+const actorFor = async (req: Request, dealId: string): Promise<{ actor: Actor; telegramUserId: string }> => {
+  const b = await buyerOf(req);
+  const d = await getDeal(dealId);
+  const asSeller = req.body?.actor === "seller";
+  if (asSeller && !mayActAsSeller(d, b.telegramUserId)) throw new DealError(403, "not this deal's seller");
+  if (!asSeller && d.buyer.telegramUserId !== b.telegramUserId) throw new DealError(403, "not this deal's buyer");
+  return { actor: asSeller ? "seller" : "buyer", telegramUserId: b.telegramUserId };
+};
+
+app.post("/deals", async (req, res) => {
+  try {
+    const b = await buyerOf(req);
+    const d = await createDeal(b.telegramUserId, req.body ?? {});
+    res.status(201).json({ deal: presentDeal(d) });
+  } catch (e) { dealErr(res, e); }
+});
+app.get("/deals", async (req, res) => {
+  const b = await buyerOf(req);
+  res.json({ deals: (await listDeals(b.telegramUserId)).map((d) => presentDeal(d)) });
+});
+app.get("/deals/:id", async (req, res) => {
+  try {
+    const b = await buyerOf(req);
+    const d = await getDeal(req.params.id);
+    const viewer: Actor = d.buyer.telegramUserId === b.telegramUserId ? "buyer" : "seller";
+    res.json({ deal: presentDeal(d, viewer), viewer, demoSellerActions: mayActAsSeller(d, b.telegramUserId) });
+  } catch (e) { dealErr(res, e); }
+});
+app.post("/deals/:id/counter", async (req, res) => {
+  try {
+    const { actor } = await actorFor(req, req.params.id);
+    if (actor !== "seller") throw new DealError(403, "only the seller can counter");
+    res.json({ deal: presentDeal(await counterDeal(req.params.id, req.body?.pricePerKg), "buyer") });
+  } catch (e) { dealErr(res, e); }
+});
+app.post("/deals/:id/accept", async (req, res) => {
+  try {
+    const { actor } = await actorFor(req, req.params.id);
+    res.json({ deal: presentDeal(await acceptDeal(req.params.id, actor), "buyer") });
+  } catch (e) { dealErr(res, e); }
+});
+app.post("/deals/:id/decline", async (req, res) => {
+  try {
+    const { actor } = await actorFor(req, req.params.id);
+    res.json({ deal: presentDeal(await declineDeal(req.params.id, actor), "buyer") });
+  } catch (e) { dealErr(res, e); }
 });
 
 /** Market price history + forecast for a product in a province (JSON, SVG or PNG). */

@@ -34,6 +34,7 @@ export interface Candidate {
   region: string;
   province?: string;
   minOrderKg?: number;
+  photoUrl?: string;
   verified: boolean;
   rating: number; // 0–5
   reviewCount: number;

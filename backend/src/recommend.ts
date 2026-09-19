@@ -95,6 +95,7 @@ export async function recommend(req: RecommendRequest) {
     region: l.seller.region,
     province: l.seller.province,
     minOrderKg: l.minOrderKg,
+    photoUrl: l.photoUrl ?? undefined,
     verified: l.seller.verified,
     rating: l.seller.rating,
     reviewCount: l.seller.reviewCount,

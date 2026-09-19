@@ -9,16 +9,16 @@ const sellers = await prisma.seller.findMany({ select: { id: true }, orderBy: { 
 const ids = sellers.map((s) => s.id);
 const fresh = () => `test-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-test("free buyer: 5 distinct unlocks succeed, the 6th is quota_exceeded naming Pro / 20", async () => {
+test("free buyer: 3 distinct unlocks succeed today, the 4th is quota_exceeded naming Pro / 20", async () => {
   const uid = fresh();
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 3; i++) {
     const r = await unlockContact(uid, ids[i]);
     assert.equal(r.status, "unlocked");
     if (r.status === "unlocked") { assert.ok(r.contact.phone); assert.ok(r.contact.mapsUrl.includes("maps.google.com")); assert.equal(r.usage.used, i + 1); }
   }
-  const sixth = await unlockContact(uid, ids[5]);
-  assert.equal(sixth.status, "quota_exceeded");
-  if (sixth.status === "quota_exceeded") { assert.equal(sixth.tier, "free"); assert.equal(sixth.quota, 5); assert.deepEqual(sixth.next, { tier: "pro", quota: 20, priceUsd: TIERS.pro.priceUsd }); }
+  const fourth = await unlockContact(uid, ids[3]);
+  assert.equal(fourth.status, "quota_exceeded");
+  if (fourth.status === "quota_exceeded") { assert.equal(fourth.tier, "free"); assert.equal(fourth.quota, 3); assert.deepEqual(fourth.next, { tier: "pro", quota: 20, priceUsd: TIERS.pro.priceUsd }); }
 });
 
 test("re-requesting an already unlocked seller → already_unlocked and no quota charge", async () => {
@@ -28,12 +28,12 @@ test("re-requesting an already unlocked seller → already_unlocked and no quota
   assert.equal(again.status, "already_unlocked");
   if (again.status === "already_unlocked") assert.equal(again.usage.used, 1);
   // even at quota, a previously unlocked seller is still readable
-  for (let i = 1; i < 5; i++) await unlockContact(uid, ids[i]);
-  assert.equal((await unlockContact(uid, ids[5])).status, "quota_exceeded");
+  for (let i = 1; i < 3; i++) await unlockContact(uid, ids[i]);
+  assert.equal((await unlockContact(uid, ids[3])).status, "quota_exceeded");
   assert.equal((await unlockContact(uid, ids[2])).status, "already_unlocked");
 });
 
-test("pro buyer: 20 unlocks ok, the 21st hits quota and names Max", async () => {
+test("pro buyer: 20 unlocks a day ok, the 21st hits quota and names Max", async () => {
   const uid = fresh();
   const b = await prisma.buyer.create({ data: { telegramUserId: uid } });
   await setTier(b.id, "pro");

@@ -2,13 +2,13 @@
  * Contact unlocks: reveal a seller's phone + exact location against the buyer's monthly quota.
  *
  *  1. already unlocked this seller → return the contact again, quota untouched (never charge twice)
- *  2. count unlocks in the rolling 30-day window (computed at query time, no reset job)
+ *  2. count unlocks in the rolling 24-hour window (computed at query time, no reset job)
  *  3. under quota → record the unlock, return the contact
  *  4. at/over quota → quota_exceeded with the tier and its quota, so the UI can offer the next tier
  */
 import type { Buyer, Seller } from "@prisma/client";
 import { prisma } from "./db.js";
-import { nextTier, TIERS, tierOf, UNLOCK_WINDOW_DAYS, type Tier } from "./tiers.js";
+import { nextTier, TIERS, tierOf, UNLOCK_WINDOW_HOURS, type Tier } from "./tiers.js";
 
 export interface Contact {
   sellerId: number;
@@ -33,11 +33,11 @@ export interface Usage {
   remaining: number;
   unlimited: boolean;
   verifiedBuyer: boolean;
-  windowDays: number;
+  windowHours: number;
   prices: Record<Tier, number>;
 }
 
-const windowStart = () => new Date(Date.now() - UNLOCK_WINDOW_DAYS * 86_400_000);
+const windowStart = () => new Date(Date.now() - UNLOCK_WINDOW_HOURS * 3_600_000);
 
 export async function countUnlocks(buyerId: number): Promise<number> {
   return prisma.contactUnlock.count({ where: { buyerId, unlockedAt: { gte: windowStart() } } });
@@ -49,7 +49,7 @@ export async function usageOf(b: Buyer): Promise<Usage> {
   const { quota, unlimited } = TIERS[tier];
   return {
     tier, quota, used, remaining: Math.max(0, quota - used), unlimited, verifiedBuyer: b.verifiedBuyer,
-    windowDays: UNLOCK_WINDOW_DAYS,
+    windowHours: UNLOCK_WINDOW_HOURS,
     prices: { free: TIERS.free.priceUsd, pro: TIERS.pro.priceUsd, max: TIERS.max.priceUsd },
   };
 }
@@ -72,9 +72,11 @@ export async function unlockContact(buyerTelegramUserId: string, sellerId: numbe
 
   const common = () => ({ contact: contactOf(seller), sellerNotice: sellerNoticeFor(buyer), sellerTelegramUserId: seller.telegramUserId, verifiedBuyer: buyer.verifiedBuyer });
 
-  // 1. never charge twice for the same seller — and an old unlock outside the window still counts as unlocked
+  // 1. never charge twice for the same seller — and an old unlock outside the window still counts as unlocked.
+  //    An accepted deal with this seller also counts: the deal is the monetised event, not the reveal.
   const existing = await prisma.contactUnlock.findUnique({ where: { buyerId_sellerId: { buyerId: buyer.id, sellerId: seller.id } } });
-  if (existing) return { status: "already_unlocked", ...common(), usage: await usageOf(buyer) };
+  const viaDeal = existing ? null : await prisma.deal.findFirst({ where: { buyerId: buyer.id, sellerId: seller.id, status: "accepted" }, select: { id: true } });
+  if (existing || viaDeal) return { status: "already_unlocked", ...common(), usage: await usageOf(buyer) };
 
   // 2–4. rolling-window quota
   const tier = tierOf(buyer);
@@ -91,5 +93,6 @@ export async function unlockContact(buyerTelegramUserId: string, sellerId: numbe
 export async function isUnlocked(buyerTelegramUserId: string, sellerId: number): Promise<boolean> {
   const buyer = await prisma.buyer.findUnique({ where: { telegramUserId: buyerTelegramUserId }, select: { id: true } });
   if (!buyer) return false;
-  return Boolean(await prisma.contactUnlock.findUnique({ where: { buyerId_sellerId: { buyerId: buyer.id, sellerId } } }));
+  if (await prisma.contactUnlock.findUnique({ where: { buyerId_sellerId: { buyerId: buyer.id, sellerId } } })) return true;
+  return Boolean(await prisma.deal.findFirst({ where: { buyerId: buyer.id, sellerId, status: "accepted" }, select: { id: true } }));
 }

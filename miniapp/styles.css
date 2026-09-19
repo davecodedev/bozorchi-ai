@@ -268,3 +268,14 @@ a { color: var(--primary); text-decoration: none; }
 
 .vbuyer { display: inline-flex; align-items: center; background: var(--positive-soft); color: var(--positive); font-weight: 800; font-size: 12px; padding: 4px 9px; border-radius: 999px; margin-left: auto; white-space: nowrap; flex: none; }
 .btn.ghost.sm { flex: 1; }
+
+/* ---------- listing photos ---------- */
+.photo { position: relative; background: var(--primary-soft); border-radius: 12px; overflow: hidden; flex: none; }
+.photo img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* icon sits under the image: visible while loading, when there is no photo, or if the image fails */
+.photo .ph { display: grid; position: absolute; inset: 0; place-items: center; color: var(--primary); }
+.photo .ph svg { width: 40%; height: 40%; }
+.photo.hero { height: 160px; margin-bottom: 12px; border-radius: 14px; }
+.photo.thumb { width: 52px; height: 52px; border-radius: 10px; }
+.photo.thumb .ph svg { width: 22px; height: 22px; }
+.link-row .ic { font-size: 16px; }

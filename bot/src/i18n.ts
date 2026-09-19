@@ -54,13 +54,13 @@ const S = {
     contactBtn: (name: string) => `📞 ${name}`,
     contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
       `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Xaritada ochish</a>`,
-    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Max reja · cheksiz kontaktlar</i>` : `\n\n<i>Bu oy: ${used}/${quota} kontakt ishlatildi</i>`,
+    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Max reja · cheksiz kontaktlar</i>` : `\n\n<i>Bugun: ${used}/${quota} kontakt ishlatildi</i>`,
     sellerNotified: (notice: string) => `\n\n📨 <i>Sotuvchi ko'radi:</i> ${notice}`,
     alreadyUnlocked: "🔓 Bu kontakt allaqachon ochilgan — limitdan yechilmadi.",
     quotaExceeded: (tier: string, quota: number, next: { tier: string; quota: number; priceUsd: number } | null) =>
-      `⛔ ${tierName(tier)} reja: ${quota}/${quota} kontakt ishlatildi (30 kun).` +
-      (next ? `\n\n⭐ <b>${tierName(next.tier)}</b> rejaga o'ting — ${next.quota >= 500 ? "cheksiz" : next.quota + " ta"} kontakt/oy, $${next.priceUsd}/oy.\nDemo: <code>/upgrade ${next.tier}</code>` : ""),
-    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Reja: <b>${tierName(tier)}</b> — ${quota >= 500 ? "cheksiz" : quota + " ta"} kontakt/oy.${verified ? "\n✅ Endi siz <b>Tasdiqlangan xaridor</b>siz — sotuvchilar buni ko'radi." : ""}`,
+      `⛔ ${tierName(tier)} reja: bugun ${quota}/${quota} kontakt ishlatildi.` +
+      (next ? `\n\n⭐ <b>${tierName(next.tier)}</b> rejaga o'ting — ${next.quota >= 500 ? "cheksiz" : next.quota + " ta"} kontakt/kun, $${next.priceUsd}/oy.\nDemo: <code>/upgrade ${next.tier}</code>` : ""),
+    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Reja: <b>${tierName(tier)}</b> — ${quota >= 500 ? "cheksiz" : quota + " ta"} kontakt/kun.${verified ? "\n✅ Endi siz <b>Tasdiqlangan xaridor</b>siz — sotuvchilar buni ko'radi." : ""}`,
     upgradeUsage: "Foydalanish: /upgrade free | pro | max",
     askProduct: "🤔 Qaysi mahsulot kerakligini tushunmadim. Masalan: <i>500 kg pomidor, Chilonzor</i>",
     understood: (p: string, q: number | null, r: string | null) => `🧠 Tushundim: <b>${p}</b>${q ? ` · ${q} kg` : ""}${r ? ` · ${r}` : ""}`,
@@ -108,13 +108,13 @@ const S = {
     contactBtn: (name: string) => `📞 ${name}`,
     contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
       `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Открыть на карте</a>`,
-    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Тариф Max · контакты без лимита</i>` : `\n\n<i>В этом месяце: ${used}/${quota} контактов</i>`,
+    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Тариф Max · контакты без лимита</i>` : `\n\n<i>Сегодня: ${used}/${quota} контактов</i>`,
     sellerNotified: (notice: string) => `\n\n📨 <i>Продавец видит:</i> ${notice}`,
     alreadyUnlocked: "🔓 Этот контакт уже открыт — лимит не списан.",
     quotaExceeded: (tier: string, quota: number, next: { tier: string; quota: number; priceUsd: number } | null) =>
-      `⛔ Тариф ${tierName(tier)}: ${quota}/${quota} контактов использовано (30 дней).` +
-      (next ? `\n\n⭐ Перейдите на <b>${tierName(next.tier)}</b> — ${next.quota >= 500 ? "безлимит" : next.quota} контактов/мес, $${next.priceUsd}/мес.\nДемо: <code>/upgrade ${next.tier}</code>` : ""),
-    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Тариф: <b>${tierName(tier)}</b> — ${quota >= 500 ? "безлимит" : quota} контактов/мес.${verified ? "\n✅ Теперь вы <b>Проверенный покупатель</b> — продавцы это видят." : ""}`,
+      `⛔ Тариф ${tierName(tier)}: сегодня использовано ${quota}/${quota} контактов.` +
+      (next ? `\n\n⭐ Перейдите на <b>${tierName(next.tier)}</b> — ${next.quota >= 500 ? "безлимит" : next.quota} контактов/день, $${next.priceUsd}/мес.\nДемо: <code>/upgrade ${next.tier}</code>` : ""),
+    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Тариф: <b>${tierName(tier)}</b> — ${quota >= 500 ? "безлимит" : quota} контактов/день.${verified ? "\n✅ Теперь вы <b>Проверенный покупатель</b> — продавцы это видят." : ""}`,
     upgradeUsage: "Использование: /upgrade free | pro | max",
     askProduct: "🤔 Не понял, какой товар нужен. Например: <i>500 кг помидор, Чиланзар</i>",
     understood: (p: string, q: number | null, r: string | null) => `🧠 Понял: <b>${p}</b>${q ? ` · ${q} кг` : ""}${r ? ` · ${r}` : ""}`,
@@ -162,13 +162,13 @@ const S = {
     contactBtn: (name: string) => `📞 ${name}`,
     contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
       `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Open in maps</a>`,
-    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Max plan · unlimited contacts</i>` : `\n\n<i>This month: ${used}/${quota} contacts used</i>`,
+    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Max plan · unlimited contacts</i>` : `\n\n<i>Today: ${used}/${quota} contacts used</i>`,
     sellerNotified: (notice: string) => `\n\n📨 <i>The seller sees:</i> ${notice}`,
     alreadyUnlocked: "🔓 Already unlocked — not charged against your quota.",
     quotaExceeded: (tier: string, quota: number, next: { tier: string; quota: number; priceUsd: number } | null) =>
-      `⛔ ${tierName(tier)} plan: ${quota}/${quota} contacts used (30 days).` +
-      (next ? `\n\n⭐ Upgrade to <b>${tierName(next.tier)}</b> — ${next.quota >= 500 ? "unlimited" : next.quota} contacts/month, $${next.priceUsd}/mo.\nDemo: <code>/upgrade ${next.tier}</code>` : ""),
-    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Plan: <b>${tierName(tier)}</b> — ${quota >= 500 ? "unlimited" : quota} contacts/month.${verified ? "\n✅ You are now a <b>Verified buyer</b> — sellers see this." : ""}`,
+      `⛔ ${tierName(tier)} plan: ${quota}/${quota} contacts used today.` +
+      (next ? `\n\n⭐ Upgrade to <b>${tierName(next.tier)}</b> — ${next.quota >= 500 ? "unlimited" : next.quota} contacts/day, $${next.priceUsd}/mo.\nDemo: <code>/upgrade ${next.tier}</code>` : ""),
+    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Plan: <b>${tierName(tier)}</b> — ${quota >= 500 ? "unlimited" : quota} contacts/day.${verified ? "\n✅ You are now a <b>Verified buyer</b> — sellers see this." : ""}`,
     upgradeUsage: "Usage: /upgrade free | pro | max",
     askProduct: "🤔 I couldn't tell which product you need. For example: <i>500 kg tomatoes, Chilanzar</i>",
     understood: (p: string, q: number | null, r: string | null) => `🧠 Got it: <b>${p}</b>${q ? ` · ${q} kg` : ""}${r ? ` · ${r}` : ""}`,

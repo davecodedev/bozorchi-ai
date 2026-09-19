@@ -152,12 +152,12 @@ most 3 days), so one typo'd listing can't move the line.
 
 Search, AI ranking, prices, weights, forecasts and basket quotes are **free and unmetered for every
 tier**. The only gated action is revealing a seller's **phone number and exact location**
-("contact unlock"), counted in a rolling 30-day window. Everything lives in `backend/src/tiers.ts`
+("contact unlock"), counted in a rolling 24-hour window. Everything lives in `backend/src/tiers.ts`
 (constants) and `backend/src/contactUnlock.ts` (logic).
 
-| plan | contact unlocks / 30 days | price (placeholder) | extra |
+| plan | contact unlocks / day (rolling 24h) | price (placeholder) | extra |
 |---|---|---|---|
-| Free | 5 | $0 | |
+| Free | 3 | $0 | |
 | Pro | 20 | $7/mo | |
 | Max | "unlimited" (500 anti-abuse cap) | $79/mo | `verifiedBuyer = true` → sellers see **✅ Tasdiqlangan xaridor** when the buyer reaches out |
 
@@ -172,6 +172,35 @@ seller/result payloads no longer include phone or lat/lng.
 Bot: every result has a **📞 <seller>** button; `/upgrade pro|max|free` is the demo tier switch.
 Mini App: "Reveal contact" on a seller profile; the plan card in Profile shows usage and the
 Pro/Max offers. If a seller row has `telegramUserId` set, the bot sends them the notice for real.
+
+## Deals: negotiation + commission (`backend/src/deals.ts`, `commission.ts`)
+
+The monetised event. From a seller profile, **🤝 Kelishuv tuzish** opens an offer form (quantity
+stepper, price per kg, live total). State machine, enforced at the API:
+
+```
+offered   → countered (seller, ONE counter only — a second is refused with 409)
+          → accepted  (seller takes the initial offer)
+          → declined
+countered → accepted  (buyer takes the counter) | declined (buyer)
+```
+
+On **accepted**: `agreedPrice`, `totalValue = agreedPrice × quantity`, and the commission are stored,
+and the seller's contact is revealed **without consuming the buyer's daily unlock quota**. The
+confirmation screen shows the full breakdown (rate, total commission, buyer's and seller's halves)
+plus a note that payment currently happens between the parties — the app moved no money.
+
+Commission brackets apply to the **whole** order value (deliberately not marginal, so it's checkable
+by hand): `< 1M → 1%`, `< 5M → 2%`, `< 10M → 3%`, `≥ 10M → 5%`, split 50/50.
+
+Endpoints: `POST /deals {listingId, quantity, pricePerKg}`, `GET /deals`, `GET /deals/:id`,
+`POST /deals/:id/counter {actor:"seller", pricePerKg}`, `POST /deals/:id/accept {actor}`,
+`POST /deals/:id/decline {actor}`. Sellers have no accounts yet, so the seller side can be played by
+anyone in demo mode (`DEMO_SELLER_ACTIONS=0` turns that off); the deal screen shows a clearly
+labelled "Demo: act as the seller" panel. `My deals` lives in the Profile tab.
+
+Listings carry a `photoUrl` (placeholder picsum.photos images in the seed); the Mini App shows a
+basket icon when a listing has none, never a broken image.
 
 ## The bot (`bot/`)
 

@@ -28,10 +28,12 @@ export async function listSellers(f: SellerFilter) {
       const latest = new Map<string, (typeof s.listings)[number]>();
       for (const l of s.listings) if (!latest.has(l.product)) latest.set(l.product, l);
       const products = [...latest.values()].map((l) => ({
+        listingId: l.id,
         product: l.product,
         category: productDef(l.product)?.category ?? null,
         pricePerKg: l.pricePerKg,
         minOrderKg: l.minOrderKg,
+        photoUrl: l.photoUrl,
         reportedAt: l.reportedAt,
       }));
       const categories = [...new Set(products.map((p) => p.category).filter(Boolean))] as Category[];
@@ -58,10 +60,12 @@ export async function getSeller(id: number) {
   const reliability = await computeReliability(s.id);
   const products = await Promise.all(
     [...latest.values()].map(async (l) => ({
+      listingId: l.id,
       product: l.product,
       category: productDef(l.product)?.category ?? null,
       pricePerKg: l.pricePerKg,
       minOrderKg: l.minOrderKg,
+      photoUrl: l.photoUrl,
       reportedAt: l.reportedAt,
       trend: await forecastTrend(l.product, s.province), // P3: "Narx tendensiyasi: so'nggi 30 kunda +15%"
     })),
