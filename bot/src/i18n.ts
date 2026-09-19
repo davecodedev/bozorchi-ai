@@ -44,6 +44,13 @@ const S = {
     voiceHeard: (t: string) => `🎤 Eshitdim: <i>${t}</i>`,
     backendDown: "⚠️ Server javob bermayapti. Bir ozdan keyin qayta urinib ko'ring.",
     breakdown: (p: number, q: number, d: number) => `narx ${p} · sifat ${q} · masofa ${d}`,
+    trendBtn: "📈 Narx tendensiyasi va prognoz",
+    trendCaption: (label: string, where: string, current: number | null, chg: number | null, dir: string, fc: { pct: number; verdict: string } | null) =>
+      `📈 <b>${label}</b> · ${where}\n` +
+      (current != null ? `Hozir bozorda o'rtacha <b>${current.toLocaleString("en-US").replace(/,/g, " ")}</b> so'm/kg` + (chg != null ? ` (${chg > 0 ? "+" : ""}${chg}% 30 kunda)` : "") + "\n" : "") +
+      `Tendensiya: ${dir === "up" ? "📈 oshmoqda" : dir === "down" ? "📉 tushmoqda" : "➡️ barqaror"}` +
+      (fc ? `\n🔮 Prognoz: kelasi hafta ${fc.pct > 0 ? "+" : ""}${fc.pct}% — ${fc.verdict === "down" ? "kutgan ma'qul" : fc.verdict === "up" ? "hozir oling" : "qulay vaqtda oling"}` : "") +
+      "\n<i>Demo tarix — sotuvchilar har kuni narx kiritganda jonli bo'ladi.</i>",
     contactBtn: (name: string) => `📞 ${name}`,
     contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
       `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Xaritada ochish</a>`,
@@ -91,6 +98,13 @@ const S = {
     voiceHeard: (t: string) => `🎤 Услышал: <i>${t}</i>`,
     backendDown: "⚠️ Сервер не отвечает. Попробуйте чуть позже.",
     breakdown: (p: number, q: number, d: number) => `цена ${p} · качество ${q} · расстояние ${d}`,
+    trendBtn: "📈 Тренд цены и прогноз",
+    trendCaption: (label: string, where: string, current: number | null, chg: number | null, dir: string, fc: { pct: number; verdict: string } | null) =>
+      `📈 <b>${label}</b> · ${where}\n` +
+      (current != null ? `Сейчас в среднем по рынку <b>${current.toLocaleString("en-US").replace(/,/g, " ")}</b> сум/кг` + (chg != null ? ` (${chg > 0 ? "+" : ""}${chg}% за 30 дней)` : "") + "\n" : "") +
+      `Тренд: ${dir === "up" ? "📈 растёт" : dir === "down" ? "📉 снижается" : "➡️ стабильно"}` +
+      (fc ? `\n🔮 Прогноз: на след. неделе ${fc.pct > 0 ? "+" : ""}${fc.pct}% — ${fc.verdict === "down" ? "стоит подождать" : fc.verdict === "up" ? "покупайте сейчас" : "покупайте, когда удобно"}` : "") +
+      "\n<i>Демо-история — станет живой, когда продавцы начнут вносить цены ежедневно.</i>",
     contactBtn: (name: string) => `📞 ${name}`,
     contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
       `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Открыть на карте</a>`,
@@ -138,6 +152,13 @@ const S = {
     voiceHeard: (t: string) => `🎤 I heard: <i>${t}</i>`,
     backendDown: "⚠️ The server isn't responding. Please try again in a moment.",
     breakdown: (p: number, q: number, d: number) => `price ${p} · quality ${q} · distance ${d}`,
+    trendBtn: "📈 Price trend & forecast",
+    trendCaption: (label: string, where: string, current: number | null, chg: number | null, dir: string, fc: { pct: number; verdict: string } | null) =>
+      `📈 <b>${label}</b> · ${where}\n` +
+      (current != null ? `Market average now <b>${current.toLocaleString("en-US").replace(/,/g, " ")}</b> so'm/kg` + (chg != null ? ` (${chg > 0 ? "+" : ""}${chg}% over 30 days)` : "") + "\n" : "") +
+      `Trend: ${dir === "up" ? "📈 rising" : dir === "down" ? "📉 falling" : "➡️ stable"}` +
+      (fc ? `\n🔮 Forecast: ${fc.pct > 0 ? "+" : ""}${fc.pct}% next week — ${fc.verdict === "down" ? "worth waiting" : fc.verdict === "up" ? "buy now" : "buy when convenient"}` : "") +
+      "\n<i>Seeded history — becomes live once sellers report daily.</i>",
     contactBtn: (name: string) => `📞 ${name}`,
     contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
       `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Open in maps</a>`,

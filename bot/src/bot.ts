@@ -1,5 +1,5 @@
-import { Bot, InlineKeyboard, Keyboard, type Context } from "grammy";
-import { ApiError, parse, recommend, setTier, unlockContact, type ParsedQuery, type Tier } from "./api.js";
+import { Bot, InlineKeyboard, InputFile, Keyboard, type Context } from "grammy";
+import { ApiError, marketChart, parse, recommend, setTier, unlockContact, type ParsedQuery, type Tier } from "./api.js";
 import { formatRecommendation } from "./format.js";
 import { pickLang, t } from "./i18n.js";
 import { extractRegion } from "./region.js";
@@ -44,6 +44,23 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
       await ctx.reply(s.upgraded(r.tier, r.usage.quota, r.verifiedBuyer), { parse_mode: "HTML" });
     } catch (e) {
       console.error("upgrade failed:", e);
+      await ctx.reply(s.backendDown);
+    }
+  });
+
+  /** "📈 trend" button under results → chart image of 30-day market prices + 7-day forecast. */
+  bot.callbackQuery(/^trend:([a-z]+):([a-z-]+)$/, async (ctx) => {
+    const lang = pickLang(ctx.from?.language_code);
+    const s = t(lang);
+    const [, product, province] = ctx.match;
+    await ctx.answerCallbackQuery().catch(() => {});
+    await ctx.replyWithChatAction("upload_photo");
+    try {
+      const { png, view } = await marketChart(backendUrl, product, province, lang);
+      const caption = s.trendCaption(view.label?.[lang] ?? product, view.provinceLabel?.[lang] ?? province, view.current, view.changePct, view.trend.direction, view.forecast);
+      await ctx.replyWithPhoto(new InputFile(png, `${product}-trend.png`), { caption, parse_mode: "HTML" });
+    } catch (e) {
+      console.error("trend chart failed:", e);
       await ctx.reply(s.backendDown);
     }
   });
@@ -140,6 +157,7 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
       // one "📞 <seller>" button per result (contact reveal is the only quota-gated action), then the app link
       const kb = new InlineKeyboard();
       for (const r of data.results) kb.text(s.contactBtn(r.sellerName), `unlock:${r.sellerId}`).row();
+      kb.text(s.trendBtn, `trend:${data.product}:${data.province ?? "toshkent-shahri"}`).row();
       if (miniAppUrl) kb.webApp(s.openApp, miniAppLink(miniAppUrl, data.product, q.region, loc));
       await ctx.reply(formatRecommendation(data, lang, s, where), { parse_mode: "HTML", reply_markup: kb });
     } catch (e) {

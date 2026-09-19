@@ -10,6 +10,7 @@ import { explainAnomalies } from "./anomaly.js";
 import { forecastTrend, FORECAST_WINDOW_DAYS } from "./forecast.js";
 import { computeReliabilityBulk } from "./reliability.js";
 import { getPersonalWeights } from "./scoring.js";
+import { marketChartPng, marketChartSvg, marketView } from "./market.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -166,6 +167,17 @@ app.get("/history/:sellerId/:product", async (req, res) => {
   };
   body.forecast = forecast(series); // free for every tier
   res.json(body);
+});
+
+/** Market price history + forecast for a product in a province (JSON, SVG or PNG). */
+app.get("/market/:product{.:ext}", async (req, res) => {
+  const product = resolveProduct(req.params.product) ?? req.params.product;
+  const lang = (["uz", "ru", "en"].includes(String(req.query.lang)) ? String(req.query.lang) : "uz") as "uz" | "ru" | "en";
+  const m = await marketView(product, (req.query.province as string) || "toshkent-shahri");
+  const ext = (req.params as Record<string, string | undefined>).ext;
+  if (ext === "png") { res.type("png").set("cache-control", "no-store").send(marketChartPng(m, lang)); return; }
+  if (ext === "svg") { res.type("svg").send(marketChartSvg(m, lang)); return; }
+  res.json(m);
 });
 
 /** P2: z-score price anomalies over current listings, grouped by product × province. */

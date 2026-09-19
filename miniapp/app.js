@@ -59,6 +59,7 @@
       trendLine: (p) => `Price trend: ${p > 0 ? "+" : ""}${p}% over the last 30 days`, trendMarket: "market, seeded history",
       hiddenNote: (n) => `${n} listing${n === 1 ? "" : "s"} hidden from the top results: stale or unreliable reporting.`, personalizedNote: (f) => `Ranking tuned to your habits: you tend to pick by ${f}.`,
       adminLink: "Bazaar admin dashboard",
+      trendBtn: "Price trend & forecast", marketTitle: "Market price", marketSub: (n) => `average of ${n} sellers reporting`, marketNow: "market average today",
       myProducts: "My products", addProduct: "Add a product", addProductSub: "List what you sell so buyers nearby can find you.",
       productName: "Product name", productNamePh: "e.g. Pomidor", pricePerKg: "Price (so'm/kg)", location: "Location", placePh: "Bazaar or city, e.g. Chorsu bozori",
       useMyLocation: "Use my location", locationSet: "GPS location attached", saveProduct: "Add product", fillAll: "Please fill in every field.",
@@ -115,6 +116,7 @@
       trendLine: (p) => `Narx tendensiyasi: so'nggi 30 kunda ${p > 0 ? "+" : ""}${p}%`, trendMarket: "bozor bo'yicha, demo tarix",
       hiddenNote: (n) => `${n} ta taklif eng yaxshilar ro'yxatidan yashirildi: eskirgan yoki ishonchsiz.`, personalizedNote: (f) => `Reyting odatlaringizga moslandi: siz ko'proq ${f === "price" ? "narxga" : f === "quality" ? "sifatga" : "masofaga"} qaraysiz.`,
       adminLink: "Bozor ma'muriyati paneli",
+      trendBtn: "Narx tendensiyasi va prognoz", marketTitle: "Bozor narxi", marketSub: (n) => `${n} ta sotuvchi o'rtachasi`, marketNow: "bugungi bozor o'rtachasi",
       myProducts: "Mahsulotlarim", addProduct: "Mahsulot qo'shish", addProductSub: "Nima sotayotganingizni kiriting — yaqin atrofdagi xaridorlar sizni topadi.",
       productName: "Mahsulot nomi", productNamePh: "masalan, Pomidor", pricePerKg: "Narx (so'm/kg)", location: "Joylashuv", placePh: "Bozor yoki shahar, masalan, Chorsu bozori",
       useMyLocation: "Joylashuvimni aniqlash", locationSet: "GPS joylashuv biriktirildi", saveProduct: "Qo'shish", fillAll: "Iltimos, barcha maydonlarni to'ldiring.",
@@ -171,6 +173,7 @@
       trendLine: (p) => `Тренд цены: ${p > 0 ? "+" : ""}${p}% за 30 дней`, trendMarket: "по рынку, демо-история",
       hiddenNote: (n) => `Скрыто из топа: ${n} — устаревшие или ненадёжные.`, personalizedNote: (f) => `Рейтинг подстроен под ваши привычки: вы выбираете по ${f === "price" ? "цене" : f === "quality" ? "качеству" : "расстоянию"}.`,
       adminLink: "Панель администрации базара",
+      trendBtn: "Тренд цены и прогноз", marketTitle: "Рыночная цена", marketSub: (n) => `среднее по ${n} продавцам`, marketNow: "средняя по рынку сегодня",
       myProducts: "Мои товары", addProduct: "Добавить товар", addProductSub: "Укажите, что продаёте, — покупатели рядом вас найдут.",
       productName: "Название товара", productNamePh: "например, Помидор", pricePerKg: "Цена (сум/кг)", location: "Локация", placePh: "Базар или город, например, Чорсу",
       useMyLocation: "Определить моё местоположение", locationSet: "GPS-локация добавлена", saveProduct: "Добавить", fillAll: "Заполните все поля.",
@@ -318,7 +321,7 @@
   const route = () => { const h = location.hash.replace(/^#\/?/, ""); const [name, ...rest] = h.split("/"); return { name: name || "search", args: rest }; };
   const TABS = ["search", "saved", "sellers", "profile"];
   /** Which tab lights up for each sub-screen. */
-  const TAB_OF = { results: "search", history: "search", seller: "sellers", requests: "profile", notifications: "profile" };
+  const TAB_OF = { results: "search", history: "search", market: "search", seller: "sellers", requests: "profile", notifications: "profile" };
   window.addEventListener("hashchange", render);
 
   function render() {
@@ -442,6 +445,7 @@
             <div class="legend"><span><i class="dot"></i>${t("price")} <b>${Math.round(r.breakdown.priceScore)}</b></span><span><i class="dot q"></i>${t("quality")} <b>${Math.round(r.breakdown.qualityScore)}</b></span><span><i class="dot d"></i>${t("dist")} <b>${Math.round(r.breakdown.distanceScore)}</b></span></div>
             ${r.sellerId === cheapestId ? `<div class="hint">${t("cheapestNote")}</div>` : ""}
           </button>`).join("")}
+        <button class="btn soft" style="margin:4px 0 14px" data-go="market/${esc(d.product)}">${I.trend}${t("trendBtn")}</button>
         ${d.excluded && d.excluded.length ? `<p class="sub wrap" style="margin:4px 0 12px">${I.shield.replace("<svg", '<svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"')}${esc(t("hiddenNote", d.excluded.length))}</p>` : ""}
 `}`;
     },
@@ -600,6 +604,28 @@
         </div>`;
     },
 
+    async market(product) {
+      const m = await api(`/market/${encodeURIComponent(product)}?province=${encodeURIComponent(S.province)}`);
+      const series = m.series.map((p) => p.price);
+      if (series.length < 2) return header(t("marketTitle"), plabel(product)) + empty(I.trend, t("noResults"));
+      const fc = m.forecast ? m.forecast.points : [];
+      const last = m.current, pct = m.changePct || 0;
+      const v = m.forecast && m.forecast.verdict;
+      const verdictText = v === "down" ? t("verdictDown", m.forecast.pct) : v === "up" ? t("verdictUp", m.forecast.pct) : v === "flat" ? t("verdictFlat") : "";
+      return `
+        ${header(t("marketTitle"), `${plabel(product)} · ${provLabel(m.province)}`)}
+        <div class="chart-wrap">
+          <div><span class="big">${fmt(last)}</span> <span class="sub">${t("perKg")} · ${t("marketNow")}</span></div>
+          <span class="trend ${pct <= 0 ? "down" : "up"}">${pct <= 0 ? I.trendDown : I.trend}${t("vs30", pct)}</span>
+          ${chartSvg(series, fc)}
+          <div class="axis" style="margin-top:6px"><span>${t("daysAgo30")}</span><span>${t("todayLbl")}</span>${fc.length ? `<span style="color:var(--distance)">${t("nextWeek")}</span>` : ""}</div>
+        </div>
+        <p class="sub wrap" style="margin:0 0 4px">${esc(t("marketSub", m.series[m.series.length - 1].sellers))} · ${t("sample")}</p>
+        ${trendLine(m.trend)}
+        ${m.forecast ? `<div class="callout ${v === "down" ? "good" : v === "up" ? "bad" : "neutral"}">${I.thumb}<div><b>${t("forecastTitle")} · ${fmt(fc[fc.length - 1])} ${t("perKg")}</b>${esc(verdictText)}</div></div>` : ""}
+        <button class="btn" data-act="quickAlert" data-product="${esc(product)}" data-price="${last}">${esc(t("setAlertFor", plabel(product)))}</button>`;
+    },
+
     async history(sellerId, product) {
       const h = await api(`/history/${sellerId}/${product}`);
       const s0 = S.sellerCache[sellerId] || (await loadSeller(sellerId));
@@ -644,6 +670,29 @@
         <button class="btn ${h.forecast ? "" : "ghost"}" style="margin-top:8px" data-act="quickAlert" data-product="${esc(h.product)}" data-price="${last}">${esc(t("setAlertFor", plabel(h.product)))}</button>`;
     },
   };
+
+  /** History (blue) + forecast (dashed orange) line chart, same look as the history screen. */
+  function chartSvg(series, fc) {
+    const all = series.concat(fc);
+    const min = Math.min(...all), max = Math.max(...all);
+    const W = 320, H = 150, pad = 6;
+    const x = (i) => pad + (i / (all.length - 1)) * (W - pad * 2);
+    const y = (v) => H - pad - ((v - min) / (max - min || 1)) * (H - pad * 2);
+    const pts = series.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    const fpts = fc.length ? [series.length - 1, ...fc.map((_, i) => series.length + i)].map((i) => `${x(i).toFixed(1)},${y(all[i]).toFixed(1)}`).join(" ") : "";
+    return `
+      <div class="axis"><span>${fmt(max)}</span><span>${t("perKg")}</span></div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3E5CF6" stop-opacity=".25"/><stop offset="1" stop-color="#3E5CF6" stop-opacity="0"/></linearGradient></defs>
+        <line x1="0" x2="${W}" y1="${pad}" y2="${pad}" stroke="#E2E4EC" stroke-dasharray="3 3"/><line x1="0" x2="${W}" y1="${H - pad}" y2="${H - pad}" stroke="#E2E4EC" stroke-dasharray="3 3"/>
+        ${fc.length ? `<rect x="${x(series.length - 1)}" y="0" width="${W - x(series.length - 1)}" height="${H}" fill="#F7C94C" fill-opacity=".12"/>` : ""}
+        <polygon points="${x(0)},${H - pad} ${pts} ${x(series.length - 1)},${H - pad}" fill="url(#g)"/>
+        <polyline points="${pts}" fill="none" stroke="#3E5CF6" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        ${fpts ? `<polyline points="${fpts}" fill="none" stroke="#E08A1E" stroke-width="2.5" stroke-dasharray="5 4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(all.length - 1)}" cy="${y(all[all.length - 1])}" r="4" fill="#E08A1E"/>` : ""}
+        <circle cx="${x(series.length - 1)}" cy="${y(series[series.length - 1])}" r="4" fill="#3E5CF6"/>
+      </svg>
+      <div class="axis"><span>${fmt(min)}</span></div>`;
+  }
 
   // ---------------------------------------------------------------- sheets & toast
   function sheet(html) {

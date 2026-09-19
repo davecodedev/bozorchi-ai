@@ -139,6 +139,15 @@ in a region fails the gate it is relaxed and the response says so (`gate.relaxed
 `/recommend` keeps its shape; it gains `weights`, `personalized`, `personalization`, `gate`,
 `excluded[]` and a `reliability` field per result.
 
+## Price trend button (bot + Mini App)
+
+Under every set of results there is a **📈 Price trend & forecast** button. In the bot it returns a
+rendered PNG chart (`GET /market/:product.png?province=…&lang=…`, SVG rendered with resvg) with a
+caption naming the market median, 30-day change, trend direction and 7-day forecast; in the Mini App
+it opens the `#market/<product>` screen with the same chart. `backend/src/market.ts` builds both from
+`marketDailyPrices()` — the daily **median** across sellers (each seller's last price counts for at
+most 3 days), so one typo'd listing can't move the line.
+
 ## Buyer plans: Free / Pro / Max
 
 Search, AI ranking, prices, weights, forecasts and basket quotes are **free and unmetered for every

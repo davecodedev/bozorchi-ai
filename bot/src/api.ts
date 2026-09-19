@@ -28,6 +28,7 @@ export interface Result {
 
 export interface RecommendResponse {
   product: string;
+  province?: string | null;
   label: { uz: string; ru: string; en: string };
   candidates: number;
   results: Result[];
@@ -112,4 +113,15 @@ export async function setTier(backendUrl: string, tier: Tier, caller?: Caller): 
   const body = (await res.json().catch(() => ({}))) as { tier: Tier; verifiedBuyer: boolean; usage: Usage; error?: string };
   if (!res.ok) throw new ApiError(res.status, body.error ?? `HTTP ${res.status}`);
   return body;
+}
+
+/** Market chart PNG for a product (history + forecast). */
+export async function marketChart(backendUrl: string, product: string, province: string | undefined, lang: string): Promise<{ png: Buffer; view: { current: number | null; changePct: number | null; trend: { direction: string; changePercent: number }; forecast: { pct: number; verdict: string; points: number[] } | null; label?: Record<string, string>; provinceLabel?: Record<string, string> } }> {
+  const q = `?province=${encodeURIComponent(province ?? "toshkent-shahri")}&lang=${lang}`;
+  const [pngRes, jsonRes] = await Promise.all([
+    fetch(`${backendUrl}/market/${encodeURIComponent(product)}.png${q}`, { signal: AbortSignal.timeout(15_000) }),
+    fetch(`${backendUrl}/market/${encodeURIComponent(product)}${q}`, { signal: AbortSignal.timeout(15_000) }),
+  ]);
+  if (!pngRes.ok || !jsonRes.ok) throw new ApiError(pngRes.status, "chart failed");
+  return { png: Buffer.from(await pngRes.arrayBuffer()), view: (await jsonRes.json()) as never };
 }

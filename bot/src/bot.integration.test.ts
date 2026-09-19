@@ -127,6 +127,19 @@ test("results carry one 📞 button per seller plus the app link; search itself 
   assert.equal(contactRows.length, 3);
   assert.match(contactRows[0][0].text, /^📞 /);
   assert.ok(kb[kb.length - 1][0].web_app, "last row opens the Mini App");
+  const trendRow = kb.find((r) => r[0].callback_data?.startsWith("trend:"));
+  assert.ok(trendRow, "has a trend button");
+  assert.match(trendRow![0].text, /📈/);
+});
+
+test("📈 trend button → chart photo with a caption naming trend and forecast", { skip: !backendUp && "backend not running" }, async () => {
+  const { bot, sent } = harness();
+  await bot.handleUpdate({ update_id: updateId++, callback_query: { id: "1", from: user("en"), chat_instance: "x", data: "trend:tomato:toshkent-shahri", message: { message_id: 1, date: 0, chat, text: "…" } } } as never);
+  const photo = sent.find((s) => s.method === "sendPhoto");
+  assert.ok(photo, "sendPhoto was called");
+  assert.match(String(photo!.payload.caption), /<b>Tomato<\/b> · Tashkent city/);
+  assert.match(String(photo!.payload.caption), /Trend: 📈 rising/);
+  assert.match(String(photo!.payload.caption), /Forecast:/);
 });
 
 const cbUpdate = (sellerId: number, id: number, lang = "en") => ({
