@@ -24,6 +24,9 @@ import { adminCatalog, adminAuth, adminDeals, adminEvents, adminListings, adminS
 import { BannedError } from "./auth.js";
 import { createOwnListing, deleteOwnListing, ListingError, ownListingFor, updateOwnListing } from "./listings.js";
 import { COMMISSION_BRACKETS } from "./commission.js";
+import { geminiStatus } from "./gemini.js";
+import { GEMINI_MODELS, selectProviderName } from "./nlp.js";
+import { TRANSCRIBE_MODELS } from "./transcribe.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -425,6 +428,15 @@ app.post("/admin/api/settings", async (req, res) => {
   } catch (e) { res.status(400).json({ error: (e as Error).message }); }
 });
 app.get("/admin/api/products", (_req, res) => res.json(adminCatalog()));
+app.get("/admin/api/ai", (_req, res) => res.json({ provider: selectProviderName(), ...geminiStatus({ nlp: GEMINI_MODELS, transcribe: TRANSCRIBE_MODELS }) }));
+app.post("/admin/api/ai/selftest", async (req, res) => {
+  const text = String(req.body?.text || "500 kg pomidor Chilonzorga kerak");
+  const t0 = Date.now();
+  const parsed = await parseQuery(text);
+  const status = geminiStatus({ nlp: GEMINI_MODELS, transcribe: TRANSCRIBE_MODELS });
+  const ok = Boolean(parsed.product);
+  res.json({ ok, text, parsed, ms: Date.now() - t0, model: ok ? status.lastSuccess.nlp?.model ?? null : null, models: status.models });
+});
 const adminDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../admin");
 app.use("/admin", express.static(adminDir, { extensions: ["html"] }));
 

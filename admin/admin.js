@@ -62,8 +62,19 @@ const PAGES = {
         <div class="card"><h3>Deals & signups per day</h3><canvas id="cAct"></canvas></div>
         <div class="card"><h3>Searches & AI calls per day</h3><canvas id="cAi"></canvas></div>
         <div class="card"><h3>Users by plan</h3><canvas id="cTier"></canvas></div>
-      </div>`;
+      </div>
+      <div class="card" id="aiCard"><div class="head" style="margin-bottom:8px"><h3 style="margin:0">AI (Gemini) status</h3><button class="btn sm" id="aiTest">Run self-test</button></div><div id="aiBody" class="muted">Loading…</div></div>`;
     bindWindow(main, () => go("overview"));
+    const renderAi = (a, test) => {
+      const rows = a.models.map((m) => `<tr><td>${esc(m.model)}</td><td class="tiny">${esc(typeof m.thinking === "string" ? m.thinking : JSON.stringify(m.thinking))}</td><td>${m.coolingDown ? `<span class="pill bad">${m.status || ""} ${esc(m.reason)}</span>` : '<span class="pill ok">ready</span>'}</td></tr>`).join("");
+      const last = Object.entries(a.lastSuccess || {}).map(([k, v]) => `${k}: ${esc(v.model)} (${v.ms} ms, ${ago(v.at)})`).join(" · ") || "no successful calls yet since restart";
+      $("#aiBody").innerHTML = `<p class="tiny" style="margin:0 0 8px">Key ${a.keyConfigured ? "configured" : "<b>MISSING</b>"} · provider ${esc(a.provider || "none")} · last success — ${last}</p>
+        ${test ? `<p style="margin:0 0 8px">${test.ok ? "✅" : "❌"} self-test "${esc(test.text)}" → <b>${esc(test.parsed.product || "—")}</b> ${test.parsed.quantity ? `× ${test.parsed.quantity} ${esc(test.parsed.unit || "")}` : ""} ${test.parsed.region ? `· ${esc(test.parsed.region)}` : ""} <span class="tiny">(${test.model || "keyword fallback"}, ${test.ms} ms)</span></p>` : ""}
+        <table><thead><tr><th>Model</th><th>Thinking</th><th>State</th></tr></thead><tbody>${rows}</tbody></table>
+        <p class="tiny" style="margin:8px 0 0">Free tier = ~20 requests per model per day; a model on cooldown is skipped and the next one answers. Enable billing on the Google AI Studio project to lift the limit.</p>`;
+    };
+    api("/ai").then((a) => renderAi(a)).catch((e) => { $("#aiBody").textContent = e.message; });
+    $("#aiTest").addEventListener("click", async () => { $("#aiTest").disabled = true; try { const t = await api("/ai/selftest", { method: "POST", body: "{}" }); const a = await api("/ai"); renderAi(a, t); } finally { $("#aiTest").disabled = false; } });
     const labels = s.series.map((d) => d.day.slice(5));
     lineChart($("#cRev"), labels, [{ label: "Commission", data: s.series.map((d) => d.commission), borderColor: C.green, backgroundColor: rgba(C.green, .15) }]);
     lineChart($("#cAct"), labels, [{ label: "Accepted deals", data: s.series.map((d) => d.deals), borderColor: C.blue, backgroundColor: rgba(C.blue, .12) }, { label: "Signups", data: s.series.map((d) => d.signups), borderColor: C.amber, backgroundColor: rgba(C.amber, .12) }]);

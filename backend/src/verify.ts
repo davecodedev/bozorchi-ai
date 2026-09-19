@@ -5,7 +5,7 @@
  *
  * severity "error" blocks posting; "warning" is shown but allowed.
  */
-import { GoogleGenAI } from "@google/genai";
+import { getGeminiClient, withGeminiModels } from "./gemini.js";
 import { marketDailyPrices } from "./forecast.js";
 import { GEMINI_MODELS } from "./nlp.js";
 import { CATEGORIES, productDef, resolveProduct, type Category } from "./products.js";
@@ -20,8 +20,6 @@ export interface VerifyResult {
 }
 
 const realKey = (k: string | undefined) => (k && !k.includes("FAKE") ? k : undefined);
-let client: GoogleGenAI | undefined;
-const getClient = () => (client ??= new GoogleGenAI({ apiKey: realKey(process.env.GEMINI_API_KEY), vertexai: process.env.GEMINI_VERTEX === "1", httpOptions: { timeout: 30_000 } }));
 
 const PHOTO_PROMPT = (name: string, category: string) =>
   `You are checking a marketplace listing for an Uzbekistan bazaar app. The seller named the product "${name}" (category: ${category}). Look at the photo and respond with ONLY JSON, no fences:\n` +
@@ -30,24 +28,21 @@ const PHOTO_PROMPT = (name: string, category: string) =>
 async function judgePhoto(dataUrl: string, name: string, category: string): Promise<{ shows: string; matches: boolean; appropriate: boolean; quality: string; note: string } | null> {
   const m = dataUrl.match(/^data:(image\/[a-z0-9.+-]+);base64,(.+)$/i);
   if (!m) return null;
-  for (const model of GEMINI_MODELS) {
-    try {
-      const res = await getClient().models.generateContent({
+  try {
+    return await withGeminiModels("verify", GEMINI_MODELS, async (model, thinking) => {
+      const res = await getGeminiClient(30_000).models.generateContent({
         model,
         contents: [{ role: "user", parts: [{ inlineData: { mimeType: m[1], data: m[2] } }, { text: PHOTO_PROMPT(name, category) }] }],
-        config: { maxOutputTokens: 200, temperature: 0, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
+        config: { maxOutputTokens: thinking ? 200 : 800, temperature: 0, responseMimeType: "application/json", ...(thinking ? { thinkingConfig: thinking } : {}) },
       });
       const txt = res.text ?? "";
       const j = JSON.parse(txt.slice(txt.indexOf("{"), txt.lastIndexOf("}") + 1));
       return { shows: String(j.shows ?? ""), matches: Boolean(j.matches), appropriate: j.appropriate !== false, quality: String(j.quality ?? "ok"), note: String(j.note ?? "") };
-    } catch (e) {
-      const status = (e as { status?: number }).status;
-      if (status === 429 || status === 404 || status === 400) { console.warn(`verify: ${model} unavailable (${status}), trying next`); continue; }
-      console.warn("verify: photo judge failed:", e instanceof Error ? e.message : e);
-      return null;
-    }
+    });
+  } catch (e) {
+    console.warn("verify: photo judge failed:", e instanceof Error ? e.message : e);
+    return null;
   }
-  return null;
 }
 
 export async function verifyListing(input: VerifyInput): Promise<VerifyResult> {

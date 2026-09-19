@@ -10,7 +10,7 @@
  *   - anthropic : ANTHROPIC_API_KEY
  */
 import Anthropic from "@anthropic-ai/sdk";
-import { GoogleGenAI } from "@google/genai";
+import { getGeminiClient, withGeminiModels, type ThinkingConfig } from "./gemini.js";
 
 export interface ParsedQuery {
   product: string | null;
@@ -25,7 +25,7 @@ export const ANTHROPIC_MODEL = "claude-haiku-4-5"; // fast + cheap; right size f
  * models and move to the next on 429 — lite models first, they have the largest allowances.
  * GEMINI_MODEL (single) or GEMINI_MODELS (comma list) override.
  */
-export const GEMINI_MODELS: string[] = (process.env.GEMINI_MODELS ?? process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite,gemini-3.1-flash-lite,gemini-2.5-flash-lite,gemini-3.6-flash,gemini-3.7-flash").split(",").map((m) => m.trim()).filter(Boolean);
+export const GEMINI_MODELS: string[] = (process.env.GEMINI_MODELS ?? process.env.GEMINI_MODEL ?? "gemini-3.1-flash-lite,gemini-3.5-flash-lite,gemini-2.5-flash-lite,gemini-3.6-flash,gemini-3.7-flash,gemini-3.8-flash").split(",").map((m) => m.trim()).filter(Boolean);
 export const GEMINI_MODEL = GEMINI_MODELS[0];
 export const NLP_MAX_TOKENS = 200;
 
@@ -70,39 +70,28 @@ export function anthropicProvider(client: MessagesClient = new Anthropic({ maxRe
 export type GenAIClient = { models: { generateContent: (p: { model: string; contents: string; config?: Record<string, unknown> }) => Promise<{ text?: string }> } };
 
 export function geminiProvider(client?: GenAIClient, apiKey = realKey(process.env.GEMINI_API_KEY)): Provider {
-  const c: GenAIClient =
-    client ??
-    // The Gemini Developer endpoint accepts both "AIza…" and express-mode "AQ.…" keys.
-    // Set GEMINI_VERTEX=1 to route through Vertex AI instead (needs aiplatform API enabled on the project).
-    new GoogleGenAI({ apiKey, vertexai: process.env.GEMINI_VERTEX === "1", httpOptions: { timeout: 10_000 } });
+  // The Gemini Developer endpoint accepts both "AIza…" and express-mode "AQ.…" keys.
+  // Set GEMINI_VERTEX=1 to route through Vertex AI instead (needs aiplatform API enabled on the project).
+  const c: GenAIClient = client ?? (apiKey ? getGeminiClient(10_000) : getGeminiClient(10_000));
   return {
     name: "gemini",
-    async call(text, system = SYSTEM_PROMPT) {
-      let lastErr: unknown;
-      for (const model of GEMINI_MODELS) {
-        try {
-          const res = await c.models.generateContent({
-            model,
-            contents: text,
-            config: {
-              systemInstruction: system,
-              maxOutputTokens: system === SYSTEM_PROMPT ? NLP_MAX_TOKENS : 600,
-              responseMimeType: "application/json",
-              temperature: 0,
-              // Gemini 3.x "thinks" by default and would spend the whole 200-token cap on it — this is a
-              // simple extraction, so turn thinking off.
-              thinkingConfig: { thinkingBudget: 0 },
-            },
-          });
-          return res.text ?? "";
-        } catch (e) {
-          lastErr = e;
-          const status = (e as { status?: number }).status;
-          if (status === 429 || status === 404 || status === 400) { console.warn(`nlp(gemini): ${model} unavailable (${status}), trying next`); continue; }
-          throw e;
-        }
-      }
-      throw lastErr;
+    call(text, system = SYSTEM_PROMPT) {
+      const cap = system === SYSTEM_PROMPT ? NLP_MAX_TOKENS : 600;
+      return withGeminiModels("nlp", GEMINI_MODELS, async (model, thinking: ThinkingConfig | undefined) => {
+        const res = await c.models.generateContent({
+          model,
+          contents: text,
+          config: {
+            systemInstruction: system,
+            // when thinking cannot be switched off, leave room for it so the JSON still fits
+            maxOutputTokens: thinking ? cap : cap * 4,
+            responseMimeType: "application/json",
+            temperature: 0,
+            ...(thinking ? { thinkingConfig: thinking } : {}),
+          },
+        });
+        return res.text ?? "";
+      });
     },
   };
 }

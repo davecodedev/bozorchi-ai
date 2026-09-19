@@ -139,6 +139,17 @@ Re-run any time with:
 npm run nlp:check --workspace backend
 ```
 
+### Surviving the Gemini free tier (`backend/src/gemini.ts`)
+
+Every Gemini call (parsing, assistant, photo verification, transcription) goes through one
+runner: per-model "thinking off" settings (3.1/3.6/3.7 take `thinkingBudget: 0`, 3.5 takes
+`thinkingLevel: "minimal"`, 3.8 takes `"low"`; a 400 that mentions thinking retries the same
+model without it), cooldowns after 429 / 503 / 404 so a dead model is skipped instead of costing
+a round-trip on every request, and a status table with a **Run self-test** button on the admin
+Overview page. The free tier allows roughly 20 requests per model per day — enough for a demo
+because the chain rotates through six models, but enable billing on the Google AI Studio project
+before a real event.
+
 ## The five AI / data-quality components
 
 Each is a separate module with unit tests, plugged into the existing pipeline. The history and
