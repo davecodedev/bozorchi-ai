@@ -187,6 +187,8 @@ a { color: var(--primary); text-decoration: none; }
 .opt { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 14px 4px; border-bottom: 1px solid var(--border); font-weight: 600; text-align: left; }
 .opt:last-child { border-bottom: 0; }
 .opt.on { color: var(--primary); }
+.opt svg { width: 18px; height: 18px; flex: none; color: var(--muted); }
+.opt .chev { margin-left: auto; }
 #toast { position: fixed; left: 16px; right: 16px; bottom: calc(84px + var(--tg-safe-area-inset-bottom, var(--safe-b))); background: var(--text); color: #fff; padding: 12px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 30; text-align: center; animation: up .2s ease-out; }
 .spinner { text-align: center; padding: 40px; color: var(--muted); }
 .spinner::before { content: ''; display: block; width: 28px; height: 28px; border: 3px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; margin: 0 auto 10px; animation: spin .8s linear infinite; }
@@ -279,3 +281,45 @@ a { color: var(--primary); text-decoration: none; }
 .photo.thumb { width: 52px; height: 52px; border-radius: 10px; }
 .photo.thumb .ph svg { width: 22px; height: 22px; }
 .link-row .ic { font-size: 16px; }
+
+/* ---------- 5-slot tab bar with centre post button ---------- */
+#tabbar button.fab { flex: 0 0 64px; justify-content: center; }
+#tabbar button.fab span { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--primary); color: #fff; margin-top: -26px; box-shadow: 0 6px 16px rgba(62,92,246,.35); border: 4px solid var(--card); }
+#tabbar button.fab svg { width: 26px; height: 26px; }
+
+/* ---------- product cards ---------- */
+.hstrip { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 4px 16px 8px; scroll-snap-type: x proximity; }
+.hstrip::-webkit-scrollbar { display: none; }
+.pcard { position: relative; display: block; width: 100%; text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 12px; }
+.pcard-sm { flex: none; width: 200px; scroll-snap-align: start; margin-bottom: 0; }
+.pc-photo { height: 180px; border-radius: 0; }
+.pcard-sm .pc-photo { height: 130px; }
+.pc-body { padding: 12px 14px 14px; }
+.pc-title { font-weight: 800; font-size: 16px; margin-bottom: 2px; }
+.pcard-sm .pc-title { font-size: 15px; }
+.pc-seller { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.pcard-sm .pc-seller .avatar { width: 28px; height: 28px; font-size: 10px; }
+.deal-badge { position: absolute; top: 12px; left: 12px; z-index: 2; background: var(--alert); color: #fff; font-weight: 800; font-size: 13px; padding: 5px 10px; border-radius: 999px; }
+.feed .pcard .price { font-size: 20px; }
+
+/* ---------- Instagram-style profile ---------- */
+.ig-head { display: flex; align-items: center; gap: 18px; margin: 8px 0 12px; }
+.ig-avatar { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; flex: none; background: var(--primary-soft); display: grid; place-items: center; }
+.ig-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ig-avatar .avatar.lg { width: 84px; height: 84px; font-size: 26px; }
+.ig-avatar.sm { width: 64px; height: 64px; } .ig-avatar.sm .avatar.lg { width: 64px; height: 64px; font-size: 20px; }
+.ig-stats { flex: 1; display: flex; justify-content: space-around; }
+.stat { text-align: center; }
+.stat b { display: block; font-size: 20px; font-weight: 800; line-height: 1.1; }
+.stat span { font-size: 12px; color: var(--muted); font-weight: 600; }
+.ig-name { font-weight: 800; font-size: 17px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ig-bio { margin: 4px 0 0; color: var(--muted); font-size: 14px; white-space: pre-wrap; }
+.ig-tabs { display: flex; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 0 -16px 2px; }
+.ig-tabs button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 0; font-weight: 700; font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent; }
+.ig-tabs button.on { color: var(--text); border-bottom-color: var(--text); }
+.ig-tabs svg { width: 18px; height: 18px; }
+.ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin: 0 -16px; }
+.ig-cell { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--primary-soft); text-align: left; }
+.ig-cell .photo.cell { width: 100%; height: 100%; border-radius: 0; }
+.cell-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 8px 6px; background: linear-gradient(transparent, rgba(0,0,0,.55)); color: #fff; font-size: 11px; display: flex; justify-content: space-between; gap: 6px; }
+.cell-cap b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -63,9 +63,15 @@ Plain HTML/CSS/JS, no build step. The backend serves it at **`http://localhost:3
 HTTPS tunnel exposes both the API and the app. Open that URL in a desktop browser to develop —
 outside Telegram it runs as a "Guest" with all features working.
 
-Screens: Search (category + region chips, best sellers carousel) → Top matches → Seller profile
-(match breakdown, 30-day price history, request offer) · Sellers · Saved · Profile · My requests ·
-Notifications & price alerts.
+Screens (bottom bar: **Search · Hot sales · ➕ · Sellers · Profile**):
+- **Search** — search box + a horizontal "Hot sales" strip of product cards; results → seller profile.
+- **Hot sales** — a For-You-style infinite feed of the best-priced fresh listings (`GET /feed`),
+  mixed across products, with category filters. Cards show the product photo, price per unit, how far
+  below the market median it is, and the seller.
+- **➕** — post a product (name, category, price, location).
+- **Profile** — Instagram-style: avatar (uploadable), post / deal / saved counts, bio, *Edit profile*
+  and *Subscription* buttons, a ☰ menu (deals, requests, alerts, region, language, admin), then a
+  grid of your posts (tap to edit/delete) and a grid of saved sellers. Plans live at `#plans`.
 
 - Search, results, seller profiles and the sellers list are **live** from `/recommend`, `/sellers`, `/meta`.
 - The search box understands quantities: `pomidor 500 kg`, `2 t piyoz`. Sellers whose minimum

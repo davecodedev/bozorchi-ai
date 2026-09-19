@@ -68,6 +68,11 @@
       paymentNote: "Payment currently happens directly between buyer and seller. The app did not process any money.", contactRevealedDeal: "Seller contact revealed — no quota used.",
       demoSeller: "Demo: act as the seller", demoSellerSub: "Sellers have no accounts yet, so for the demo you can answer from the seller's side here.", sellerAccept: "Accept offer", sellerCounterBtn: "Counter once", sellerDecline: "Decline", counterPrice: "Counter price (so'm/kg)", oneCounter: "Only one counter is allowed per deal.",
       dealCreated: "Offer sent", perKgLabel: "so'm/kg",
+      hotSales: "Hot sales", forYou: "Best prices right now, mixed across products. Scroll or filter.", seeAll: "See all", vsMarket: (p) => `${p}% below market`, atMarket: "at market price",
+      tabHot: "Hot sales", tabPost: "Post", posts: "Posts", dealsStat: "Deals", savedStat: "Saved", editProfile: "Edit profile", subscription: "Subscription", menu: "Menu",
+      bioPh: "Tell buyers who you are — e.g. Bahor Restaurant, Tashkent", displayName: "Name", profilePhoto: "Profile photo", choosePhoto: "Choose photo", removePhoto: "Remove", saveProfile: "Save",
+      noPosts: "No products posted yet. Tap + to add one.", noSaved: "Nothing saved yet.", edit: "Edit", delete: "Delete", postDetails: "Your listing", updated: "Saved", deleted: "Deleted",
+      plansTitle: "Subscription", feedEnd: "That's everything for now.", settings: "Settings", region: "Region",
       myProducts: "My products", addProduct: "Add a product", addProductSub: "List what you sell so buyers nearby can find you.",
       productName: "Product name", productNamePh: "e.g. Pomidor", pricePerKg: "Price (so'm/kg)", location: "Location", placePh: "Bazaar or city, e.g. Chorsu bozori",
       useMyLocation: "Use my location", locationSet: "GPS location attached", saveProduct: "Add product", fillAll: "Please fill in every field.",
@@ -133,6 +138,11 @@
       paymentNote: "To'lov hozircha tomonlar o'rtasida amalga oshiriladi. Ilova hech qanday pul o'tkazmadi.", contactRevealedDeal: "Sotuvchi kontakti ochildi — limit sarflanmadi.",
       demoSeller: "Demo: sotuvchi sifatida javob berish", demoSellerSub: "Sotuvchilarda hali hisob yo'q, shuning uchun demo uchun sotuvchi tomonidan shu yerda javob berishingiz mumkin.", sellerAccept: "Taklifni qabul qilish", sellerCounterBtn: "Bir marta qarshi taklif", sellerDecline: "Rad etish", counterPrice: "Qarshi taklif narxi (so'm/kg)", oneCounter: "Har bir kelishuvda faqat bitta qarshi taklifga ruxsat.",
       dealCreated: "Taklif yuborildi", perKgLabel: "so'm/kg",
+      hotSales: "Qaynoq takliflar", forYou: "Hozirgi eng yaxshi narxlar, turli mahsulotlar aralash. Varaqlang yoki filtrlang.", seeAll: "Hammasi", vsMarket: (p) => `bozordan ${p}% arzon`, atMarket: "bozor narxida",
+      tabHot: "Takliflar", tabPost: "Qo'shish", posts: "E'lonlar", dealsStat: "Kelishuvlar", savedStat: "Saqlangan", editProfile: "Profilni tahrirlash", subscription: "Obuna", menu: "Menyu",
+      bioPh: "O'zingiz haqingizda — masalan, Bahor Restaurant, Toshkent", displayName: "Ism", profilePhoto: "Profil rasmi", choosePhoto: "Rasm tanlash", removePhoto: "O'chirish", saveProfile: "Saqlash",
+      noPosts: "Hali e'lon yo'q. + tugmasini bosing.", noSaved: "Hali saqlanganlar yo'q.", edit: "Tahrirlash", delete: "O'chirish", postDetails: "Sizning e'loningiz", updated: "Saqlandi", deleted: "O'chirildi",
+      plansTitle: "Obuna", feedEnd: "Hozircha shu.", settings: "Sozlamalar", region: "Hudud",
       myProducts: "Mahsulotlarim", addProduct: "Mahsulot qo'shish", addProductSub: "Nima sotayotganingizni kiriting — yaqin atrofdagi xaridorlar sizni topadi.",
       productName: "Mahsulot nomi", productNamePh: "masalan, Pomidor", pricePerKg: "Narx (so'm/kg)", location: "Joylashuv", placePh: "Bozor yoki shahar, masalan, Chorsu bozori",
       useMyLocation: "Joylashuvimni aniqlash", locationSet: "GPS joylashuv biriktirildi", saveProduct: "Qo'shish", fillAll: "Iltimos, barcha maydonlarni to'ldiring.",
@@ -198,6 +208,11 @@
       paymentNote: "Оплата пока проходит напрямую между покупателем и продавцом. Приложение не проводило платёж.", contactRevealedDeal: "Контакт продавца открыт — лимит не списан.",
       demoSeller: "Демо: ответить за продавца", demoSellerSub: "У продавцов пока нет аккаунтов, поэтому для демо можно ответить со стороны продавца здесь.", sellerAccept: "Принять предложение", sellerCounterBtn: "Встречная (один раз)", sellerDecline: "Отклонить", counterPrice: "Встречная цена (сум/кг)", oneCounter: "В сделке допускается только одно встречное предложение.",
       dealCreated: "Предложение отправлено", perKgLabel: "сум/кг",
+      hotSales: "Горячие цены", forYou: "Лучшие цены прямо сейчас, вперемешку по товарам. Листайте или фильтруйте.", seeAll: "Все", vsMarket: (p) => `на ${p}% ниже рынка`, atMarket: "по рыночной цене",
+      tabHot: "Горячее", tabPost: "Добавить", posts: "Товары", dealsStat: "Сделки", savedStat: "Избранное", editProfile: "Редактировать", subscription: "Подписка", menu: "Меню",
+      bioPh: "О себе — например, Bahor Restaurant, Ташкент", displayName: "Имя", profilePhoto: "Фото профиля", choosePhoto: "Выбрать фото", removePhoto: "Удалить", saveProfile: "Сохранить",
+      noPosts: "Пока нет товаров. Нажмите +.", noSaved: "Пока ничего не сохранено.", edit: "Изменить", delete: "Удалить", postDetails: "Ваше объявление", updated: "Сохранено", deleted: "Удалено",
+      plansTitle: "Подписка", feedEnd: "Пока это всё.", settings: "Настройки", region: "Регион",
       myProducts: "Мои товары", addProduct: "Добавить товар", addProductSub: "Укажите, что продаёте, — покупатели рядом вас найдут.",
       productName: "Название товара", productNamePh: "например, Помидор", pricePerKg: "Цена (сум/кг)", location: "Локация", placePh: "Базар или город, например, Чорсу",
       useMyLocation: "Определить моё местоположение", locationSet: "GPS-локация добавлена", saveProduct: "Добавить", fillAll: "Заполните все поля.",
@@ -228,6 +243,10 @@
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
     thumb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.5 1 2.5 2.5V10h5a2 2 0 0 1 2 2l-1.5 6.5a2 2 0 0 1-2 1.5H7"/></svg>',
     sliders: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+    fire: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3 4 4.5 4 8.5a4 4 0 0 1-8 0c0-1.5.5-2.5 1-3.5.5 1 1.5 1.5 2 1.5 0-3 0-4.5 1-6.5z"/><path d="M6 14a6 6 0 0 0 12 0"/></svg>',
+    grid: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>',
+    menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+    camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
     lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
     basket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18l-2 10H5z"/><path d="m7 10 3-6M17 10l-3-6M9 14v3M12 14v3M15 14v3"/></svg>',
     star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/></svg>',
@@ -240,7 +259,7 @@
   // ---------------------------------------------------------------- storage (localStorage + Telegram CloudStorage mirror)
   const KEY = "bazarcha:v1";
   const defaults = () => ({
-    lang: null, province: DEFAULT_PROVINCE, saved: [], requests: [], alerts: [], myProducts: [], guestId: null,
+    lang: null, province: DEFAULT_PROVINCE, saved: [], requests: [], alerts: [], myProducts: [], guestId: null, profile: { name: "", bio: "", photo: "" },
     notif: { priceDrop: true, newSellers: true, orderUpdates: false },
   });
   const store = { ...defaults() };
@@ -265,6 +284,7 @@
     q: { text: "", qty: null }, category: "all", province: DEFAULT_PROVINCE, location: null,
     results: null, sellerQ: "", sellersCat: "all", sellersProv: null, loading: false, listening: false,
     me: null, weights: null, basketText: "", quote: null,
+    feed: { items: [], next: 0, category: "all", loading: false, key: "" }, hot: [], pick: null, profileTab: "posts", dealsCount: null,
   };
   const has = () => true; // search, ranking, weights, forecast and basket are free for every tier
   const tierLabel = (t) => t === "pro" ? "Pro" : t === "max" ? "Max" : "Free";
@@ -295,6 +315,16 @@
     return body;
   }
   async function loadMe() { try { const r = await api("/me"); S.me = r.usage; S.me.buyer = r.buyer; S.me.tiers = r.tiers; } catch { S.me = null; } return S.me; }
+  async function loadFeed() {
+    if (S.feed.loading || S.feed.next == null) return;
+    S.feed.loading = true;
+    try {
+      const cat = S.feed.category === "all" ? "" : `&category=${S.feed.category}`;
+      const r = await api(`/feed?province=${encodeURIComponent(S.province)}&offset=${S.feed.next}&limit=20${cat}${S.location ? `&lat=${S.location.lat}&lng=${S.location.lng}` : ""}`);
+      S.feed.items = S.feed.items.concat(r.items); S.feed.next = r.nextOffset;
+    } catch { S.feed.next = null; }
+    S.feed.loading = false;
+  }
   const loadSellers = async () => (S.sellers ??= (await api("/sellers")).sellers);
   async function loadSeller(id) {
     if (!S.sellerCache[id]) S.sellerCache[id] = (await api(`/sellers/${id}`)).seller;
@@ -345,9 +375,9 @@
   // ---------------------------------------------------------------- routing
   const go = (hash) => { location.hash = hash; };
   const route = () => { const h = location.hash.replace(/^#\/?/, ""); const [name, ...rest] = h.split("/"); return { name: name || "search", args: rest }; };
-  const TABS = ["search", "saved", "sellers", "profile"];
+  const TABS = ["search", "hot", "sellers", "profile"];
   /** Which tab lights up for each sub-screen. */
-  const TAB_OF = { results: "search", history: "search", market: "search", seller: "sellers", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
+  const TAB_OF = { results: "search", history: "search", market: "search", basket: "search", seller: "sellers", saved: "profile", plans: "profile", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
   window.addEventListener("hashchange", render);
 
   let lastRouteKey = "";
@@ -356,6 +386,7 @@
     const view = document.getElementById("view");
     const routeKey = location.hash;
     const sameScreen = routeKey === lastRouteKey;
+    if (!sameScreen) closeSheet(); // navigating away always dismisses an open sheet
     const keepScroll = sameScreen ? view.scrollTop : 0;
     lastRouteKey = routeKey;
     const fn = SCREENS[r.name] || SCREENS.search;
@@ -367,8 +398,10 @@
       .catch((e) => { view.innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
   }
   function renderTabs(active) {
-    const tabs = [["search", I.search, t("tabSearch")], ["saved", I.bookmark, t("tabSaved")], ["sellers", I.store, t("tabSellers")], ["profile", I.user, t("tabProfile")]];
-    document.getElementById("tabbar").innerHTML = tabs.map(([k, ic, l]) => `<button class="${k === active ? "on" : ""}" data-go="${k}">${ic}<span>${l}</span></button>`).join("");
+    const tabs = [["search", I.search, t("tabSearch")], ["hot", I.fire, t("tabHot")], ["__post"], ["sellers", I.store, t("tabSellers")], ["profile", I.user, t("tabProfile")]];
+    document.getElementById("tabbar").innerHTML = tabs.map(([k, ic, l]) => k === "__post"
+      ? `<button class="fab" data-act="addProduct" aria-label="${t("tabPost")}"><span>${I.plus}</span></button>`
+      : `<button class="${k === active ? "on" : ""}" data-go="${k}">${ic}<span>${l}</span></button>`).join("");
   }
   const back = () => { if (history.length > 1) history.back(); else go("search"); };
   if (tg) tg.BackButton.onClick(back);
@@ -420,13 +453,25 @@
     const pct = Math.min(100, (S.me.used / S.me.quota) * 100);
     return `<button class="usage" data-go="profile"><span class="meter"><i style="width:${pct}%"></i></span><span>${tierLabel(S.me.tier)} · ${t("contactsUsed", S.me.used, S.me.quota)}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>`;
   };
+  const productCard = (it, cls = "pcard") => `
+    <button class="${cls}" data-pick="${it.sellerId}:${esc(it.product)}" data-go="seller/${it.sellerId}">
+      ${photo(it.photoUrl, "photo pc-photo")}
+      ${it.discountPct >= 3 ? `<span class="deal-badge">−${it.discountPct}%</span>` : ""}
+      <div class="pc-body">
+        <div class="pc-title">${esc(plabel(it.product))}</div>
+        <div class="price">${fmt(it.pricePerKg)} <small>${per(it.product)}</small></div>
+        <div class="sub">${it.discountPct >= 3 ? esc(t("vsMarket", it.discountPct)) : t("atMarket")}</div>
+        <div class="row pc-seller">${avatar(it.sellerName)}<div class="grow"><div class="sub" style="color:var(--text);font-weight:700">${esc(it.sellerName)}</div><div class="sub">${esc(it.region)}${it.distanceKm != null ? ` · ${it.distanceKm} km` : ""} · ★ ${it.rating.toFixed(1)}</div></div><span class="tier-dot ${it.reliability.tier}"></span></div>
+      </div>
+    </button>`;
   const empty = (icon, text) => `<div class="empty">${icon}<div>${text}</div></div>`;
   const spinner = () => `<div class="spinner"></div>`;
 
   // ---------------------------------------------------------------- screens
   const SCREENS = {
     async search() {
-      const sellers = (await loadSellers()).filter((s) => s.province === S.province && (S.category === "all" || s.categories.includes(S.category))).slice(0, 6);
+      const feed = await api(`/feed?province=${encodeURIComponent(S.province)}&limit=8${S.location ? `&lat=${S.location.lat}&lng=${S.location.lng}` : ""}`).catch(() => ({ items: [] }));
+      S.hot = feed.items;
       const q = S.q.text ? `${S.q.text}${S.q.qty ? ` · ${S.q.qty} kg` : ""}` : "";
       return `
         ${brandHeader(BRAND, t("tagline"), I.bag)}
@@ -437,19 +482,23 @@
           <button type="submit" class="icon-btn primary" aria-label="Search" ${S.loading ? "disabled" : ""}>${I.arrow}</button>
         </form>
         ${usagePill()}
-        <button class="link-row feature" data-go="basket"><span class="ic">${I.basket}</span><span class="grow"><b>${t("basket")}</b><span class="sub wrap" style="display:block">${t("basketLockedBody")}</span></span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
-        ${catChips(S.category, "cat")}
-        ${provChips(S.province, "prov", false)}
-        <p class="label">${t("bestNear")}</p>
-        ${sellers.length ? `<div class="carousel" id="carousel">${sellers.map((s) => `
-          <button class="bs-card" data-go="seller/${s.id}">
-            <div class="bs-hero">${I.bag}<span class="pill">★ ${s.rating.toFixed(1)}</span></div>
-            <div class="bs-foot row">${avatar(s.name)}<div class="grow" style="text-align:left"><div class="name">${esc(s.name)}</div><div class="sub">${esc(s.region)} · ${esc(sellerCats(s))}</div></div></div>
-          </button>`).join("")}</div>
-          <div class="dots" id="dots">${sellers.map((_, i) => `<i class="${i === 0 ? "on" : ""}"></i>`).join("")}</div>`
-          : empty(I.store, t("noResults"))}
+        <div class="row" style="margin:4px 0 10px"><p class="label" style="margin:0" >🔥 ${t("hotSales")} · ${esc(provLabel(S.province))}</p><span class="grow"></span><button class="sub" style="color:var(--primary);font-weight:700" data-go="hot">${t("seeAll")} ›</button></div>
+        ${S.hot.length ? `<div class="hstrip">${S.hot.map((it) => productCard(it, "pcard pcard-sm")).join("")}</div>` : empty(I.fire, t("noResults"))}
+        <button class="link-row feature" style="margin-top:14px" data-go="basket"><span class="ic">${I.basket}</span><span class="grow"><b>${t("basket")}</b><span class="sub wrap" style="display:block">${t("basketLockedBody")}</span></span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <p class="foot-note">${t("footNote")}</p>
         ${S.loading ? spinner() : ""}`;
+    },
+
+    async hot() {
+      const key = `${S.province}|${S.feed.category}`;
+      if (S.feed.key !== key) { S.feed = { items: [], next: 0, category: S.feed.category, loading: false, key }; }
+      if (!S.feed.items.length && S.feed.next === 0 && !S.feed.loading) await loadFeed();
+      return `
+        <div class="hdr"><div class="hdr-icon" style="background:#FFF3C4;color:#D9A400">${I.fire}</div><div><h1>${t("hotSales")}</h1><p>${esc(provLabel(S.province))}</p></div></div>
+        <p class="sub wrap" style="margin:-8px 0 12px">${t("forYou")}</p>
+        <div class="chips scroll" style="margin-bottom:12px"><button class="chip sm ${S.feed.category === "all" ? "on" : ""}" data-fcat="all">${t("all")}</button>${S.meta.categories.map((c) => `<button class="chip sm ${S.feed.category === c.key ? "on" : ""}" data-fcat="${c.key}">${esc(c.label[S.lang] || c.label.en)}</button>`).join("")}</div>
+        <div class="feed" id="feed">${S.feed.items.map((it) => productCard(it)).join("")}</div>
+        <div id="feed-more" class="foot-note">${S.feed.loading ? "…" : S.feed.next == null ? t("feedEnd") : ""}</div>`;
     },
 
     results() {
@@ -529,7 +578,8 @@
     async seller(id) {
       const s = await loadSeller(id);
       const match = S.results && S.results.results.find((r) => r.sellerId === s.id);
-      const product = match ? S.results.product : (s.products[0] && s.products[0].product);
+      const picked = S.pick && S.pick.sellerId === s.id && s.products.some((p) => p.product === S.pick.product) ? S.pick.product : null;
+      const product = match ? S.results.product : (picked || (s.products[0] && s.products[0].product));
       const reviews = s.reviews || [];
       return `
         ${header(t("sellerProfile"), "", bmBtn(s.id))}
@@ -584,34 +634,38 @@
         <p class="foot-note">${t("savedEmpty")}</p>`;
     },
 
-    profile() {
+    async profile() {
       const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
-      const name = u ? [u.first_name, u.last_name].filter(Boolean).join(" ") : t("guest");
-      const sub = [u && u.username ? "@" + u.username : null, provLabel(store.province)].filter(Boolean).join(" · ");
+      const name = store.profile.name || (u ? [u.first_name, u.last_name].filter(Boolean).join(" ") : t("guest"));
+      const photoUrl = store.profile.photo || (u && u.photo_url) || "";
+      if (S.dealsCount == null) { try { S.dealsCount = ((await api("/deals")).deals || []).filter((d) => d.status === "accepted").length; } catch { S.dealsCount = 0; } }
+      const all = await loadSellers();
+      const savedSellers = store.saved.map((id) => all.find((x) => x.id === id)).filter(Boolean);
+      const postPhoto = (p) => { const m = S.meta.products.find((x) => Object.values(x.label).some((l) => l.toLowerCase() === p.name.trim().toLowerCase()) || (x.aliases || []).includes(p.name.trim().toLowerCase())); return m ? m.photoUrl : null; };
+      const stat = (n, l) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`;
       return `
-        <div class="hdr" style="margin-top:12px">${avatar(name, "lg").replace('class="avatar', 'class="avatar').replace("lg", "lg")}<div><h1>${esc(name)}</h1><p>${esc(sub)}</p></div></div>
-        ${planCard()}
-        <p class="label caps">${t("account")}</p>
-        <button class="link-row" data-go="deals"><span class="ic">🤝</span><span class="grow">${t("myDeals")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
-        <button class="link-row" data-go="requests"><span class="ic">${I.list}</span><span class="grow">${t("myRequests")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
-        <button class="link-row" data-go="saved"><span class="ic">${I.bookmark}</span><span class="grow">${t("savedSellers")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
-        <button class="link-row" data-go="notifications"><span class="ic">${I.bell}</span><span class="grow">${t("notifications")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
-        <a class="link-row" href="admin.html" target="_blank" rel="noopener"><span class="ic">${I.sliders}</span><span class="grow">${t("adminLink")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</a>
-        <p class="label caps" style="margin-top:20px">${t("myProducts")}</p>
-        ${store.myProducts.length ? store.myProducts.map((p, i) => `
-          <div class="card mp-row" style="padding:12px 14px"><span class="mp-ic">${I.bag}</span>
-            <div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(catLabelOf(p.category))} · ${esc(p.place || provLabel(p.province))}</div></div>
-            <div class="price" style="font-size:15px">${fmt(p.price)}<small>${t("perKgShort")}</small></div>
-            <button class="x" data-act="removeProduct" data-i="${i}" aria-label="Remove">${I.close}</button></div>`).join("")
-          : `<p class="sub wrap" style="margin:0 0 10px">${t("noProducts")}</p>`}
-        <button class="btn" style="margin-bottom:6px" data-act="addProduct">${I.plus}${t("addProduct")}</button>
-        <p class="sub wrap" style="margin:0 0 20px;text-align:center">${t("demoNote")}</p>
-        <p class="label caps" style="margin-top:20px">${t("preferences")}</p>
-        <div class="card">
-          <div class="label" style="margin-bottom:0">${t("language")}</div>
-          <div class="lang">${[["uz", "O'zbek"], ["ru", "Русский"], ["en", "English"]].map(([k, l]) => `<button class="chip sm ${S.lang === k ? "on" : ""}" data-lang="${k}">${l}</button>`).join("")}</div>
-          <button class="row" style="width:100%;padding-top:12px;border-top:1px solid var(--border)" data-act="chooseRegion"><span class="grow muted" style="text-align:left">${t("defaultRegion")}</span><b>${esc(provLabel(store.province))}</b>${I.chev.replace("<svg", '<svg class="chev" style="margin-left:4px"')}</button>
-        </div>`;
+        <div class="ig-head">
+          <div class="ig-avatar">${photoUrl ? `<img src="${esc(photoUrl)}" alt="" />` : avatar(name, "lg")}</div>
+          <div class="ig-stats">${stat(store.myProducts.length, t("posts"))}${stat(S.dealsCount, t("dealsStat"))}${stat(store.saved.length, t("savedStat"))}</div>
+        </div>
+        <div class="ig-name">${esc(name)} ${S.me ? `<span class="badge ${S.me.tier === "max" ? "gold" : ""}" style="font-size:10px;padding:3px 8px;${S.me.tier === "free" ? "background:var(--chip);color:var(--muted)" : ""}">${tierLabel(S.me.tier)}</span>` : ""}${S.me && S.me.verifiedBuyer ? `<span class="vbuyer">✅ ${t("verifiedBuyer")}</span>` : ""}</div>
+        <p class="ig-bio">${esc(store.profile.bio || provLabel(store.province))}</p>
+        <div class="row" style="gap:8px;margin:12px 0 16px">
+          <button class="btn ghost sm" style="flex:1" data-act="editProfile">${t("editProfile")}</button>
+          <button class="btn ghost sm" style="flex:1" data-go="plans">${I.star}${t("subscription")}</button>
+          <button class="icon-btn" data-act="settings" aria-label="${t("menu")}">${I.menu}</button>
+        </div>
+        <div class="ig-tabs"><button class="${S.profileTab === "posts" ? "on" : ""}" data-ptab="posts">${I.grid}${t("posts")}</button><button class="${S.profileTab === "saved" ? "on" : ""}" data-ptab="saved">${I.bookmark}${t("savedStat")}</button></div>
+        ${S.profileTab === "posts" ? (store.myProducts.length ? `<div class="ig-grid">${store.myProducts.map((p, i) => `
+            <button class="ig-cell" data-act="openPost" data-i="${i}">${photo(postPhoto(p), "photo cell")}<div class="cell-cap"><b>${esc(p.name)}</b><span>${fmt(p.price)}</span></div></button>`).join("")}</div>`
+          : `<div class="empty">${I.bag}<div>${t("noPosts")}</div></div>`)
+        : (savedSellers.length ? `<div class="ig-grid">${savedSellers.map((x) => `
+            <button class="ig-cell" data-go="seller/${x.id}">${photo((x.products[0] || {}).photoUrl, "photo cell")}<div class="cell-cap"><b>${esc(x.name)}</b><span>★ ${x.rating.toFixed(1)}</span></div></button>`).join("")}</div>`
+          : `<div class="empty">${I.bookmark}<div>${t("noSaved")}</div></div>`)}`;
+    },
+
+    plans() {
+      return `${header(t("plansTitle"), "")}${planCard()}`;
     },
 
     requests() {
@@ -859,7 +913,7 @@
     try {
       await api(`/deals/${id}/${path}`, { method: "POST", body: JSON.stringify(body || {}) });
       haptic("medium"); try { if (path === "accept") tg.HapticFeedback.notificationOccurred("success"); } catch {}
-      render();
+      S.dealsCount = null; render();
     } catch (e) { toast(e.body && e.body.error ? e.body.error : t("offline")); }
   }
 
@@ -939,19 +993,57 @@
     S.loading = false; haptic(); render();
   }
 
+  function editProfileSheet() {
+    sheet(`
+      <h3>${t("editProfile")}</h3>
+      <div class="row" style="gap:12px;margin-top:6px"><div class="ig-avatar sm" id="ep-preview">${store.profile.photo ? `<img src="${esc(store.profile.photo)}" alt="" />` : avatar(store.profile.name || "?", "lg")}</div>
+        <label class="btn ghost sm" style="flex:1">${I.camera}${t("choosePhoto")}<input type="file" accept="image/*" id="ep-file" hidden /></label>
+        ${store.profile.photo ? `<button class="btn ghost sm" data-act="removePhoto">${t("removePhoto")}</button>` : ""}</div>
+      <label class="field"><span>${t("displayName")}</span><input id="ep-name" value="${esc(store.profile.name)}" /></label>
+      <label class="field"><span>Bio</span><textarea id="ep-bio" class="ta" rows="3" placeholder="${esc(t("bioPh"))}">${esc(store.profile.bio)}</textarea></label>
+      <button class="btn" data-act="saveProfile">${t("saveProfile")}</button>`);
+    const f = document.getElementById("ep-file");
+    if (f) f.onchange = () => { const file = f.files && f.files[0]; if (!file) return; const img = new Image(); const url = URL.createObjectURL(file); img.onload = () => {
+      const c = document.createElement("canvas"); const size = 160; c.width = c.height = size; const ctx = c.getContext("2d"); const m = Math.min(img.width, img.height);
+      ctx.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, size, size); store.profile.photo = c.toDataURL("image/jpeg", 0.8); URL.revokeObjectURL(url);
+      const pv = document.getElementById("ep-preview"); if (pv) pv.innerHTML = `<img src="${store.profile.photo}" alt="" />`; }; img.src = url; };
+  }
+  function settingsSheet() {
+    const row = (icon, label, attrs) => `<button class="opt" ${attrs}><span class="row" style="gap:10px">${icon}${label}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>`;
+    sheet(`
+      <h3>${t("settings")}</h3>
+      ${row("🤝", t("myDeals"), 'data-go="deals"')}
+      ${row(I.list, t("myRequests"), 'data-go="requests"')}
+      ${row(I.bell, t("notifications"), 'data-go="notifications"')}
+      ${row(I.pin, `${t("region")} · <b>${esc(provLabel(store.province))}</b>`, 'data-act="chooseRegion"')}
+      <div class="field"><span>${t("language")}</span><div class="lang" style="margin:0">${[["uz", "O'zbek"], ["ru", "Русский"], ["en", "English"]].map(([k, l]) => `<button class="chip sm ${S.lang === k ? "on" : ""}" data-lang="${k}">${l}</button>`).join("")}</div></div>
+      <a class="opt" href="admin.html" target="_blank" rel="noopener"><span class="row" style="gap:10px">${I.sliders}${t("adminLink")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</a>
+      ${S.me && S.me.tier !== "free" ? `<button class="sub" style="text-decoration:underline;margin-top:10px" data-act="downgrade">${t("downgradeDemo")}</button>` : ""}`);
+  }
+  function postSheet(i) {
+    const p = store.myProducts[i]; if (!p) return;
+    sheet(`
+      <h3>${t("postDetails")}</h3>
+      <div class="card mp-row"><span class="mp-ic">${I.bag}</span><div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(catLabelOf(p.category))} · ${esc(p.place || provLabel(p.province))}</div></div><div class="price">${fmt(p.price)}<small>${t("perKgShort")}</small></div></div>
+      <div class="row" style="gap:8px"><button class="btn ghost sm" style="flex:1" data-act="deletePost" data-i="${i}">${t("delete")}</button><button class="btn sm" style="flex:1" data-act="editPost" data-i="${i}">${t("edit")}</button></div>`);
+  }
+
   let draftLoc = null;
-  function addProductSheet() {
-    draftLoc = null;
+  let editingIndex = null;
+  function addProductSheet(editIndex = null) {
+    editingIndex = editIndex;
+    const ex = editIndex != null ? store.myProducts[editIndex] : null;
+    draftLoc = ex ? ex.loc : null;
     const cats = S.meta.categories;
     sheet(`
-      <h3>${t("addProduct")}</h3><p class="sub wrap">${t("addProductSub")}</p>
-      <label class="field"><span>${t("productName")}</span><input id="ap-name" list="ap-list" autocomplete="off" placeholder="${t("productNamePh")}" /><datalist id="ap-list">${S.meta.products.map((p) => `<option value="${esc(p.label[S.lang] || p.label.en)}">`).join("")}</datalist></label>
-      <div class="field"><span>${t("category")}</span><div class="seg" id="ap-cat">${cats.map((c, i) => `<button type="button" class="chip sm ${i === 0 ? "on" : ""}" data-apcat="${c.key}">${esc(c.label[S.lang] || c.label.en)}</button>`).join("")}</div></div>
-      <label class="field"><span>${t("pricePerKg")}</span><input id="ap-price" type="number" inputmode="numeric" placeholder="12000" /></label>
-      <label class="field"><span>${t("location")}</span><select id="ap-prov">${S.meta.provinces.map((p) => `<option value="${p.key}" ${p.key === store.province ? "selected" : ""}>${esc(p.label[S.lang] || p.label.en)}</option>`).join("")}</select></label>
-      <label class="field" style="margin-top:8px"><input id="ap-place" placeholder="${t("placePh")}" autocomplete="off" /></label>
+      <h3>${ex ? t("edit") : t("addProduct")}</h3><p class="sub wrap">${t("addProductSub")}</p>
+      <label class="field"><span>${t("productName")}</span><input id="ap-name" list="ap-list" autocomplete="off" placeholder="${t("productNamePh")}" value="${esc(ex ? ex.name : "")}" /><datalist id="ap-list">${S.meta.products.map((p) => `<option value="${esc(p.label[S.lang] || p.label.en)}">`).join("")}</datalist></label>
+      <div class="field"><span>${t("category")}</span><div class="seg" id="ap-cat">${cats.map((c, i) => `<button type="button" class="chip sm ${(ex ? ex.category === c.key : i === 0) ? "on" : ""}" data-apcat="${c.key}">${esc(c.label[S.lang] || c.label.en)}</button>`).join("")}</div></div>
+      <label class="field"><span>${t("pricePerKg")}</span><input id="ap-price" type="number" inputmode="numeric" placeholder="12000" value="${ex ? ex.price : ""}" /></label>
+      <label class="field"><span>${t("location")}</span><select id="ap-prov">${S.meta.provinces.map((p) => `<option value="${p.key}" ${p.key === (ex ? ex.province : store.province) ? "selected" : ""}>${esc(p.label[S.lang] || p.label.en)}</option>`).join("")}</select></label>
+      <label class="field" style="margin-top:8px"><input id="ap-place" placeholder="${t("placePh")}" autocomplete="off" value="${esc(ex ? ex.place || "" : "")}" /></label>
       <button type="button" class="btn ghost" style="margin-top:10px" data-act="apLocate" id="ap-locate">${I.pin}<span>${t("useMyLocation")}</span></button>
-      <button type="button" class="btn" data-act="saveProduct">${t("saveProduct")}</button>`);
+      <button type="button" class="btn" data-act="saveProduct">${ex ? t("saveProfile") : t("saveProduct")}</button>`);
   }
   function popup(title, body, onOk) {
     if (tg && tg.showPopup && tg.isVersionAtLeast && tg.isVersionAtLeast("6.2")) {
@@ -969,10 +1061,14 @@
     const province = document.getElementById("ap-prov").value;
     const place = document.getElementById("ap-place").value.trim();
     if (!name || !price || !catBtn) return toast(t("fillAll"));
+    if (editingIndex != null && store.myProducts[editingIndex]) {
+      Object.assign(store.myProducts[editingIndex], { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc });
+      editingIndex = null; save(); closeSheet(); haptic(); toast(t("updated")); return render();
+    }
     store.myProducts.unshift({ id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, at: new Date().toISOString() });
     save(); closeSheet(); haptic("medium");
     try { tg.HapticFeedback.notificationOccurred("success"); } catch {}
-    popup(t("productAdded"), t("productAddedBody", name), () => render());
+    popup(t("productAdded"), t("productAddedBody", name), () => { if (route().name !== "profile") go("profile"); else render(); });
     render();
   }
   function locateForProduct() {
@@ -1005,10 +1101,20 @@
 
   // ---------------------------------------------------------------- events (delegated)
   function afterRender(name) {
-    if (name === "search") {
-      const c = document.getElementById("carousel"), d = document.getElementById("dots");
-      if (c && d) c.addEventListener("scroll", () => { const gap = parseFloat(getComputedStyle(c).columnGap) || 32; const i = Math.round(c.scrollLeft / (c.firstElementChild.offsetWidth + gap)); [...d.children].forEach((el, j) => el.classList.toggle("on", j === i)); }, { passive: true });
-    }
+    if (name === "hot") {
+      const view = document.getElementById("view");
+      view.onscroll = async () => {
+        if (route().name !== "hot" || S.feed.loading || S.feed.next == null) return;
+        if (view.scrollTop + view.clientHeight >= view.scrollHeight - 600) {
+          const before = S.feed.items.length;
+          await loadFeed();
+          const feedEl = document.getElementById("feed"); const more = document.getElementById("feed-more");
+          if (feedEl) feedEl.insertAdjacentHTML("beforeend", S.feed.items.slice(before).map((it) => productCard(it)).join(""));
+          if (more) more.textContent = S.feed.next == null ? t("feedEnd") : "";
+        }
+      };
+    } else { document.getElementById("view").onscroll = null; }
+
     if (name === "sellers") { const i = document.getElementById("sq"); if (i) i.oninput = () => { S.sellerQ = i.value; const list = document.querySelector(".list"); renderSellersList(list); }; }
   }
   async function renderSellersList(list) {
@@ -1037,16 +1143,19 @@
     if (e.target.id === "deal-product") { const o = e.target.selectedOptions[0]; const p = document.getElementById("deal-price"); const q = document.getElementById("deal-qty"); p.value = o.dataset.price; q.min = o.dataset.min; if (Number(q.value) < Number(o.dataset.min)) q.value = o.dataset.min; document.getElementById("deal-list").textContent = t("listPrice", fmt(Number(o.dataset.price))); updateDealTotal(); }
   });
   document.addEventListener("click", async (e) => {
-    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat]");
+    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat],[data-fcat],[data-ptab],[data-pick]");
     if (!el) return;
     const d = el.dataset;
     if (d.go !== undefined) { haptic(); closeSheet(); return go(d.go); }
     if (d.cat) { S.category = d.cat; return render(); }
+    if (d.ptab) { S.profileTab = d.ptab; return render(); }
+    if (d.fcat) { S.feed = { items: [], next: 0, category: d.fcat, loading: false, key: "" }; return render(); }
+    if (d.pick) { const [sid, prod] = d.pick.split(":"); S.pick = { sellerId: Number(sid), product: prod }; }
     if (d.prov !== undefined) { S.province = d.prov; S.location = null; return render(); }
     if (d.scat) { S.sellersCat = d.scat; return render(); }
     if (d.sprov !== undefined) { S.sellersProv = d.sprov || null; return render(); }
     if (d.bm) { const id = Number(d.bm); store.saved = isSaved(id) ? store.saved.filter((x) => x !== id) : [...store.saved, id]; save(); haptic("medium"); return render(); }
-    if (d.lang) { S.lang = store.lang = d.lang; save(); return render(); }
+    if (d.lang) { S.lang = store.lang = d.lang; save(); render(); if (!document.getElementById("sheet").hidden) settingsSheet(); return; }
     if (d.apcat) { document.querySelectorAll("#ap-cat .chip").forEach((c) => c.classList.toggle("on", c === el)); return; }
     if (d.setprov) { store.province = S.province = d.setprov; save(); closeSheet(); return render(); }
     if (d.tgl) {
@@ -1061,6 +1170,13 @@
       case "sendRequest": closeSheet(); haptic("medium"); try { tg.HapticFeedback.notificationOccurred("success"); } catch {} return toast(t("requestSent"));
       case "chooseRegion": return regionSheet();
       case "addProduct": haptic(); return addProductSheet();
+      case "editProfile": haptic(); return editProfileSheet();
+      case "saveProfile": store.profile.name = document.getElementById("ep-name").value.trim(); store.profile.bio = document.getElementById("ep-bio").value.trim(); save(); closeSheet(); toast(t("updated")); return render();
+      case "removePhoto": store.profile.photo = ""; save(); return editProfileSheet();
+      case "settings": haptic(); return settingsSheet();
+      case "openPost": haptic(); return postSheet(Number(d.i));
+      case "editPost": closeSheet(); return addProductSheet(Number(d.i));
+      case "deletePost": store.myProducts.splice(Number(d.i), 1); save(); closeSheet(); haptic(); toast(t("deleted")); return render();
       case "upgrade": haptic(); return go("profile");
       case "makeDeal": haptic(); return dealSheet(d.id, d.product);
       case "sendOffer": return sendOffer();

@@ -12,6 +12,8 @@ import { forecastTrend, FORECAST_WINDOW_DAYS } from "./forecast.js";
 import { computeReliabilityBulk } from "./reliability.js";
 import { getPersonalWeights } from "./scoring.js";
 import { marketChartPng, marketChartSvg, marketView } from "./market.js";
+import { hotFeed } from "./feed.js";
+import { photoFor } from "./photos.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -72,7 +74,7 @@ app.post("/sellers/:id/unlock", async (req, res) => {
 /** Everything the Mini App needs to draw its chips. */
 app.get("/meta", (_req, res) =>
   res.json({
-    products: PRODUCTS.map(({ key, category, unit, label }) => ({ key, category, unit, label })),
+    products: PRODUCTS.map(({ key, category, unit, label, aliases }) => ({ key, category, unit, label, aliases, photoUrl: photoFor(key) })),
     categories: CATEGORIES,
     units: UNIT_LABEL,
     provinces: PROVINCES.map(({ key, label }) => ({ key, label })),
@@ -225,6 +227,14 @@ app.post("/deals/:id/decline", async (req, res) => {
     const { actor } = await actorFor(req, req.params.id);
     res.json({ deal: presentDeal(await declineDeal(req.params.id, actor), "buyer") });
   } catch (e) { dealErr(res, e); }
+});
+
+/** Hot-sales feed: best-priced fresh listings across products (For-You style, paginated). */
+app.get("/feed", async (req, res) => {
+  try {
+    const q = req.query as Record<string, string | undefined>;
+    res.json(await hotFeed({ province: q.province ?? null, category: q.category ?? null, offset: Number(q.offset) || 0, limit: Number(q.limit) || 20, lat: q.lat ? Number(q.lat) : undefined, lng: q.lng ? Number(q.lng) : undefined }));
+  } catch (e) { console.error(e); res.status(500).json({ error: "internal error" }); }
 });
 
 /** Market price history + forecast for a product in a province (JSON, SVG or PNG). */
