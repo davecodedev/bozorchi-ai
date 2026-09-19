@@ -109,7 +109,7 @@ function schedule(r: Reporting): { days: number[]; lastAgoH: number } {
 }
 
 // ---------------- generated sellers: ~50 per category so every product has ~50 listings ----------------
-const SELLERS_PER_CATEGORY = 50;
+const SELLERS_PER_CATEGORY = 75; // ~70–95 listings per product
 const PROVINCES: { key: string; city: string; lat: number; lng: number; weight: number; bazaars: string[] }[] = [
   { key: "toshkent-shahri", city: "Toshkent", lat: 41.3111, lng: 69.2797, weight: 10, bazaars: ["Chorsu Bazaar", "Olmazor Bazaar", "Farhod Bazaar", "Yunusobod Bazaar", "Qo'yliq Bazaar", "Sergeli Bazaar", "Mirobod Bazaar", "Parkent Bazaar", "Beshyog'och Bazaar", "Chilonzor Bazaar", "Oloy Bazaar", "Malika Bozori", "Abu Saxiy Bozori", "Bek Baraka Bozori", "O'rikzor Bozori", "Yangiobod Bozori", "Qorasuv Bozori", "Ippodrom Bozori"] },
   { key: "toshkent", city: "Qibray", lat: 41.39, lng: 69.47, weight: 2, bazaars: ["Qibray Dehqon Bozori", "Chirchiq Markaziy Bozor", "Angren Bozori"] },
@@ -149,10 +149,19 @@ function generateSellers(existingNames: Set<string>): GenSeller[] {
       const r = rnd();
       const reporting: Reporting = r < 0.6 ? "daily" : r < 0.9 ? "regular" : r < 0.95 ? "quiet" : "none";
       const regional = prov.key !== "toshkent-shahri";
+      // Seller archetype — makes "cheap", "quality" and "near" genuinely pick different sellers:
+      //   bargain   : ~15–30 % under market, rating 3.0–3.9, rarely verified
+      //   regular   : around market, rating 3.6–4.5
+      //   premium   : ~15–40 % over market, rating 4.4–5.0, usually verified
+      const a = rnd();
+      const archetype = a < 0.25 ? "bargain" : a < 0.75 ? "regular" : "premium";
+      const priceBias = archetype === "bargain" ? 0.7 + rnd() * 0.15 : archetype === "premium" ? 1.15 + rnd() * 0.25 : 0.9 + rnd() * 0.2;
+      const rating = Math.round((archetype === "bargain" ? 3.0 + rnd() * 0.9 : archetype === "premium" ? 4.4 + rnd() * 0.6 : 3.6 + rnd() * 0.9) * 10) / 10;
+      const verified = rnd() < (archetype === "premium" ? 0.85 : archetype === "bargain" ? 0.25 : 0.55);
       const listings: SellerSeed["listings"] = [];
       for (const p of products) {
         if (rnd() > 0.95) continue; // a few sellers skip a product
-        const spread = 0.8 + rnd() * 0.4; // ±20 %
+        const spread = priceBias * (0.94 + rnd() * 0.12); // archetype bias ± 6 % per product
         const regionalDiscount = regional ? 0.82 : 1;
         const price = Math.max(50, Math.round((p.basePrice * spread * regionalDiscount) / (p.basePrice >= 10_000 ? 500 : 50)) * (p.basePrice >= 10_000 ? 500 : 50));
         const minOrder = p.unit === "kg" || p.unit === "l" ? [10, 20, 50, 100, 200][Math.floor(rnd() * 5)] : p.unit === "dona" ? [1, 5, 10, 50][Math.floor(rnd() * 4)] : p.unit === "qop" ? [5, 10, 20][Math.floor(rnd() * 3)] : [10, 50, 100][Math.floor(rnd() * 3)];
@@ -160,8 +169,9 @@ function generateSellers(existingNames: Set<string>): GenSeller[] {
       }
       out.push({
         name, bazaar: prov.bazaars[Math.floor(rnd() * prov.bazaars.length)], region: prov.key === "toshkent-shahri" ? ["Chilanzar", "Yunusabad", "Mirabad", "Yakkasaray", "Shaykhantahur", "Almazar", "Sergeli", "Bektemir", "Uchtepa", "Yashnabad"][Math.floor(rnd() * 10)] : prov.city,
-        province: prov.key, lat: prov.lat + (rnd() - 0.5) * (regional ? 0.06 : 0.16), lng: prov.lng + (rnd() - 0.5) * (regional ? 0.06 : 0.2),
-        verified: rnd() < 0.6, rating: Math.round((3.5 + rnd() * 1.4) * 10) / 10, reviewCount: Math.floor(5 + rnd() * 300), phone: `+99890${String(1110000 + phone++).padStart(7, "0")}`,
+        // Tashkent sellers spread across the whole city (≈ ±17 km) so distance really separates them
+        province: prov.key, lat: prov.lat + (rnd() - 0.5) * (regional ? 0.08 : 0.3), lng: prov.lng + (rnd() - 0.5) * (regional ? 0.08 : 0.4),
+        verified, rating, reviewCount: Math.floor(archetype === "premium" ? 60 + rnd() * 400 : 5 + rnd() * 160), phone: `+99890${String(1110000 + phone++).padStart(7, "0")}`,
         reporting, listings,
       });
     }

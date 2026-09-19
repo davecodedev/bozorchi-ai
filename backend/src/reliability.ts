@@ -70,8 +70,19 @@ export async function computeReliability(sellerId: number | string, windowDays =
   return map.get(Number(sellerId)) ?? scoreReports([]);
 }
 
-/** One query for many sellers — used by /recommend's gate and the sellers list. */
+const bulkCache = new Map<string, { at: number; map: Map<number, Reliability> }>();
+const BULK_TTL_MS = 60_000;
+
+/** One query for many sellers — used by /recommend's gate and the sellers list. Large batches are cached for a minute. */
 export async function computeReliabilityBulk(sellerIds: number[], windowDays = RELIABILITY_WINDOW_DAYS): Promise<Map<number, Reliability>> {
+  const cacheKey = sellerIds.length > 50 ? `${windowDays}:${[...sellerIds].sort((a, b) => a - b).join(",")}` : null;
+  if (cacheKey) { const hit = bulkCache.get(cacheKey); if (hit && Date.now() - hit.at < BULK_TTL_MS) return hit.map; }
+  const map = await computeReliabilityBulkUncached(sellerIds, windowDays);
+  if (cacheKey) bulkCache.set(cacheKey, { at: Date.now(), map });
+  return map;
+}
+
+async function computeReliabilityBulkUncached(sellerIds: number[], windowDays: number): Promise<Map<number, Reliability>> {
   const now = new Date();
   const since = new Date(now.getTime() - windowDays * 86_400_000);
   const rows = sellerIds.length

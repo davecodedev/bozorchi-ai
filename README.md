@@ -23,9 +23,12 @@ clothing, electronics, tools — each with a unit (`kg`, `l`, `dona` = piece, `q
 aliases in Uzbek, Russian and English. Search resolves exact aliases, aliases inside a sentence, then
 fuzzy matches (1–2 typos: "kartoshkaa", "pomidr").
 
-`data/seed.ts` generates **~50 sellers per category** (621 total, 21 hand-written + 600 generated
-deterministically) so every product has ~45–70 listings, plus 45 days of price history per listing
-(~96k reports), reviews, and the reliability/personalisation demo fixtures. Quantities in searches
+`data/seed.ts` generates **75 sellers per category** (921 total, 21 hand-written + 900 generated
+deterministically) so every product has ~65–95 listings, plus 45 days of price history per listing
+(~143k reports), reviews, and the reliability/personalisation demo fixtures. Generated sellers follow
+three archetypes so different priorities pick different sellers: **bargain** (15–30 % under market,
+rating 3.0–3.9, rarely verified), **regular** (around market), **premium** (15–40 % over, rating
+4.4–5.0, usually verified); Tashkent sellers are spread across the whole city (≈ ±17 km). Quantities in searches
 use the listing's unit ("20 qop sement", "100 dona tuxum", "500 kg pomidor").
 
 ## Quick start
