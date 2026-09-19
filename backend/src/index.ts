@@ -1,9 +1,10 @@
 import "dotenv/config";
-import express, { type Request, type Response } from "express";
+import express, { type Request } from "express";
 import { getOrCreateBuyer, identify } from "./auth.js";
 import { parseBasket, quoteBasket } from "./basket.js";
 import { forecast } from "./history.js";
-import { consumeSearch, CREDIT_PACK_SIZE, hasFeature, MAX_RESULTS, usageOf, type Tier } from "./limits.js";
+import { isUnlocked, unlockContact, usageOf } from "./contactUnlock.js";
+import { setTier, TIERS, tierOf, type Tier } from "./tiers.js";
 import { nlpAvailable, parseQuery, toKg } from "./nlp.js";
 import { explainAnomalies } from "./anomaly.js";
 import { forecastTrend, FORECAST_WINDOW_DAYS } from "./forecast.js";
@@ -37,25 +38,34 @@ const buyerOf = (req: Request) => getOrCreateBuyer(identify(req));
 
 app.get("/me", async (req, res) => {
   const b = await buyerOf(req);
-  res.json({ buyer: { id: b.id, telegramUserId: b.telegramUserId, name: b.name, username: b.username, tier: b.tier, upgradedAt: b.upgradedAt }, usage: usageOf(b) });
+  res.json({ buyer: { id: b.id, telegramUserId: b.telegramUserId, name: b.name, username: b.username, tier: tierOf(b), verifiedBuyer: b.verifiedBuyer, upgradedAt: b.upgradedAt }, usage: await usageOf(b), tiers: TIERS });
 });
 
-/** Fake checkout for the demo — flips the tier. Real Telegram Payments/Stars plug in here later. */
+/** Mock checkout for the demo — flips the tier via tiers.setTier(). Payme / Click / Stars plug in there later. */
 app.post("/me/upgrade", async (req, res) => {
   const b = await buyerOf(req);
-  const tier: Tier = req.body?.tier === "standard" ? "standard" : "enterprise";
-  const u = await prisma.buyer.update({ where: { id: b.id }, data: { tier, upgradedAt: tier === "enterprise" ? new Date() : null } });
-  res.json({ ok: true, tier: u.tier, usage: usageOf(u) });
+  const tier = req.body?.tier as Tier;
+  if (!["free", "pro", "max"].includes(tier)) return res.status(400).json({ error: "tier must be free | pro | max" });
+  const u = await setTier(b.id, tier);
+  res.json({ ok: true, tier: tierOf(u), verifiedBuyer: u.verifiedBuyer, usage: await usageOf(u) });
 });
 
-app.post("/me/credits", async (req, res) => {
-  const b = await buyerOf(req);
-  const u = await prisma.buyer.update({ where: { id: b.id }, data: { credits: b.credits + CREDIT_PACK_SIZE } });
-  res.json({ ok: true, added: CREDIT_PACK_SIZE, usage: usageOf(u) });
+/**
+ * Reveal a seller's phone + exact location. The only tier-gated action in the whole product.
+ *   unlocked / already_unlocked → contact + the notice the seller receives (with ✅ tag for Max buyers)
+ *   quota_exceeded → tier, quota and the next tier to offer
+ */
+app.post("/sellers/:id/unlock", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) return res.status(400).json({ error: "bad id" });
+  try {
+    const b = await buyerOf(req);
+    const r = await unlockContact(b.telegramUserId, id);
+    res.status(r.status === "quota_exceeded" ? 402 : 200).json(r);
+  } catch (e) {
+    res.status(404).json({ error: (e as Error).message });
+  }
 });
-
-const paywall = (res: Response, feature: string, usage: ReturnType<typeof usageOf>) =>
-  res.status(403).json({ error: "enterprise_required", feature, usage });
 
 /** Everything the Mini App needs to draw its chips. */
 app.get("/meta", (_req, res) =>
@@ -69,10 +79,12 @@ app.get("/meta", (_req, res) =>
 
 app.get("/products", (_req, res) => res.json({ products: PRODUCTS, defaultWeights: DEFAULT_WEIGHTS }));
 
+const hideContact = <T extends { phone?: string | null; lat?: number; lng?: number }>(s: T) => { const { phone: _p, lat: _a, lng: _b, ...rest } = s; return rest; };
+
 app.get("/sellers", async (req, res) => {
   try {
     const { province, category, q } = req.query as Record<string, string | undefined>;
-    res.json({ sellers: await listSellers({ province, category: category as never, q }) });
+    res.json({ sellers: (await listSellers({ province, category: category as never, q })).map(hideContact) });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "internal error" });
@@ -84,7 +96,9 @@ app.get("/sellers/:id", async (req, res) => {
   if (!Number.isInteger(id)) return res.status(400).json({ error: "bad id" });
   const seller = await getSeller(id);
   if (!seller) return res.status(404).json({ error: "seller not found" });
-  res.json({ seller });
+  const b = await buyerOf(req);
+  const unlocked = await isUnlocked(b.telegramUserId, id);
+  res.json({ seller: { ...hideContact(seller), contactUnlocked: unlocked, ...(unlocked ? { contact: { phone: seller.phone, lat: seller.lat, lng: seller.lng, mapsUrl: `https://maps.google.com/?q=${seller.lat},${seller.lng}` } } : {}) } });
 });
 
 /**
@@ -108,20 +122,17 @@ app.post("/parse", async (req, res) => {
 
 app.post("/recommend", async (req, res) => {
   try {
+    // Search and ranking are free and unmetered for every tier — no quota, no feature gate.
     const b = await buyerOf(req);
-    const tier = (b.tier === "enterprise" ? "enterprise" : "standard") as Tier;
     const personal = await getPersonalWeights(b.telegramUserId); // P4
     const data = await recommend({
       ...(req.body ?? {}),
-      maxResults: MAX_RESULTS[tier],
-      allowWeights: hasFeature(b, "weights"),
+      maxResults: 10,
+      allowWeights: true,
       personalWeights: personal.preference ? personal.weights : undefined,
     });
     (data as Record<string, unknown>).personalization = { preference: personal.preference, contacts: personal.contacts };
-    // Only successful searches cost quota.
-    const usage = await consumeSearch(b);
-    if (!usage) return res.status(402).json({ error: "limit_reached", usage: usageOf(b) });
-    res.json({ ...data, usage });
+    res.json({ ...data, usage: await usageOf(b) });
   } catch (e) {
     if (e instanceof RecommendError) {
       return res.status(e.status).json({ error: e.message, ...(e.extra as object) });
@@ -133,7 +144,6 @@ app.post("/recommend", async (req, res) => {
 
 /** 30-day series from real price reports (all tiers) + 7-day forecast (Enterprise) + 30-day trend (P3). */
 app.get("/history/:sellerId/:product", async (req, res) => {
-  const b = await buyerOf(req);
   const sellerId = Number(req.params.sellerId);
   const seller = Number.isInteger(sellerId) ? await getSeller(sellerId) : null;
   const listing = seller?.products.find((p) => p.product === req.params.product);
@@ -154,8 +164,7 @@ app.get("/history/:sellerId/:product", async (req, res) => {
     series, current, changePct: Math.round(((current - first) / first) * 100), reports: rows.length, seeded: true,
     trend: await forecastTrend(listing.product, seller.province), // market-wide, not just this seller
   };
-  if (hasFeature(b, "forecast")) body.forecast = forecast(series);
-  else body.forecastLocked = true;
+  body.forecast = forecast(series); // free for every tier
   res.json(body);
 });
 
@@ -204,8 +213,6 @@ app.get("/admin/overview", async (req, res) => {
 /** Basket quote (Enterprise). Accepts `items` or free `text`. */
 app.post("/quote", async (req, res) => {
   try {
-    const b = await buyerOf(req);
-    if (!hasFeature(b, "basket")) return paywall(res, "basket", usageOf(b));
     const { text, items: rawItems, province, region, lat, lng } = req.body ?? {};
     let items = Array.isArray(rawItems) ? rawItems : [];
     let unknown: string[] = [];

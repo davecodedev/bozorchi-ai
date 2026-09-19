@@ -70,8 +70,8 @@ test("'pomidor Chilonzor' → 3 ranked sellers with Mini App button", { skip: !b
   assert.match(text, /📍 Chilanzar/);
   assert.equal((text.match(/🥇|🥈|🥉/g) ?? []).length, 3);
   assert.match(text, /AI tanlovi/);
-  const btn = (m.payload.reply_markup as { inline_keyboard: { text: string; web_app: { url: string } }[][] })
-    .inline_keyboard[0][0];
+  const rows = (m.payload.reply_markup as { inline_keyboard: { text: string; web_app?: { url: string } }[][] }).inline_keyboard;
+  const btn = rows[rows.length - 1][0] as { text: string; web_app: { url: string } };
   assert.match(btn.text, /Mini App/);
   assert.equal(btn.web_app.url, "https://bazarcha.example/miniapp?product=tomato&region=Chilanzar");
 });
@@ -95,8 +95,8 @@ test("shared location is used for the next query", { skip: !backendUp && "backen
   const text = String(messages(sent)[1].payload.text);
   assert.match(text, /📍 Sizga yaqin/);
   assert.match(text, /🥇 <b>Qo&#39;yliq Ulgurji<\/b>|🥇 <b>Qo'yliq Ulgurji<\/b>/); // nearest wholesaler wins
-  const url = (messages(sent)[1].payload.reply_markup as { inline_keyboard: { web_app: { url: string } }[][] })
-    .inline_keyboard[0][0].web_app.url;
+  const rows2 = (messages(sent)[1].payload.reply_markup as { inline_keyboard: { web_app?: { url: string } }[][] }).inline_keyboard;
+  const url = rows2[rows2.length - 1][0].web_app!.url;
   assert.match(url, /lat=41\.25&lng=69\.36/);
 });
 
@@ -117,16 +117,51 @@ test("voice without STT configured → asks to type", { skip: !backendUp && "bac
   assert.match(String(messages(sent)[0].payload.text), /speech recognition isn't connected/);
 });
 
-test("6th search of the day → limit message with upgrade button", { skip: !backendUp && "backend not running" }, async () => {
+test("results carry one 📞 button per seller plus the app link; search itself is never gated", { skip: !backendUp && "backend not running" }, async () => {
   const { bot, sent } = harness();
-  const fresh = (text: string) => { const u = textUpdate(text, "en"); const id = UID + 1; return { ...u, message: { ...u.message, chat: { id, type: "private" as const }, from: { ...u.message.from, id } } }; };
-  for (let i = 0; i < 6; i++) await bot.handleUpdate(fresh("kartoshka") as never);
+  for (let i = 0; i < 8; i++) await bot.handleUpdate(textUpdate("kartoshka", "en") as never); // 8 searches: no quota, no 402
   const msgs = messages(sent);
-  assert.match(String(msgs[4].payload.text), /Today: 5\/5 free searches/);
-  assert.match(String(msgs[5].payload.text), /used today's free searches/);
-  const kb = msgs[5].payload.reply_markup as { inline_keyboard: { text: string; web_app: { url: string } }[][] };
-  assert.match(kb.inline_keyboard[0][0].text, /Enterprise/);
-  assert.match(kb.inline_keyboard[0][0].web_app.url, /screen=profile/);
+  assert.equal(msgs.length, 8);
+  const kb = (msgs[7].payload.reply_markup as { inline_keyboard: { text: string; callback_data?: string; web_app?: { url: string } }[][] }).inline_keyboard;
+  const contactRows = kb.filter((r) => r[0].callback_data?.startsWith("unlock:"));
+  assert.equal(contactRows.length, 3);
+  assert.match(contactRows[0][0].text, /^📞 /);
+  assert.ok(kb[kb.length - 1][0].web_app, "last row opens the Mini App");
+});
+
+const cbUpdate = (sellerId: number, id: number, lang = "en") => ({
+  update_id: updateId++,
+  callback_query: { id: String(updateId), from: { id, is_bot: false, first_name: "Test", language_code: lang }, chat_instance: "x", data: `unlock:${sellerId}`, message: { message_id: 1, date: 0, chat: { id, type: "private" as const }, text: "…" } },
+});
+const sellerIds = backendUp ? ((await (await fetch(`${BACKEND_URL}/sellers`)).json()) as { sellers: { id: number }[] }).sellers.map((s) => s.id) : [];
+
+test("free buyer: 5 contact unlocks succeed, the 6th gets the upgrade prompt naming Pro / 20", { skip: !backendUp && "backend not running" }, async () => {
+  const { bot, sent } = harness();
+  const id = UID + 10;
+  for (let i = 0; i < 5; i++) await bot.handleUpdate(cbUpdate(sellerIds[i], id) as never);
+  const msgs = messages(sent);
+  assert.match(String(msgs[0].payload.text), /☎️ \+998/);
+  assert.match(String(msgs[0].payload.text), /maps\.google\.com/);
+  assert.match(String(msgs[4].payload.text), /5\/5 contacts used/);
+  await bot.handleUpdate(cbUpdate(sellerIds[5], id) as never);
+  const sixth = String(messages(sent)[5].payload.text);
+  assert.match(sixth, /Free plan: 5\/5/);
+  assert.match(sixth, /Upgrade to <b>Pro<\/b> — 20 contacts/);
+  // re-requesting an earlier seller still works and is not charged
+  await bot.handleUpdate(cbUpdate(sellerIds[1], id) as never);
+  assert.match(String(messages(sent)[6].payload.text), /Already unlocked/);
+});
+
+test("/upgrade max → verified buyer; the seller-facing notice carries the ✅ tag", { skip: !backendUp && "backend not running" }, async () => {
+  const { bot, sent } = harness();
+  const id = UID + 20;
+  const cmd = { ...textUpdate("/upgrade max", "en"), message: { ...textUpdate("/upgrade max", "en").message, chat: { id, type: "private" as const }, from: { id, is_bot: false, first_name: "Bahor", language_code: "en" }, entities: [{ type: "bot_command", offset: 0, length: 8 }] } };
+  await bot.handleUpdate(cmd as never);
+  assert.match(String(messages(sent)[0].payload.text), /Verified buyer/);
+  await bot.handleUpdate(cbUpdate(sellerIds[0], id) as never);
+  const contact = String(messages(sent)[1].payload.text);
+  assert.match(contact, /✅ Tasdiqlangan xaridor/);
+  assert.match(contact, /unlimited contacts/);
 });
 
 test("backend down → friendly message", async () => {

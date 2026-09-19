@@ -23,6 +23,7 @@ export interface Result {
   aiPick: boolean;
   reportedDaysAgo: number;
   breakdown: { priceScore: number; qualityScore: number; distanceScore: number };
+  reliability?: { score: number; tier: string };
 }
 
 export interface RecommendResponse {
@@ -38,7 +39,8 @@ export class ApiError extends Error {
   }
 }
 
-export interface Usage { tier: "standard" | "enterprise"; used: number; limit: number | null; credits: number; remaining: number | null }
+export type Tier = "free" | "pro" | "max";
+export interface Usage { tier: Tier; quota: number; used: number; remaining: number; unlimited: boolean; verifiedBuyer: boolean; prices: Record<Tier, number> }
 
 export interface Caller { telegramUserId: number | string; name?: string }
 
@@ -86,4 +88,28 @@ export async function parse(backendUrl: string, text: string): Promise<ParsedQue
   } catch {
     return nothing;
   }
+}
+
+export interface Contact { sellerId: number; sellerName: string; phone: string | null; bazaar: string; region: string; lat: number; lng: number; mapsUrl: string }
+export type UnlockResult =
+  | { status: "unlocked" | "already_unlocked"; contact: Contact; usage: Usage; sellerNotice: string; sellerTelegramUserId: string | null; verifiedBuyer: boolean }
+  | { status: "quota_exceeded"; tier: Tier; quota: number; usage: Usage; next: { tier: Tier; quota: number; priceUsd: number } | null };
+
+const callerHeaders = (caller?: Caller) =>
+  caller ? { "x-telegram-user-id": String(caller.telegramUserId), ...(caller.name ? { "x-telegram-user-name": encodeURIComponent(caller.name) } : {}) } : {};
+
+/** Reveal a seller's contact against the buyer's monthly quota. 402 = quota_exceeded (still a valid result). */
+export async function unlockContact(backendUrl: string, sellerId: number, caller?: Caller): Promise<UnlockResult> {
+  const res = await fetch(`${backendUrl}/sellers/${sellerId}/unlock`, { method: "POST", headers: { "content-type": "application/json", ...callerHeaders(caller) }, signal: AbortSignal.timeout(8000) });
+  const body = (await res.json().catch(() => ({}))) as UnlockResult & { error?: string };
+  if (!res.ok && res.status !== 402) throw new ApiError(res.status, body.error ?? `HTTP ${res.status}`);
+  return body;
+}
+
+/** Mock upgrade for the demo. */
+export async function setTier(backendUrl: string, tier: Tier, caller?: Caller): Promise<{ tier: Tier; verifiedBuyer: boolean; usage: Usage }> {
+  const res = await fetch(`${backendUrl}/me/upgrade`, { method: "POST", headers: { "content-type": "application/json", ...callerHeaders(caller) }, body: JSON.stringify({ tier }), signal: AbortSignal.timeout(8000) });
+  const body = (await res.json().catch(() => ({}))) as { tier: Tier; verifiedBuyer: boolean; usage: Usage; error?: string };
+  if (!res.ok) throw new ApiError(res.status, body.error ?? `HTTP ${res.status}`);
+  return body;
 }

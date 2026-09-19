@@ -8,6 +8,8 @@ export function pickLang(code?: string): Lang {
   return "uz";
 }
 
+const tierName = (t: string) => ({ free: "Free", pro: "Pro", max: "Max" })[t] ?? t;
+
 const S = {
   uz: {
     start:
@@ -42,11 +44,19 @@ const S = {
     voiceHeard: (t: string) => `🎤 Eshitdim: <i>${t}</i>`,
     backendDown: "⚠️ Server javob bermayapti. Bir ozdan keyin qayta urinib ko'ring.",
     breakdown: (p: number, q: number, d: number) => `narx ${p} · sifat ${q} · masofa ${d}`,
-    limitReached: "⛔ Bugungi bepul qidiruvlar tugadi (5 ta/kun).\nMini App'da qo'shimcha paket oling yoki Enterprise'ga o'ting — cheksiz qidiruv, 7 kunlik narx prognozi va savat bo'yicha taklif.",
-    upgradeBtn: "⭐ Enterprise'ga o'tish",
+    contactBtn: (name: string) => `📞 ${name}`,
+    contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
+      `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Xaritada ochish</a>`,
+    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Max reja · cheksiz kontaktlar</i>` : `\n\n<i>Bu oy: ${used}/${quota} kontakt ishlatildi</i>`,
+    sellerNotified: (notice: string) => `\n\n📨 <i>Sotuvchi ko'radi:</i> ${notice}`,
+    alreadyUnlocked: "🔓 Bu kontakt allaqachon ochilgan — limitdan yechilmadi.",
+    quotaExceeded: (tier: string, quota: number, next: { tier: string; quota: number; priceUsd: number } | null) =>
+      `⛔ ${tierName(tier)} reja: ${quota}/${quota} kontakt ishlatildi (30 kun).` +
+      (next ? `\n\n⭐ <b>${tierName(next.tier)}</b> rejaga o'ting — ${next.quota >= 500 ? "cheksiz" : next.quota + " ta"} kontakt/oy, $${next.priceUsd}/oy.\nDemo: <code>/upgrade ${next.tier}</code>` : ""),
+    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Reja: <b>${tierName(tier)}</b> — ${quota >= 500 ? "cheksiz" : quota + " ta"} kontakt/oy.${verified ? "\n✅ Endi siz <b>Tasdiqlangan xaridor</b>siz — sotuvchilar buni ko'radi." : ""}`,
+    upgradeUsage: "Foydalanish: /upgrade free | pro | max",
     askProduct: "🤔 Qaysi mahsulot kerakligini tushunmadim. Masalan: <i>500 kg pomidor, Chilonzor</i>",
     understood: (p: string, q: number | null, r: string | null) => `🧠 Tushundim: <b>${p}</b>${q ? ` · ${q} kg` : ""}${r ? ` · ${r}` : ""}`,
-    usageLine: (used: number, limit: number) => `\n\n<i>Bugun: ${used}/${limit} bepul qidiruv</i>`,
   },
   ru: {
     start:
@@ -81,11 +91,19 @@ const S = {
     voiceHeard: (t: string) => `🎤 Услышал: <i>${t}</i>`,
     backendDown: "⚠️ Сервер не отвечает. Попробуйте чуть позже.",
     breakdown: (p: number, q: number, d: number) => `цена ${p} · качество ${q} · расстояние ${d}`,
-    limitReached: "⛔ Бесплатные поиски на сегодня закончились (5 в день).\nКупите пакет в Mini App или перейдите на Enterprise — безлимит, прогноз цен на 7 дней и расчёт корзины.",
-    upgradeBtn: "⭐ Перейти на Enterprise",
+    contactBtn: (name: string) => `📞 ${name}`,
+    contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
+      `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Открыть на карте</a>`,
+    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Тариф Max · контакты без лимита</i>` : `\n\n<i>В этом месяце: ${used}/${quota} контактов</i>`,
+    sellerNotified: (notice: string) => `\n\n📨 <i>Продавец видит:</i> ${notice}`,
+    alreadyUnlocked: "🔓 Этот контакт уже открыт — лимит не списан.",
+    quotaExceeded: (tier: string, quota: number, next: { tier: string; quota: number; priceUsd: number } | null) =>
+      `⛔ Тариф ${tierName(tier)}: ${quota}/${quota} контактов использовано (30 дней).` +
+      (next ? `\n\n⭐ Перейдите на <b>${tierName(next.tier)}</b> — ${next.quota >= 500 ? "безлимит" : next.quota} контактов/мес, $${next.priceUsd}/мес.\nДемо: <code>/upgrade ${next.tier}</code>` : ""),
+    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Тариф: <b>${tierName(tier)}</b> — ${quota >= 500 ? "безлимит" : quota} контактов/мес.${verified ? "\n✅ Теперь вы <b>Проверенный покупатель</b> — продавцы это видят." : ""}`,
+    upgradeUsage: "Использование: /upgrade free | pro | max",
     askProduct: "🤔 Не понял, какой товар нужен. Например: <i>500 кг помидор, Чиланзар</i>",
     understood: (p: string, q: number | null, r: string | null) => `🧠 Понял: <b>${p}</b>${q ? ` · ${q} кг` : ""}${r ? ` · ${r}` : ""}`,
-    usageLine: (used: number, limit: number) => `\n\n<i>Сегодня: ${used}/${limit} бесплатных поисков</i>`,
   },
   en: {
     start:
@@ -120,13 +138,23 @@ const S = {
     voiceHeard: (t: string) => `🎤 I heard: <i>${t}</i>`,
     backendDown: "⚠️ The server isn't responding. Please try again in a moment.",
     breakdown: (p: number, q: number, d: number) => `price ${p} · quality ${q} · distance ${d}`,
-    limitReached: "⛔ You've used today's free searches (5/day).\nBuy a pack in the Mini App or go Enterprise — unlimited searches, 7-day price forecasts and basket quotes.",
-    upgradeBtn: "⭐ Go Enterprise",
+    contactBtn: (name: string) => `📞 ${name}`,
+    contactMsg: (c: { sellerName: string; phone: string | null; bazaar: string; region: string; mapsUrl: string }) =>
+      `📞 <b>${c.sellerName}</b>\n☎️ ${c.phone ?? "—"}\n📍 ${c.bazaar}, ${c.region}\n🗺 <a href="${c.mapsUrl}">Open in maps</a>`,
+    contactUsage: (used: number, quota: number, unlimited: boolean) => unlimited ? `\n\n<i>Max plan · unlimited contacts</i>` : `\n\n<i>This month: ${used}/${quota} contacts used</i>`,
+    sellerNotified: (notice: string) => `\n\n📨 <i>The seller sees:</i> ${notice}`,
+    alreadyUnlocked: "🔓 Already unlocked — not charged against your quota.",
+    quotaExceeded: (tier: string, quota: number, next: { tier: string; quota: number; priceUsd: number } | null) =>
+      `⛔ ${tierName(tier)} plan: ${quota}/${quota} contacts used (30 days).` +
+      (next ? `\n\n⭐ Upgrade to <b>${tierName(next.tier)}</b> — ${next.quota >= 500 ? "unlimited" : next.quota} contacts/month, $${next.priceUsd}/mo.\nDemo: <code>/upgrade ${next.tier}</code>` : ""),
+    upgraded: (tier: string, quota: number, verified: boolean) => `✅ Plan: <b>${tierName(tier)}</b> — ${quota >= 500 ? "unlimited" : quota} contacts/month.${verified ? "\n✅ You are now a <b>Verified buyer</b> — sellers see this." : ""}`,
+    upgradeUsage: "Usage: /upgrade free | pro | max",
     askProduct: "🤔 I couldn't tell which product you need. For example: <i>500 kg tomatoes, Chilanzar</i>",
     understood: (p: string, q: number | null, r: string | null) => `🧠 Got it: <b>${p}</b>${q ? ` · ${q} kg` : ""}${r ? ` · ${r}` : ""}`,
-    usageLine: (used: number, limit: number) => `\n\n<i>Today: ${used}/${limit} free searches</i>`,
   },
 } as const;
+
+export { tierName };
 
 export type Strings = (typeof S)[Lang];
 export const t = (lang: Lang): Strings => S[lang];

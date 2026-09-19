@@ -94,7 +94,6 @@ export async function recommend(req: RecommendRequest) {
     bazaar: l.seller.bazaar,
     region: l.seller.region,
     province: l.seller.province,
-    phone: l.seller.phone ?? undefined,
     minOrderKg: l.minOrderKg,
     verified: l.seller.verified,
     rating: l.seller.rating,

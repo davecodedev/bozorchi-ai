@@ -27,6 +27,7 @@ bot.api
   .setMyCommands([
     { command: "start", description: "Bozorchi AI — start" },
     { command: "help", description: "How to use" },
+    { command: "upgrade", description: "Demo: switch plan (free | pro | max)" },
   ])
   .catch(() => {});
 

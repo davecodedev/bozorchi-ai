@@ -22,9 +22,11 @@ model Seller {
   rating      Float     @default(0) // 0–5
   reviewCount Int       @default(0)
   phone       String?
+  telegramUserId String? // if set, the bot notifies this seller when a buyer unlocks their contact
   listings    Listing[]
   reviews     Review[]
   reports     PriceHistory[]
+  unlocks     ContactUnlock[]
 }
 
 model Listing {
@@ -74,15 +76,26 @@ model Buyer {
   telegramUserId String    @unique
   name           String?
   username       String?
-  tier           String    @default("standard") // "standard" | "enterprise"
+  tier           String    @default("free") // "free" | "pro" | "max" — see backend/src/tiers.ts
+  verifiedBuyer  Boolean   @default(false) // true only when tier = "max"
   upgradedAt     DateTime?
-  // daily search quota (standard tier) — see backend/src/limits.ts
-  searchesUsed   Int       @default(0)
-  searchesDate   String    @default("") // YYYY-MM-DD the counter belongs to
-  credits        Int       @default(0) // extra searches bought as packs
   createdAt      DateTime  @default(now())
   reviews        Review[]
   interactions   BuyerInteraction[]
+  unlocks        ContactUnlock[]
+}
+
+/** A buyer revealed a seller's phone + exact location. One row per pair; counted in a rolling 30-day window. */
+model ContactUnlock {
+  id         String   @id @default(cuid())
+  buyer      Buyer    @relation(fields: [buyerId], references: [id])
+  buyerId    Int
+  seller     Seller   @relation(fields: [sellerId], references: [id])
+  sellerId   Int
+  unlockedAt DateTime @default(now())
+
+  @@unique([buyerId, sellerId])
+  @@index([buyerId, unlockedAt])
 }
 
 model Review {

@@ -1,5 +1,5 @@
 import { Bot, InlineKeyboard, Keyboard, type Context } from "grammy";
-import { ApiError, parse, recommend, type ParsedQuery } from "./api.js";
+import { ApiError, parse, recommend, setTier, unlockContact, type ParsedQuery, type Tier } from "./api.js";
 import { formatRecommendation } from "./format.js";
 import { pickLang, t } from "./i18n.js";
 import { extractRegion } from "./region.js";
@@ -31,6 +31,47 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
     });
     // 2. a persistent "share location" key under the keyboard (reply keyboards can't be combined with inline ones)
     await ctx.reply(s.locationPrompt, { reply_markup: new Keyboard().requestLocation(s.locationBtn).resized() });
+  });
+
+  /** Demo-only tier switch: /upgrade pro | max | free. Real checkout will replace the body, not the command. */
+  bot.command("upgrade", async (ctx) => {
+    const lang = pickLang(ctx.from?.language_code);
+    const s = t(lang);
+    const tier = (ctx.match || "").trim().toLowerCase() as Tier;
+    if (!["free", "pro", "max"].includes(tier)) return ctx.reply(s.upgradeUsage);
+    try {
+      const r = await setTier(backendUrl, tier, callerOf(ctx));
+      await ctx.reply(s.upgraded(r.tier, r.usage.quota, r.verifiedBuyer), { parse_mode: "HTML" });
+    } catch (e) {
+      console.error("upgrade failed:", e);
+      await ctx.reply(s.backendDown);
+    }
+  });
+
+  /** "📞 <seller>" button under results → reveal contact against the buyer's quota. */
+  bot.callbackQuery(/^unlock:(\d+)$/, async (ctx) => {
+    const lang = pickLang(ctx.from?.language_code);
+    const s = t(lang);
+    const sellerId = Number(ctx.match[1]);
+    await ctx.answerCallbackQuery().catch(() => {});
+    try {
+      const r = await unlockContact(backendUrl, sellerId, callerOf(ctx));
+      if (r.status === "quota_exceeded") {
+        const reply_markup = miniAppUrl ? new InlineKeyboard().webApp(s.openApp, `${miniAppUrl}${miniAppUrl.includes("?") ? "&" : "?"}screen=profile`) : undefined;
+        return ctx.reply(s.quotaExceeded(r.tier, r.quota, r.next), { parse_mode: "HTML", reply_markup });
+      }
+      let text = s.contactMsg(r.contact) + s.contactUsage(r.usage.used, r.usage.quota, r.usage.unlimited);
+      if (r.status === "already_unlocked") text = s.alreadyUnlocked + "\n\n" + text;
+      else {
+        text += s.sellerNotified(r.sellerNotice);
+        // real seller-side notification when the seller has linked their Telegram account
+        if (r.sellerTelegramUserId) ctx.api.sendMessage(r.sellerTelegramUserId, r.sellerNotice).catch(() => {});
+      }
+      await ctx.reply(text, { parse_mode: "HTML", link_preview_options: { is_disabled: true } });
+    } catch (e) {
+      console.error("unlock failed:", e);
+      await ctx.reply(s.backendDown);
+    }
   });
 
   bot.command("help", async (ctx) => {
@@ -67,6 +108,9 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
     await handleQuery(ctx, text);
   });
 
+  const callerOf = (ctx: Context) =>
+    ctx.from ? { telegramUserId: ctx.from.id, name: [ctx.from.first_name, ctx.from.last_name].filter(Boolean).join(" ") } : undefined;
+
   async function handleQuery(ctx: Context, text: string) {
     const lang = pickLang(ctx.from?.language_code);
     const s = t(lang);
@@ -90,20 +134,15 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
       const data = await recommend(
         backendUrl,
         { product: q.product, region: q.region, quantityKg: q.quantityKg, lat: loc?.lat, lng: loc?.lng, limit: 3 },
-        ctx.from ? { telegramUserId: ctx.from.id, name: [ctx.from.first_name, ctx.from.last_name].filter(Boolean).join(" ") } : undefined,
+        callerOf(ctx),
       );
 
-      const reply_markup = miniAppUrl ? miniAppKeyboard(miniAppUrl, s.openApp, data.product, q.region, loc) : undefined;
-      const usageLine = data.usage && data.usage.limit != null ? s.usageLine(data.usage.used, data.usage.limit) : "";
-      await ctx.reply(formatRecommendation(data, lang, s, where) + usageLine, {
-        parse_mode: "HTML",
-        reply_markup,
-      });
+      // one "📞 <seller>" button per result (contact reveal is the only quota-gated action), then the app link
+      const kb = new InlineKeyboard();
+      for (const r of data.results) kb.text(s.contactBtn(r.sellerName), `unlock:${r.sellerId}`).row();
+      if (miniAppUrl) kb.webApp(s.openApp, miniAppLink(miniAppUrl, data.product, q.region, loc));
+      await ctx.reply(formatRecommendation(data, lang, s, where), { parse_mode: "HTML", reply_markup: kb });
     } catch (e) {
-      if (e instanceof ApiError && e.status === 402) {
-        const reply_markup = miniAppUrl ? new InlineKeyboard().webApp(s.upgradeBtn, `${miniAppUrl}${miniAppUrl.includes("?") ? "&" : "?"}screen=profile`) : undefined;
-        return ctx.reply(s.limitReached, { reply_markup });
-      }
       if (e instanceof ApiError && e.status === 404) {
         return ctx.reply(s.unknownProduct(parsed.product ?? text), { parse_mode: "HTML" });
       }
@@ -115,13 +154,7 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
     }
   }
 
-  function miniAppKeyboard(
-    miniAppUrl: string,
-    label: string,
-    product: string,
-    region?: string,
-    loc?: { lat: number; lng: number },
-  ) {
+  function miniAppLink(miniAppUrl: string, product: string, region?: string, loc?: { lat: number; lng: number }): string {
     const url = new URL(miniAppUrl);
     url.searchParams.set("product", product);
     if (region) url.searchParams.set("region", region);
@@ -129,7 +162,7 @@ export function createBot({ token, backendUrl, miniAppUrl }: BotConfig) {
       url.searchParams.set("lat", String(loc.lat));
       url.searchParams.set("lng", String(loc.lng));
     }
-    return new InlineKeyboard().webApp(label, url.toString());
+    return url.toString();
   }
 
   bot.catch((err) => {

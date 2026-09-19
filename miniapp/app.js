@@ -24,7 +24,7 @@
       viewHistory: "View 30-day price history", reviews: "Reviews", noReviews: "No public reviews yet",
       noReviewsBody: `New sellers are quality-checked by the ${BRAND} team before crowd reviews open, so buyers still get a trust signal from day one.`,
       requestOffer: "Request this offer", requestTitle: "Request this offer", requestBody: (n) => `We'll pass your request to ${n}. You can also reach them directly:`,
-      call: "Call seller", sendRequest: "Send request", requestSent: "Request sent — the seller will contact you.",
+      sendRequest: "Send request", requestSent: "Request sent — the seller will contact you.",
       sellers: "Sellers", browseAll: "Browse every registered seller", searchSellers: "Search sellers by name", allSellers: "All sellers",
       saved: "Saved", savedSub: "Sellers you're keeping an eye on", savedEmpty: "Tap the bookmark icon on any seller to save them here for quick access.",
       account: "Account", myRequests: "My requests", savedSellers: "Saved sellers", notifications: "Notifications & price alerts",
@@ -42,16 +42,18 @@
       voiceUnsupported: "Voice search isn't available here — send a voice message to the bot instead.", listening: "Listening…",
       unknownProduct: "Product not recognised. Try: pomidor, kartoshka, piyoz, bodring, olma.", offline: "Can't reach the server. Is the backend running?",
       ago: (d) => d === 0 ? "today" : d === 1 ? "yesterday" : d < 7 ? `${d} days ago` : d < 14 ? "1 week ago" : `${Math.floor(d / 7)} weeks ago`,
-      standard: "Standard", enterprise: "Enterprise", free: "Free", unlimited: "Unlimited", perMonth: (usd) => `$${usd}/mo`,
-      searchesToday: (u, l) => `${u} of ${l} free searches today`, creditsLeft: (n) => `+${n} bought`, buyPack: (n, p) => `Buy ${n} searches · ${p} so'm`,
-      upgrade: "Upgrade to Enterprise", upgradeSub: "For restaurants, retailers and wholesalers who buy every week.", payNow: (usd) => `Pay $${usd} · demo`, downgradeDemo: "Demo: switch back to Standard",
-      perkUnlimited: "Unlimited searches, no daily cap", perkTop10: "Top 10 results + adjustable weights", perkForecast: "7-day price forecast with buy/wait advice", perkBasket: "Basket quotes: best single supplier vs best split", perkAlerts: "Unlimited price alerts pushed by the bot",
-      upgraded: "Welcome to Enterprise!", upgradedBody: "Unlimited searches, forecasts and basket quotes are now unlocked.", packBought: (n) => `${n} searches added`,
-      limitTitle: "Daily limit reached", limitBody: (l) => `Standard accounts get ${l} free searches a day. Buy a pack or go Enterprise for unlimited.`,
-      lockedTag: "Enterprise", unlock: "Unlock with Enterprise", weightsTitle: "Adjust weights", apply: "Apply", showingTop: (n) => `Showing top ${n}`, moreResultsLocked: "Top 10 results and adjustable weights",
+      tierFree: "Free", tierPro: "Pro", tierMax: "Max", perMonth: (usd) => `$${usd}/mo`, unlimited: "Unlimited",
+      contactsUsed: (u, q) => `${u} of ${q} contacts this month`, contactsUnlimited: "Unlimited contacts this month", verifiedBuyer: "Verified buyer",
+      planTitle: "Your plan", planNote: "Search, AI ranking and prices are free for everyone. Plans only change how many seller contacts you can reveal per month.",
+      proPerks: ["20 seller contacts / month", "Phone + exact location on the map"], maxPerks: ["Unlimited seller contacts", "✅ Verified buyer badge — sellers see it when you reach out", "Priority support"],
+      upgradeTo: (t) => `Upgrade to ${t}`, payNow: (usd) => `Pay $${usd} · demo`, downgradeDemo: "Demo: switch back to Free", upgraded: (t) => `Welcome to ${t}!`, upgradedBody: (q, v) => `${q >= 500 ? "Unlimited" : q} seller contacts a month.${v ? " Sellers will now see your ✅ Verified buyer badge." : ""}`,
+      revealContact: "Reveal contact", revealHint: (u, q, unl) => unl ? "Max plan · unlimited" : `Uses 1 of your ${q - u} remaining this month`, contactRevealed: "Contact revealed", alreadyUnlocked: "Already unlocked — not charged again.",
+      quotaTitle: (t, q) => `${t} plan: ${q}/${q} contacts used`, quotaBody: (n, q, usd) => `Upgrade to ${n} for ${q >= 500 ? "unlimited" : q} contacts a month at $${usd}/mo.`, sellerSees: "The seller sees",
+      openMaps: "Open in maps", call: "Call seller",
+      lockedTag: "Pro", unlock: "See plans", weightsTitle: "Adjust weights", apply: "Apply",
       forecastTitle: "7-day forecast", forecastLocked: "See where this price is heading next week", verdictDown: (p) => `Likely down ~${Math.abs(p)}% next week — worth waiting`, verdictUp: (p) => `Likely up ~${p}% next week — buy now`, verdictFlat: "Expected to stay flat — buy when convenient", nextWeek: "next week",
       basket: "Basket quote", basketSub: "Paste your whole order — we find the cheapest single supplier and the cheapest split, delivery included.", basketPh: "500 kg pomidor\n200 kg piyoz\n100 kg sabzi", getQuote: "Get quote",
-      singleSupplier: "Best single supplier", bestSplit: "Best split", sellers: (n) => `${n} sellers`, goods: "Goods", delivery: "Delivery", total: "Total", saves: (n) => `Saves ${n} so'm`, recommendedTag: "Recommended", noSingle: "No single seller carries everything.", unknownLines: (l) => `Not recognised: ${l}`, requestQuotes: "Request these offers", quotesRequested: "Requests sent to the sellers.",
+      singleSupplier: "Best single supplier", bestSplit: "Best split", goods: "Goods", delivery: "Delivery", total: "Total", saves: (n) => `Saves ${n} so'm`, recommendedTag: "Recommended", noSingle: "No single seller carries everything.", unknownLines: (l) => `Not recognised: ${l}`, requestQuotes: "Request these offers", quotesRequested: "Requests sent to the sellers.",
       basketLockedBody: "Order lists, not single items: one quote for the whole basket.", deliveryNote: (b, k) => `Delivery estimate: ${b} + ${k} so'm/km per seller.`,
       tierGold: "Gold reporter", tierSilver: "Silver reporter", tierBronze: "Bronze reporter", tierNew: "New seller", tierHint: "Reliability: how often and how honestly this seller reports prices (last 30 days).",
       trendLine: (p) => `Price trend: ${p > 0 ? "+" : ""}${p}% over the last 30 days`, trendMarket: "market, seeded history",
@@ -78,7 +80,7 @@
       viewHistory: "30 kunlik narx tarixi", reviews: "Sharhlar", noReviews: "Hali ochiq sharhlar yo'q",
       noReviewsBody: `Yangi sotuvchilar sharhlar ochilishidan oldin ${BRAND} jamoasi tomonidan tekshiriladi — shuning uchun ishonch belgisi birinchi kundanoq mavjud.`,
       requestOffer: "Taklifni so'rash", requestTitle: "Taklifni so'rash", requestBody: (n) => `So'rovingizni ${n}ga yetkazamiz. To'g'ridan-to'g'ri bog'lanishingiz ham mumkin:`,
-      call: "Qo'ng'iroq qilish", sendRequest: "So'rov yuborish", requestSent: "So'rov yuborildi — sotuvchi siz bilan bog'lanadi.",
+      sendRequest: "So'rov yuborish", requestSent: "So'rov yuborildi — sotuvchi siz bilan bog'lanadi.",
       sellers: "Sotuvchilar", browseAll: "Barcha ro'yxatdan o'tgan sotuvchilar", searchSellers: "Sotuvchini nomi bo'yicha qidiring", allSellers: "Barcha sotuvchilar",
       saved: "Saqlangan", savedSub: "Kuzatib borayotgan sotuvchilaringiz", savedEmpty: "Sotuvchini bu yerda saqlash uchun xatcho'p belgisini bosing.",
       account: "Hisob", myRequests: "So'rovlarim", savedSellers: "Saqlangan sotuvchilar", notifications: "Bildirishnomalar va narx ogohlantirishlari",
@@ -96,16 +98,18 @@
       voiceUnsupported: "Ovozli qidiruv bu yerda ishlamaydi — botga ovozli xabar yuboring.", listening: "Tinglayapman…",
       unknownProduct: "Mahsulot tanilmadi. Masalan: pomidor, kartoshka, piyoz, bodring, olma.", offline: "Server bilan aloqa yo'q. Backend ishlayaptimi?",
       ago: (d) => d === 0 ? "bugun" : d === 1 ? "kecha" : d < 7 ? `${d} kun oldin` : d < 14 ? "1 hafta oldin" : `${Math.floor(d / 7)} hafta oldin`,
-      standard: "Standart", enterprise: "Enterprise", free: "Bepul", unlimited: "Cheksiz", perMonth: (usd) => `$${usd}/oy`,
-      searchesToday: (u, l) => `Bugun ${u}/${l} bepul qidiruv`, creditsLeft: (n) => `+${n} sotib olingan`, buyPack: (n, p) => `${n} ta qidiruv olish · ${p} so'm`,
-      upgrade: "Enterprise'ga o'tish", upgradeSub: "Har hafta xarid qiladigan restoran, do'kon va ulgurjichilar uchun.", payNow: (usd) => `$${usd} to'lash · demo`, downgradeDemo: "Demo: Standartga qaytish",
-      perkUnlimited: "Cheksiz qidiruv, kunlik limit yo'q", perkTop10: "Top 10 natija + sozlanadigan og'irliklar", perkForecast: "7 kunlik narx prognozi va maslahat", perkBasket: "Savat bo'yicha taklif: bitta yetkazuvchi yoki bo'lib olish", perkAlerts: "Bot orqali cheksiz narx ogohlantirishlari",
-      upgraded: "Enterprise'ga xush kelibsiz!", upgradedBody: "Cheksiz qidiruv, prognoz va savat takliflari ochildi.", packBought: (n) => `${n} ta qidiruv qo'shildi`,
-      limitTitle: "Kunlik limit tugadi", limitBody: (l) => `Standart hisobda kuniga ${l} ta bepul qidiruv. Paket oling yoki Enterprise'ga o'ting.`,
-      lockedTag: "Enterprise", unlock: "Enterprise bilan ochish", weightsTitle: "Og'irliklarni sozlash", apply: "Qo'llash", showingTop: (n) => `Top ${n} ko'rsatilmoqda`, moreResultsLocked: "Top 10 natija va sozlanadigan og'irliklar",
+      tierFree: "Free", tierPro: "Pro", tierMax: "Max", perMonth: (usd) => `$${usd}/oy`, unlimited: "Cheksiz",
+      contactsUsed: (u, q) => `Bu oy ${u}/${q} kontakt`, contactsUnlimited: "Bu oy kontaktlar cheksiz", verifiedBuyer: "Tasdiqlangan xaridor",
+      planTitle: "Rejangiz", planNote: "Qidiruv, AI reyting va narxlar hamma uchun bepul. Reja faqat oyiga nechta sotuvchi kontaktini ochishingizni belgilaydi.",
+      proPerks: ["Oyiga 20 ta sotuvchi kontakti", "Telefon + xaritada aniq joylashuv"], maxPerks: ["Cheksiz sotuvchi kontaktlari", "✅ Tasdiqlangan xaridor belgisi — sotuvchilar buni ko'radi", "Ustuvor yordam"],
+      upgradeTo: (t) => `${t} rejaga o'tish`, payNow: (usd) => `$${usd} to'lash · demo`, downgradeDemo: "Demo: Free rejaga qaytish", upgraded: (t) => `${t} rejaga xush kelibsiz!`, upgradedBody: (q, v) => `Oyiga ${q >= 500 ? "cheksiz" : q + " ta"} sotuvchi kontakti.${v ? " Endi sotuvchilar ✅ Tasdiqlangan xaridor belgingizni ko'radi." : ""}`,
+      revealContact: "Kontaktni ochish", revealHint: (u, q, unl) => unl ? "Max reja · cheksiz" : `Bu oy qolgan ${q - u} tadan 1 tasi ishlatiladi`, contactRevealed: "Kontakt ochildi", alreadyUnlocked: "Allaqachon ochilgan — qayta hisoblanmadi.",
+      quotaTitle: (t, q) => `${t} reja: ${q}/${q} kontakt ishlatildi`, quotaBody: (n, q, usd) => `${n} rejaga o'ting — oyiga ${q >= 500 ? "cheksiz" : q + " ta"} kontakt, $${usd}/oy.`, sellerSees: "Sotuvchi ko'radi",
+      openMaps: "Xaritada ochish", call: "Qo'ng'iroq qilish",
+      lockedTag: "Pro", unlock: "Rejalarni ko'rish", weightsTitle: "Og'irliklarni sozlash", apply: "Qo'llash",
       forecastTitle: "7 kunlik prognoz", forecastLocked: "Kelasi hafta narx qayerga boradi — ko'ring", verdictDown: (p) => `Kelasi hafta ~${Math.abs(p)}% tushishi kutilmoqda — kutgan ma'qul`, verdictUp: (p) => `Kelasi hafta ~${p}% oshishi kutilmoqda — hozir oling`, verdictFlat: "Narx o'zgarmaydi — qulay vaqtda oling", nextWeek: "kelasi hafta",
       basket: "Savat bo'yicha taklif", basketSub: "Butun buyurtmani kiriting — eng arzon bitta yetkazuvchi va eng arzon bo'lib olishni topamiz, yetkazib berish bilan.", basketPh: "500 kg pomidor\n200 kg piyoz\n100 kg sabzi", getQuote: "Taklif olish",
-      singleSupplier: "Eng yaxshi bitta yetkazuvchi", bestSplit: "Eng yaxshi bo'lib olish", sellers: (n) => `${n} ta sotuvchi`, goods: "Mahsulot", delivery: "Yetkazib berish", total: "Jami", saves: (n) => `${n} so'm tejaladi`, recommendedTag: "Tavsiya", noSingle: "Hammasini sotadigan bitta sotuvchi yo'q.", unknownLines: (l) => `Tanilmadi: ${l}`, requestQuotes: "Takliflarni so'rash", quotesRequested: "So'rovlar sotuvchilarga yuborildi.",
+      singleSupplier: "Eng yaxshi bitta yetkazuvchi", bestSplit: "Eng yaxshi bo'lib olish", goods: "Mahsulot", delivery: "Yetkazib berish", total: "Jami", saves: (n) => `${n} so'm tejaladi`, recommendedTag: "Tavsiya", noSingle: "Hammasini sotadigan bitta sotuvchi yo'q.", unknownLines: (l) => `Tanilmadi: ${l}`, requestQuotes: "Takliflarni so'rash", quotesRequested: "So'rovlar sotuvchilarga yuborildi.",
       basketLockedBody: "Bitta mahsulot emas — butun ro'yxat uchun bitta taklif.", deliveryNote: (b, k) => `Yetkazib berish hisobi: har sotuvchi uchun ${b} + ${k} so'm/km.`,
       tierGold: "Oltin sotuvchi", tierSilver: "Kumush sotuvchi", tierBronze: "Bronza sotuvchi", tierNew: "Yangi sotuvchi", tierHint: "Ishonchlilik: sotuvchi narxlarni qanchalik tez-tez va halol kiritadi (so'nggi 30 kun).",
       trendLine: (p) => `Narx tendensiyasi: so'nggi 30 kunda ${p > 0 ? "+" : ""}${p}%`, trendMarket: "bozor bo'yicha, demo tarix",
@@ -132,7 +136,7 @@
       viewHistory: "История цен за 30 дней", reviews: "Отзывы", noReviews: "Публичных отзывов пока нет",
       noReviewsBody: `Новых продавцов проверяет команда ${BRAND} до открытия отзывов, поэтому сигнал доверия есть с первого дня.`,
       requestOffer: "Запросить предложение", requestTitle: "Запросить предложение", requestBody: (n) => `Мы передадим запрос продавцу ${n}. Также можно связаться напрямую:`,
-      call: "Позвонить", sendRequest: "Отправить запрос", requestSent: "Запрос отправлен — продавец свяжется с вами.",
+      sendRequest: "Отправить запрос", requestSent: "Запрос отправлен — продавец свяжется с вами.",
       sellers: "Продавцы", browseAll: "Все зарегистрированные продавцы", searchSellers: "Поиск продавца по имени", allSellers: "Все продавцы",
       saved: "Избранное", savedSub: "Продавцы, за которыми вы следите", savedEmpty: "Нажмите значок закладки у продавца, чтобы сохранить его здесь.",
       account: "Аккаунт", myRequests: "Мои запросы", savedSellers: "Избранные продавцы", notifications: "Уведомления и оповещения о ценах",
@@ -150,16 +154,18 @@
       voiceUnsupported: "Голосовой поиск здесь недоступен — отправьте голосовое боту.", listening: "Слушаю…",
       unknownProduct: "Товар не распознан. Например: помидор, картошка, лук, огурец, яблоко.", offline: "Сервер недоступен. Бэкенд запущен?",
       ago: (d) => d === 0 ? "сегодня" : d === 1 ? "вчера" : d < 7 ? `${d} дн. назад` : d < 14 ? "неделю назад" : `${Math.floor(d / 7)} нед. назад`,
-      standard: "Стандарт", enterprise: "Enterprise", free: "Бесплатно", unlimited: "Безлимит", perMonth: (usd) => `$${usd}/мес`,
-      searchesToday: (u, l) => `Сегодня ${u} из ${l} бесплатных поисков`, creditsLeft: (n) => `+${n} куплено`, buyPack: (n, p) => `Купить ${n} поисков · ${p} сум`,
-      upgrade: "Перейти на Enterprise", upgradeSub: "Для ресторанов, магазинов и оптовиков, которые закупаются каждую неделю.", payNow: (usd) => `Оплатить $${usd} · демо`, downgradeDemo: "Демо: вернуться на Стандарт",
-      perkUnlimited: "Безлимитный поиск без дневного лимита", perkTop10: "Топ-10 результатов + настраиваемые веса", perkForecast: "Прогноз цен на 7 дней с советом", perkBasket: "Расчёт корзины: один поставщик или разбивка", perkAlerts: "Безлимитные оповещения через бота",
-      upgraded: "Добро пожаловать в Enterprise!", upgradedBody: "Безлимитный поиск, прогнозы и расчёт корзины открыты.", packBought: (n) => `Добавлено поисков: ${n}`,
-      limitTitle: "Дневной лимит исчерпан", limitBody: (l) => `На Стандарте ${l} бесплатных поисков в день. Купите пакет или перейдите на Enterprise.`,
-      lockedTag: "Enterprise", unlock: "Открыть с Enterprise", weightsTitle: "Настроить веса", apply: "Применить", showingTop: (n) => `Показано топ-${n}`, moreResultsLocked: "Топ-10 результатов и настраиваемые веса",
+      tierFree: "Free", tierPro: "Pro", tierMax: "Max", perMonth: (usd) => `$${usd}/мес`, unlimited: "Безлимит",
+      contactsUsed: (u, q) => `В этом месяце ${u} из ${q} контактов`, contactsUnlimited: "Контакты без лимита", verifiedBuyer: "Проверенный покупатель",
+      planTitle: "Ваш тариф", planNote: "Поиск, AI-рейтинг и цены бесплатны для всех. Тариф влияет только на число контактов продавцов в месяц.",
+      proPerks: ["20 контактов продавцов в месяц", "Телефон + точная локация на карте"], maxPerks: ["Безлимитные контакты", "✅ Значок проверенного покупателя — продавцы его видят", "Приоритетная поддержка"],
+      upgradeTo: (t) => `Перейти на ${t}`, payNow: (usd) => `Оплатить $${usd} · демо`, downgradeDemo: "Демо: вернуться на Free", upgraded: (t) => `Добро пожаловать в ${t}!`, upgradedBody: (q, v) => `${q >= 500 ? "Безлимит" : q} контактов продавцов в месяц.${v ? " Теперь продавцы видят ваш значок ✅ Проверенный покупатель." : ""}`,
+      revealContact: "Открыть контакт", revealHint: (u, q, unl) => unl ? "Тариф Max · безлимит" : `Спишется 1 из ${q - u} оставшихся в этом месяце`, contactRevealed: "Контакт открыт", alreadyUnlocked: "Уже открыт — повторно не списывается.",
+      quotaTitle: (t, q) => `Тариф ${t}: ${q}/${q} контактов`, quotaBody: (n, q, usd) => `Перейдите на ${n}: ${q >= 500 ? "безлимит" : q} контактов в месяц за $${usd}/мес.`, sellerSees: "Продавец видит",
+      openMaps: "Открыть на карте", call: "Позвонить",
+      lockedTag: "Pro", unlock: "Смотреть тарифы", weightsTitle: "Настроить веса", apply: "Применить",
       forecastTitle: "Прогноз на 7 дней", forecastLocked: "Узнайте, куда пойдёт цена на следующей неделе", verdictDown: (p) => `Ожидается снижение ~${Math.abs(p)}% — стоит подождать`, verdictUp: (p) => `Ожидается рост ~${p}% — покупайте сейчас`, verdictFlat: "Цена не изменится — покупайте, когда удобно", nextWeek: "след. неделя",
       basket: "Расчёт корзины", basketSub: "Вставьте весь заказ — найдём самого дешёвого поставщика и самую дешёвую разбивку, с доставкой.", basketPh: "500 кг помидор\n200 кг лук\n100 кг морковь", getQuote: "Рассчитать",
-      singleSupplier: "Лучший единый поставщик", bestSplit: "Лучшая разбивка", sellers: (n) => `Продавцов: ${n}`, goods: "Товар", delivery: "Доставка", total: "Итого", saves: (n) => `Экономия ${n} сум`, recommendedTag: "Рекомендуем", noSingle: "Нет продавца со всеми позициями.", unknownLines: (l) => `Не распознано: ${l}`, requestQuotes: "Запросить предложения", quotesRequested: "Запросы отправлены продавцам.",
+      singleSupplier: "Лучший единый поставщик", bestSplit: "Лучшая разбивка", goods: "Товар", delivery: "Доставка", total: "Итого", saves: (n) => `Экономия ${n} сум`, recommendedTag: "Рекомендуем", noSingle: "Нет продавца со всеми позициями.", unknownLines: (l) => `Не распознано: ${l}`, requestQuotes: "Запросить предложения", quotesRequested: "Запросы отправлены продавцам.",
       basketLockedBody: "Не один товар, а весь список — одним расчётом.", deliveryNote: (b, k) => `Оценка доставки: ${b} + ${k} сум/км за продавца.`,
       tierGold: "Золотой продавец", tierSilver: "Серебряный продавец", tierBronze: "Бронзовый продавец", tierNew: "Новый продавец", tierHint: "Надёжность: как часто и честно продавец сообщает цены (последние 30 дней).",
       trendLine: (p) => `Тренд цены: ${p > 0 ? "+" : ""}${p}% за 30 дней`, trendMarket: "по рынку, демо-история",
@@ -233,8 +239,8 @@
     results: null, sellerQ: "", sellersCat: "all", sellersProv: null, loading: false, listening: false,
     me: null, weights: null, basketText: "", quote: null,
   };
-  const isEnt = () => !!(S.me && S.me.tier === "enterprise");
-  const has = (f) => !!(S.me && S.me.features && S.me.features.includes(f));
+  const has = () => true; // search, ranking, weights, forecast and basket are free for every tier
+  const tierLabel = (t) => t === "pro" ? "Pro" : t === "max" ? "Max" : "Free";
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fmt = (n) => Math.round(n).toLocaleString("en-US").replace(/,/g, ",");
   const initials = (name) => name.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -259,7 +265,7 @@
     if (!res.ok) { const e = new Error(body.error || `HTTP ${res.status}`); e.status = res.status; e.body = body; throw e; }
     return body;
   }
-  async function loadMe() { try { const r = await api("/me"); S.me = r.usage; S.me.buyer = r.buyer; } catch { S.me = null; } return S.me; }
+  async function loadMe() { try { const r = await api("/me"); S.me = r.usage; S.me.buyer = r.buyer; S.me.tiers = r.tiers; } catch { S.me = null; } return S.me; }
   const loadSellers = async () => (S.sellers ??= (await api("/sellers")).sellers);
   async function loadSeller(id) {
     if (!S.sellerCache[id]) S.sellerCache[id] = (await api(`/sellers/${id}`)).seller;
@@ -285,8 +291,8 @@
     S.q = { text, qty };
     S.loading = true; render();
     try {
-      const body = { product: text, quantityKg: qty || undefined, limit: isEnt() ? 10 : 3 };
-      if (isEnt() && S.weights) body.weights = S.weights;
+      const body = { product: text, quantityKg: qty || undefined, limit: S.weights ? 10 : 3 };
+      if (S.weights) body.weights = S.weights;
       if (S.location) { body.lat = S.location.lat; body.lng = S.location.lng; }
       else if (opts.region) body.region = opts.region;
       if (!opts.region || opts.provinceExplicit) body.province = S.province;
@@ -303,7 +309,6 @@
       if (route().name === "results") render(); else go("results"); // same hash → no hashchange, so render explicitly
     } catch (e) {
       S.loading = false; render();
-      if (e.status === 402) { if (e.body && e.body.usage) S.me = { ...S.me, ...e.body.usage }; return limitSheet(); }
       toast(e.status === 404 ? t("unknownProduct") : e.status ? e.message : t("offline"));
     }
   }
@@ -372,9 +377,9 @@
   const lockTag = () => `<span class="lock-tag">${I.lock}${t("lockedTag")}</span>`;
   const usagePill = () => {
     if (!S.me) return "";
-    if (isEnt()) return `<div class="usage ent">${I.star}<span>${t("enterprise")} · ${t("unlimited")}</span></div>`;
-    const pct = Math.min(100, (S.me.used / S.me.limit) * 100);
-    return `<button class="usage" data-go="profile"><span class="meter"><i style="width:${pct}%"></i></span><span>${t("searchesToday", S.me.used, S.me.limit)}${S.me.credits ? ` · ${t("creditsLeft", S.me.credits)}` : ""}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>`;
+    if (S.me.unlimited) return `<button class="usage ent" data-go="profile">${I.star}<span>${tierLabel(S.me.tier)} · ${t("contactsUnlimited")}</span>${S.me.verifiedBuyer ? `<span class="vbuyer">✅ ${t("verifiedBuyer")}</span>` : ""}</button>`;
+    const pct = Math.min(100, (S.me.used / S.me.quota) * 100);
+    return `<button class="usage" data-go="profile"><span class="meter"><i style="width:${pct}%"></i></span><span>${tierLabel(S.me.tier)} · ${t("contactsUsed", S.me.used, S.me.quota)}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>`;
   };
   const empty = (icon, text) => `<div class="empty">${icon}<div>${text}</div></div>`;
   const spinner = () => `<div class="spinner"></div>`;
@@ -393,7 +398,7 @@
           <button type="submit" class="icon-btn primary" aria-label="Search" ${S.loading ? "disabled" : ""}>${I.arrow}</button>
         </form>
         ${usagePill()}
-        <button class="link-row feature" data-go="basket"><span class="ic">${I.basket}</span><span class="grow"><b>${t("basket")}</b><span class="sub wrap" style="display:block">${t("basketLockedBody")}</span></span>${has("basket") ? I.chev.replace("<svg", '<svg class="chev"') : lockTag()}</button>
+        <button class="link-row feature" data-go="basket"><span class="ic">${I.basket}</span><span class="grow"><b>${t("basket")}</b><span class="sub wrap" style="display:block">${t("basketLockedBody")}</span></span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         ${catChips(S.category, "cat")}
         ${provChips(S.province, "prov", false)}
         <p class="label">${t("bestNear")}</p>
@@ -417,7 +422,7 @@
       const cheapestId = d.results.length ? d.results.reduce((a, b) => (a.pricePerKg <= b.pricePerKg ? a : b)).sellerId : null;
       return `
         ${header(t("topMatches"), sub)}
-        ${has("weights") ? weightsCard(S.weights || w) : `<div class="banner">${I.sliders}<span>${t("formula", Math.round(w.price * 100), Math.round(w.quality * 100), Math.round(w.distance * 100))}</span></div>`}
+        ${weightsCard(S.weights || w)}
         ${d.personalization && d.personalization.preference ? `<div class="banner">${I.user}<span>${esc(t("personalizedNote", d.personalization.preference))}</span></div>` : ""}
         ${!top ? `<div class="card">${empty(I.search, t("noResults") + " " + t("tryAnother"))}</div>` : `
         <div class="card soft">
@@ -438,11 +443,11 @@
             ${r.sellerId === cheapestId ? `<div class="hint">${t("cheapestNote")}</div>` : ""}
           </button>`).join("")}
         ${d.excluded && d.excluded.length ? `<p class="sub wrap" style="margin:4px 0 12px">${I.shield.replace("<svg", '<svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"')}${esc(t("hiddenNote", d.excluded.length))}</p>` : ""}
-        ${!has("top10") ? `<button class="link-row feature" data-act="upgrade"><span class="ic">${I.lock}</span><span class="grow"><b>${t("moreResultsLocked")}</b><span class="sub wrap" style="display:block">${t("showingTop", 3)}</span></span>${lockTag()}</button>` : ""}`}`;
+`}`;
     },
 
     basket() {
-      if (!has("basket")) return `
+      if (false) return `
         ${header(t("basket"), "")}
         <div class="card soft" style="text-align:center;padding:28px 20px">
           <div class="mp-ic" style="margin:0 auto 12px;width:56px;height:56px">${I.basket}</div>
@@ -459,7 +464,7 @@
       const lines = (ls) => ls.map((l) => `<div class="qline"><span class="grow"><b>${esc(l.label ? l.label[S.lang] || l.label.en : l.product)}</b> <span class="sub">× ${l.quantityKg} kg</span><div class="sub">${esc(l.sellerName)} · ${fmt(l.pricePerKg)} ${t("perKgShort")}</div></span><b>${money(l.subtotal)}</b></div>`).join("");
       const totals = (o) => `<div class="qtot"><span>${t("goods")}</span><span>${money(o.goods)}</span><span>${t("delivery")}</span><span>${money(o.delivery)}</span><span class="b">${t("total")}</span><span class="b">${money(o.total)} so'm</span></div>`;
       return `
-        ${header(t("basket"), t("enterprise"))}
+        ${header(t("basket"), "")}
         <p class="sub wrap" style="margin:0 0 10px">${t("basketSub")}</p>
         <textarea id="basket" class="ta" rows="4" placeholder="${t("basketPh")}">${esc(S.basketText)}</textarea>
         <button class="btn" style="margin:10px 0 18px" data-act="quote" ${S.loading ? "disabled" : ""}>${I.basket}${t("getQuote")}</button>
@@ -509,7 +514,9 @@
         <p class="label caps">${t("reviews")}</p>
         ${reviews.length ? reviews.map((r) => `<div class="card"><div class="row"><b>${"★".repeat(r.rating)}</b><span class="sub">${esc(r.buyer && r.buyer.name || "Buyer")} · ${t("ago", daysBetween(r.createdAt))}</span></div>${r.comment ? `<p style="margin:8px 0 0">${esc(r.comment)}</p>` : ""}</div>`).join("")
           : `<div class="card soft"><div class="row" style="align-items:flex-start">${I.shield.replace("<svg", '<svg style="width:22px;height:22px;color:var(--primary);flex:none"')}<div><div class="name">${t("noReviews")}</div><p class="sub" style="margin:4px 0 0">${t("noReviewsBody")}</p></div></div></div>`}
-        <button class="btn" style="margin-top:8px" data-act="request" data-id="${s.id}">${t("requestOffer")}</button>`;
+        ${s.contactUnlocked && s.contact ? contactCard(s) : ""}
+        <button class="btn" style="margin-top:8px" data-act="request" data-id="${s.id}">${s.contactUnlocked ? t("requestOffer") : `${I.phone}${t("revealContact")}`}</button>
+        ${!s.contactUnlocked && S.me ? `<p class="sub wrap" style="text-align:center;margin:8px 0 0">${esc(t("revealHint", S.me.used, S.me.quota, S.me.unlimited))}</p>` : ""}`;
     },
 
     async sellers() {
@@ -651,13 +658,45 @@
     clearTimeout(toastT); toastT = setTimeout(() => (el.hidden = true), 2600);
   }
 
+  const contactCard = (s) => `
+    <div class="card" style="border-color:#CBEBD6;background:var(--positive-soft)">
+      <div class="row"><span class="mp-ic" style="background:#fff;color:var(--positive)">${I.phone}</span><div class="grow"><div class="name">${esc(s.contact.phone || "—")}</div><div class="sub wrap">${esc(s.bazaar)} · ${esc(s.region)}</div></div></div>
+      <div class="row" style="gap:8px;margin-top:10px">${s.contact.phone ? `<a class="btn ghost sm" href="tel:${esc(s.contact.phone)}">${I.phone}${t("call")}</a>` : ""}<a class="btn ghost sm" href="${esc(s.contact.mapsUrl)}" target="_blank" rel="noopener">${I.pin}${t("openMaps")}</a></div>
+    </div>`;
+
+  /** Reveal contact (quota-gated) or, once revealed, send the request. */
   async function requestSheet(id) {
     const s = await loadSeller(id);
+    if (!s.contactUnlocked) {
+      let r;
+      try { r = await api(`/sellers/${id}/unlock`, { method: "POST", body: "{}" }); }
+      catch (e) {
+        if (e.status === 402 && e.body) { S.me = { ...S.me, ...e.body.usage }; return quotaSheet(e.body); }
+        return toast(t("offline"));
+      }
+      S.me = { ...S.me, ...r.usage };
+      s.contactUnlocked = true; s.contact = r.contact;
+      haptic("medium"); try { tg.HapticFeedback.notificationOccurred("success"); } catch {}
+      toast(r.status === "already_unlocked" ? t("alreadyUnlocked") : t("contactRevealed"));
+      render();
+      sheet(`
+        <h3>${t("contactRevealed")}</h3>
+        ${contactCard(s)}
+        <p class="sub wrap" style="margin:8px 0 0"><b>${t("sellerSees")}:</b> ${esc(r.sellerNotice)}</p>
+        <button class="btn" data-act="sendRequest" data-id="${s.id}">${t("sendRequest")}</button>`);
+      return;
+    }
     sheet(`
-      <h3>${t("requestTitle")}</h3><p class="sub">${esc(t("requestBody", s.name))}</p>
-      <div class="card row" style="margin:12px 0 0">${avatar(s.name)}<div class="grow"><div class="name">${esc(s.name)}</div><div class="sub">${esc(s.phone || "")}</div></div></div>
-      ${s.phone ? `<a class="btn ghost" href="tel:${esc(s.phone)}">${I.phone}${t("call")}</a>` : ""}
+      <h3>${t("requestTitle")}</h3><p class="sub wrap">${esc(t("requestBody", s.name))}</p>
+      ${contactCard(s)}
       <button class="btn" data-act="sendRequest" data-id="${s.id}">${t("sendRequest")}</button>`);
+  }
+  function quotaSheet(q) {
+    const n = q.next;
+    sheet(`
+      <h3>${esc(t("quotaTitle", tierLabel(q.tier), q.quota))}</h3>
+      <p class="sub wrap">${n ? esc(t("quotaBody", tierLabel(n.tier), n.quota, n.priceUsd)) : ""}</p>
+      ${n ? `<button class="btn" data-act="pay" data-tier="${n.tier}">${I.star}${t("upgradeTo", tierLabel(n.tier))} · ${t("perMonth", n.priceUsd)}</button>` : ""}`);
   }
   function regionSheet() {
     sheet(`<h3>${t("chooseRegion")}</h3>${S.meta.provinces.map((p) => `<button class="opt ${store.province === p.key ? "on" : ""}" data-setprov="${p.key}">${esc(p.label[S.lang] || p.label.en)}${store.province === p.key ? "✓" : ""}</button>`).join("")}`);
@@ -672,68 +711,49 @@
 
   function planCard() {
     if (!S.me) return "";
-    const p = S.me.prices || {};
-    if (isEnt()) return `
-      <div class="card plan-ent">
-        <div class="row"><span class="badge gold">${t("enterprise")}</span><span class="grow"></span><b>${t("perMonth", p.enterpriseUsd)}</b></div>
-        <ul class="perks">${["perkUnlimited", "perkTop10", "perkForecast", "perkBasket", "perkAlerts"].map((k) => `<li>${I.check}${t(k)}</li>`).join("")}</ul>
-        <button class="sub" style="text-decoration:underline" data-act="downgrade">${t("downgradeDemo")}</button>
+    const tiers = S.me.tiers || { free: { quota: 5, priceUsd: 0 }, pro: { quota: 20, priceUsd: 7 }, max: { quota: 500, priceUsd: 79 } };
+    const cur = S.me.tier;
+    const pct = S.me.unlimited ? 0 : Math.min(100, (S.me.used / S.me.quota) * 100);
+    const perks = (arr) => `<ul class="perks">${arr.map((p) => `<li>${I.check}${esc(p)}</li>`).join("")}</ul>`;
+    const offer = (tier, perksArr) => cur === tier ? "" : `
+      <div class="card ${tier === "max" ? "plan-ent" : "soft"}">
+        <div class="row" style="margin-bottom:6px"><span class="badge ${tier === "max" ? "gold" : ""}">${tierLabel(tier)}</span><span class="grow"></span><b>${t("perMonth", tiers[tier].priceUsd)}</b></div>
+        ${perks(perksArr)}
+        <button class="btn" data-act="pay" data-tier="${tier}">${I.star}${t("upgradeTo", tierLabel(tier))}</button>
       </div>`;
-    const pct = Math.min(100, (S.me.used / S.me.limit) * 100);
     return `
-      <div class="card">
-        <div class="row"><span class="plan" style="margin:0">${t("standard")} · ${t("free")}</span></div>
-        <div class="usage" style="margin:12px 0 10px"><span class="meter"><i style="width:${pct}%"></i></span><span>${t("searchesToday", S.me.used, S.me.limit)}${S.me.credits ? ` · ${t("creditsLeft", S.me.credits)}` : ""}</span></div>
-        <button class="btn ghost" data-act="buyPack">${t("buyPack", p.creditPackSize, fmt(p.creditPackUzs))}</button>
+      <div class="card ${cur === "max" ? "plan-ent" : ""}">
+        <div class="row"><span class="badge ${cur === "max" ? "gold" : ""}" ${cur === "free" ? 'style="background:var(--chip);color:var(--muted)"' : ""}>${tierLabel(cur)}</span>${S.me.verifiedBuyer ? `<span class="vbuyer">✅ ${t("verifiedBuyer")}</span>` : ""}<span class="grow"></span><b>${t("perMonth", tiers[cur].priceUsd)}</b></div>
+        <div class="usage" style="margin:12px 0 4px">${S.me.unlimited ? `${I.star}<span>${t("contactsUnlimited")}</span>` : `<span class="meter"><i style="width:${pct}%"></i></span><span>${t("contactsUsed", S.me.used, S.me.quota)}</span>`}</div>
+        <p class="sub wrap" style="margin:8px 0 0">${t("planNote")}</p>
+        ${cur !== "free" ? `<button class="sub" style="text-decoration:underline;margin-top:10px" data-act="downgrade">${t("downgradeDemo")}</button>` : ""}
       </div>
-      <div class="card soft">
-        <div class="row" style="margin-bottom:8px"><span class="badge gold">${t("enterprise")}</span><span class="grow"></span><b>${t("perMonth", p.enterpriseUsd)}</b></div>
-        <p class="sub wrap" style="margin:0 0 10px">${t("upgradeSub")}</p>
-        <ul class="perks">${["perkUnlimited", "perkTop10", "perkForecast", "perkBasket", "perkAlerts"].map((k) => `<li>${I.check}${t(k)}</li>`).join("")}</ul>
-        <button class="btn" data-act="upgrade">${I.star}${t("upgrade")}</button>
-      </div>`;
+      ${offer("pro", t("proPerks"))}
+      ${offer("max", t("maxPerks"))}`;
   }
   function weightsCard(w) {
     const pc = (v) => Math.round(v * 100);
     return `
       <div class="card" style="padding:14px 16px">
-        <div class="row" style="margin-bottom:8px">${I.sliders.replace("<svg", '<svg style="width:16px;height:16px;color:var(--primary)"')}<b class="grow">${t("weightsTitle")}</b><span class="badge gold">${t("enterprise")}</span></div>
+        <div class="row" style="margin-bottom:8px">${I.sliders.replace("<svg", '<svg style="width:16px;height:16px;color:var(--primary)"')}<b class="grow">${t("weightsTitle")}</b></div>
         ${[["price", t("price")], ["quality", t("quality")], ["distance", t("distance")]].map(([k, l]) => `
           <label class="wrow"><span>${l}</span><input type="range" min="0" max="100" value="${pc(w[k])}" data-w="${k}" /><b data-wv="${k}">${pc(w[k])}%</b></label>`).join("")}
         <button class="btn sm" style="margin-top:8px" data-act="applyWeights">${t("apply")}</button>
       </div>`;
   }
-  function limitSheet() {
-    const p = S.me && S.me.prices || {};
-    sheet(`
-      <h3>${t("limitTitle")}</h3><p class="sub wrap">${t("limitBody", S.me ? S.me.limit : 5)}</p>
-      <button class="btn ghost" data-act="buyPack">${t("buyPack", p.creditPackSize, fmt(p.creditPackUzs || 0))}</button>
-      <button class="btn" data-act="upgrade">${I.star}${t("upgrade")}</button>`);
-  }
-  function upgradeSheet() {
-    const p = S.me && S.me.prices || {};
-    sheet(`
-      <div class="row" style="margin-bottom:6px"><span class="badge gold">${t("enterprise")}</span><span class="grow"></span><b>${t("perMonth", p.enterpriseUsd)}</b></div>
-      <h3>${t("upgrade")}</h3><p class="sub wrap">${t("upgradeSub")}</p>
-      <ul class="perks">${["perkUnlimited", "perkTop10", "perkForecast", "perkBasket", "perkAlerts"].map((k) => `<li>${I.check}${t(k)}</li>`).join("")}</ul>
-      <button class="btn" data-act="pay">${t("payNow", p.enterpriseUsd)}</button>`);
-  }
-  async function pay() {
+  /** Mock checkout: flips the tier on the backend. Real payment providers plug into /me/upgrade. */
+  async function pay(tier) {
     closeSheet();
     try {
-      const r = await api("/me/upgrade", { method: "POST", body: JSON.stringify({ tier: "enterprise" }) });
-      S.me = { ...S.me, ...r.usage }; S.weights = null;
+      const r = await api("/me/upgrade", { method: "POST", body: JSON.stringify({ tier }) });
+      S.me = { ...S.me, ...r.usage };
       try { tg.HapticFeedback.notificationOccurred("success"); } catch {}
-      popup(t("upgraded"), t("upgradedBody"), () => render());
+      popup(t("upgraded", tierLabel(r.tier)), t("upgradedBody", r.usage.quota, r.verifiedBuyer), () => render());
       render();
     } catch (e) { toast(t("offline")); }
   }
   async function downgrade() {
-    try { const r = await api("/me/upgrade", { method: "POST", body: JSON.stringify({ tier: "standard" }) }); S.me = { ...S.me, ...r.usage }; S.weights = null; S.quote = null; render(); } catch { toast(t("offline")); }
-  }
-  async function buyPack() {
-    closeSheet();
-    try { const r = await api("/me/credits", { method: "POST", body: "{}" }); S.me = { ...S.me, ...r.usage }; haptic("medium"); toast(t("packBought", r.added)); render(); } catch { toast(t("offline")); }
+    try { const r = await api("/me/upgrade", { method: "POST", body: JSON.stringify({ tier: "free" }) }); S.me = { ...S.me, ...r.usage }; render(); } catch { toast(t("offline")); }
   }
   async function getQuote() {
     const text = document.getElementById("basket").value.trim();
@@ -742,7 +762,6 @@
     try {
       S.quote = await api("/quote", { method: "POST", body: JSON.stringify({ text, province: S.province, lat: S.location && S.location.lat, lng: S.location && S.location.lng }) });
     } catch (e) {
-      if (e.status === 403) { S.loading = false; S.me = { ...S.me, ...(e.body && e.body.usage) }; render(); return upgradeSheet(); }
       toast(e.status === 400 ? t("unknownProduct") : t("offline"));
     }
     S.loading = false; haptic(); render();
@@ -861,10 +880,9 @@
       case "sendRequest": closeSheet(); haptic("medium"); try { tg.HapticFeedback.notificationOccurred("success"); } catch {} return toast(t("requestSent"));
       case "chooseRegion": return regionSheet();
       case "addProduct": haptic(); return addProductSheet();
-      case "upgrade": haptic(); return upgradeSheet();
-      case "pay": haptic("medium"); return pay();
+      case "upgrade": haptic(); return go("profile");
+      case "pay": haptic("medium"); return pay(d.tier || "pro");
       case "downgrade": return downgrade();
-      case "buyPack": haptic(); return buyPack();
       case "quote": haptic(); return getQuote();
       case "requestQuotes": haptic("medium"); try { tg.HapticFeedback.notificationOccurred("success"); } catch {} return toast(t("quotesRequested"));
       case "applyWeights": {

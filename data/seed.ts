@@ -63,6 +63,14 @@ const sellers: SellerSeed[] = [
     listings: [["tomato", 10_000, 300, 2], ["potato", 4_500, 300, 2], ["grape", 11_000, 200, 2]] },
   { name: "Farg'ona Fresh", reporting: "daily", bazaar: "Farg'ona Markaziy Bozor", region: "Farg'ona", province: "fargona", lat: 40.3842, lng: 71.7843, verified: true, rating: 4.4, reviewCount: 57, phone: "+998901110016",
     listings: [["tomato", 9_800, 200, 0], ["cucumber", 7_200, 200, 0], ["onion", 3_500, 300, 0], ["apple", 9_000, 100, 0]] },
+  { name: "Namangan Bog'lari", reporting: "daily", bazaar: "Namangan Markaziy Bozor", region: "Namangan", province: "namangan", lat: 40.9983, lng: 71.6726, verified: true, rating: 4.5, reviewCount: 52, phone: "+998901110018",
+    listings: [["tomato", 9_900, 200, 0], ["apple", 8_800, 100, 0], ["grape", 11_500, 100, 0]] },
+  { name: "Buxoro Sabzavot", reporting: "regular", bazaar: "Buxoro Markaziy Bozor", region: "Buxoro", province: "buxoro", lat: 39.7747, lng: 64.4286, verified: false, rating: 4.2, reviewCount: 31, phone: "+998901110019",
+    listings: [["tomato", 10_200, 300, 1], ["onion", 3_400, 300, 1], ["carrot", 3_700, 300, 1]] },
+  { name: "Jizzax Dehqon", reporting: "daily", bazaar: "Jizzax Dehqon Bozori", region: "Jizzax", province: "jizzax", lat: 40.1158, lng: 67.8422, verified: true, rating: 4.4, reviewCount: 38, phone: "+998901110020",
+    listings: [["potato", 4_400, 300, 0], ["onion", 3_500, 300, 0], ["tomato", 10_800, 200, 0]] },
+  { name: "Navoiy Meva", reporting: "regular", bazaar: "Navoiy Markaziy Bozor", region: "Navoiy", province: "navoiy", lat: 40.0844, lng: 65.3792, verified: false, rating: 4.1, reviewCount: 19, phone: "+998901110021",
+    listings: [["apple", 9_200, 100, 1], ["grape", 12_500, 100, 1]] },
   { name: "Andijon Dehqon", reporting: "none", bazaar: "Andijon Eski Shahar Bozori", region: "Andijon", province: "andijon", lat: 40.7821, lng: 72.3442, verified: false, rating: 4.3, reviewCount: 28, phone: "+998901110017",
     listings: [["tomato", 9_600, 300, 1], ["potato", 4_300, 500, 1], ["carrot", 3_900, 300, 1]] },
 ];
@@ -97,6 +105,7 @@ function schedule(r: Reporting): { days: number[]; lastAgoH: number } {
 }
 
 async function main() {
+  await prisma.contactUnlock.deleteMany();
   await prisma.buyerInteraction.deleteMany();
   await prisma.priceHistory.deleteMany();
   await prisma.review.deleteMany();
@@ -145,7 +154,7 @@ async function main() {
     { telegramUserId: "demo-buyer-8", name: "Sevara Alimova" },
   ];
   const buyers = [];
-  for (const b of buyerSeeds) buyers.push(await prisma.buyer.create({ data: { ...b, tier: "standard" } }));
+  for (const b of buyerSeeds) buyers.push(await prisma.buyer.create({ data: { ...b, tier: "free" } }));
 
   const comments: [rating: number, comment: string][] = [
     [5, "Fresh, delivered on time. Will order again."],
@@ -178,8 +187,8 @@ async function main() {
   }
 
   // ---- buyer interaction history (P4): two opposite habits ----
-  const cheap = await prisma.buyer.create({ data: { telegramUserId: "demo-cheap", name: "Arzon Xaridor", tier: "standard" } });
-  const quality = await prisma.buyer.create({ data: { telegramUserId: "demo-quality", name: "Sifat Xaridor", tier: "standard" } });
+  const cheap = await prisma.buyer.create({ data: { telegramUserId: "demo-cheap", name: "Arzon Xaridor", tier: "free" } });
+  const quality = await prisma.buyer.create({ data: { telegramUserId: "demo-quality", name: "Sifat Xaridor", tier: "free" } });
   const contacts: [buyerId: number, key: string][] = [
     // always the cheapest option in Tashkent, whatever the rating
     [cheap.id, "Sergeli Dehqon:tomato"], [cheap.id, "Qo'yliq Ulgurji:potato"], [cheap.id, "Qo'yliq Ulgurji:onion"], [cheap.id, "Qo'yliq Ulgurji:carrot"], [cheap.id, "Farhod aka:tomato"],

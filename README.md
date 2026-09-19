@@ -139,23 +139,30 @@ in a region fails the gate it is relaxed and the response says so (`gate.relaxed
 `/recommend` keeps its shape; it gains `weights`, `personalized`, `personalization`, `gate`,
 `excluded[]` and a `reliability` field per result.
 
-## Tiers & paywall
+## Buyer plans: Free / Pro / Max
 
-Identity comes from Telegram (the Mini App sends `Authorization: tma <initData>`, validated with
-`BOT_TOKEN` when the backend has it; the bot sends `x-telegram-user-id`). Everything about quotas and
-prices lives in `backend/src/limits.ts`:
+Search, AI ranking, prices, weights, forecasts and basket quotes are **free and unmetered for every
+tier**. The only gated action is revealing a seller's **phone number and exact location**
+("contact unlock"), counted in a rolling 30-day window. Everything lives in `backend/src/tiers.ts`
+(constants) and `backend/src/contactUnlock.ts` (logic).
 
-| | Standard (free) | Enterprise ($49/mo, fake checkout) |
-|---|---|---|
-| Searches | 5/day, +20 per 15 000 so'm pack | unlimited |
-| Results | top 3, fixed weights | top 10, adjustable weights |
-| Price history | 30 days | + 7-day forecast with buy/wait verdict |
-| Basket quote | locked | `POST /quote`: best single supplier vs best split, delivery included |
+| plan | contact unlocks / 30 days | price (placeholder) | extra |
+|---|---|---|---|
+| Free | 5 | $0 | |
+| Pro | 20 | $7/mo | |
+| Max | "unlimited" (500 anti-abuse cap) | $79/mo | `verifiedBuyer = true` → sellers see **✅ Tasdiqlangan xaridor** when the buyer reaches out |
 
-Endpoints: `GET /me`, `POST /me/upgrade` (`{tier}`), `POST /me/credits`, `GET /history/:sellerId/:product`,
-`POST /quote` (`{text}` or `{items}`). `/recommend` returns `402 limit_reached` when the quota is spent
-and `403 enterprise_required` guards Enterprise-only endpoints. The Profile tab has a "Demo: switch back
-to Standard" link so judges can see both sides.
+Rules in `unlockContact()`: a seller already unlocked by this buyer is returned again and **never
+charged twice**; otherwise unlocks in the window are counted and either a new `ContactUnlock` row
+is created or `quota_exceeded` is returned with the next tier to offer.
+
+Endpoints: `GET /me` (tier + usage), `POST /me/upgrade {tier}` (mock checkout — `tiers.setTier()` is
+the single write path so Payme/Click/Stars plug in there), `POST /sellers/:id/unlock`. Public
+seller/result payloads no longer include phone or lat/lng.
+
+Bot: every result has a **📞 <seller>** button; `/upgrade pro|max|free` is the demo tier switch.
+Mini App: "Reveal contact" on a seller profile; the plan card in Profile shows usage and the
+Pro/Max offers. If a seller row has `telegramUserId` set, the bot sends them the notice for real.
 
 ## The bot (`bot/`)
 
