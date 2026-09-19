@@ -82,6 +82,7 @@
       youSaid: "You said", yourPlan: "Your plan", prefPrice: "cheapest", prefQuality: "best quality", prefDistance: "nearest", prefBalanced: "balanced", within: (k) => `within ${k} km`, bestFor: "Best for", noneFor: "No offer found", speak: "Read aloud", tryExample: "Try: “500 kg tomatoes, 200 kg onions and 100 kg carrots, good quality, not more than 5 km”",
       openInBasket: "Open in basket", dictateList: "Dictate your list",
       score: "score",
+      holdHint: "Hold + for a second to talk to the assistant", checking: "AI is checking your listing…", verifyTitle: "AI check", verifyPassed: "Looks good — verified", verifyFailed: "Fix these before posting", verifyWarn: "Posted with notes", fixAndRetry: "Fix and try again", postAnyway: "Post anyway", detectedAs: (s) => `Photo shows: ${s}`, verifiedBadge: "AI verified",
       myProducts: "My products", addProduct: "Add a product", addProductSub: "List what you sell so buyers nearby can find you.",
       productName: "Product name", productNamePh: "e.g. Pomidor", pricePerKg: "Price (so'm/kg)", location: "Location", placePh: "Bazaar or city, e.g. Chorsu bozori",
       useMyLocation: "Use my location", locationSet: "GPS location attached", saveProduct: "Add product", fillAll: "Please fill in every field.",
@@ -161,6 +162,7 @@
       youSaid: "Siz aytdingiz", yourPlan: "Sizning rejangiz", prefPrice: "eng arzon", prefQuality: "eng sifatli", prefDistance: "eng yaqin", prefBalanced: "muvozanatli", within: (k) => `${k} km radiusda`, bestFor: "Eng mosi", noneFor: "Taklif topilmadi", speak: "Ovozli o'qish", tryExample: "Masalan: “500 kg pomidor, 200 kg piyoz va 100 kg sabzi kerak, sifatli bo'lsin, 5 km dan uzoq bo'lmasin”",
       openInBasket: "Savatda ochish", dictateList: "Ro'yxatni ayting",
       score: "ball",
+      holdHint: "Yordamchi bilan gaplashish uchun + ni bir soniya bosib turing", checking: "AI e'loningizni tekshirmoqda…", verifyTitle: "AI tekshiruvi", verifyPassed: "Hammasi joyida — tasdiqlandi", verifyFailed: "E'lon berishdan oldin bularni tuzating", verifyWarn: "Izohlar bilan joylandi", fixAndRetry: "Tuzatib qayta urinish", postAnyway: "Baribir joylash", detectedAs: (s) => `Rasmda: ${s}`, verifiedBadge: "AI tasdiqladi",
       myProducts: "Mahsulotlarim", addProduct: "Mahsulot qo'shish", addProductSub: "Nima sotayotganingizni kiriting — yaqin atrofdagi xaridorlar sizni topadi.",
       productName: "Mahsulot nomi", productNamePh: "masalan, Pomidor", pricePerKg: "Narx (so'm/kg)", location: "Joylashuv", placePh: "Bozor yoki shahar, masalan, Chorsu bozori",
       useMyLocation: "Joylashuvimni aniqlash", locationSet: "GPS joylashuv biriktirildi", saveProduct: "Qo'shish", fillAll: "Iltimos, barcha maydonlarni to'ldiring.",
@@ -240,6 +242,7 @@
       youSaid: "Вы сказали", yourPlan: "Ваш план", prefPrice: "подешевле", prefQuality: "качество", prefDistance: "поближе", prefBalanced: "сбалансированно", within: (k) => `в радиусе ${k} км`, bestFor: "Лучший вариант", noneFor: "Предложений нет", speak: "Озвучить", tryExample: "Например: «500 кг помидоров, 200 кг лука и 100 кг моркови, хорошего качества, не дальше 5 км»",
       openInBasket: "Открыть в корзине", dictateList: "Продиктовать список",
       score: "балл",
+      holdHint: "Удерживайте + секунду, чтобы поговорить с ассистентом", checking: "AI проверяет объявление…", verifyTitle: "Проверка AI", verifyPassed: "Всё в порядке — проверено", verifyFailed: "Исправьте перед публикацией", verifyWarn: "Опубликовано с замечаниями", fixAndRetry: "Исправить и повторить", postAnyway: "Опубликовать всё равно", detectedAs: (s) => `На фото: ${s}`, verifiedBadge: "Проверено AI",
       myProducts: "Мои товары", addProduct: "Добавить товар", addProductSub: "Укажите, что продаёте, — покупатели рядом вас найдут.",
       productName: "Название товара", productNamePh: "например, Помидор", pricePerKg: "Цена (сум/кг)", location: "Локация", placePh: "Базар или город, например, Чорсу",
       useMyLocation: "Определить моё местоположение", locationSet: "GPS-локация добавлена", saveProduct: "Добавить", fillAll: "Заполните все поля.",
@@ -405,7 +408,7 @@
   const route = () => { const h = location.hash.replace(/^#\/?/, ""); const [name, ...rest] = h.split("/"); return { name: name || "search", args: rest }; };
   const TABS = ["search", "hot", "sellers", "profile"];
   /** Which tab lights up for each sub-screen. */
-  const TAB_OF = { results: "search", history: "search", market: "search", basket: "search", assistant: "search", seller: "sellers", saved: "profile", plans: "profile", dashboard: "profile", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
+  const TAB_OF = { results: "search", history: "search", market: "search", basket: "search", seller: "sellers", saved: "profile", plans: "profile", dashboard: "profile", requests: "profile", notifications: "profile", deals: "profile", deal: "profile" };
   window.addEventListener("hashchange", render);
 
   let lastRouteKey = "";
@@ -510,11 +513,10 @@
           <button type="submit" class="icon-btn primary" aria-label="Search" ${S.loading ? "disabled" : ""}>${I.arrow}</button>
         </form>
         ${usagePill()}
-        <button class="asst-card" data-go="assistant"><span class="asst-mic">${I.mic}</span><span class="grow" style="text-align:left"><b>🎙️ ${t("assistant")}</b><span class="sub wrap" style="display:block">${t("assistantSub")}</span></span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
         <div class="row" style="margin:4px 0 10px"><p class="label" style="margin:0" >🔥 ${t("hotSales")} · ${esc(provLabel(S.province))}</p><span class="grow"></span><button class="sub" style="color:var(--primary);font-weight:700" data-go="hot">${t("seeAll")} ›</button></div>
-        ${S.hot.length ? `<div class="hstrip">${S.hot.map((it) => productCard(it, "pcard pcard-sm")).join("")}</div>` : empty(I.fire, t("noResults"))}
+        ${S.hot.length ? `<div class="hstrip" id="hstrip">${[S.hot[S.hot.length - 1], ...S.hot, S.hot[0]].map((it, i) => productCard(it, "pcard pcard-sm" + (i === 0 || i === S.hot.length + 1 ? " clone" : ""))).join("")}</div>` : empty(I.fire, t("noResults"))}
         <button class="link-row feature" style="margin-top:14px" data-go="basket"><span class="ic">${I.basket}</span><span class="grow"><b>${t("basket")}</b><span class="sub wrap" style="display:block">${t("basketLockedBody")}</span></span>${I.chev.replace("<svg", '<svg class="chev"')}</button>
-        <p class="foot-note">${t("footNote")}</p>
+        <p class="foot-note">${t("footNote")}<br><span style="opacity:.8">🎙️ ${t("holdHint")}</span></p>
         ${S.loading ? spinner() : ""}`;
     },
 
@@ -529,7 +531,7 @@
           ${i.best ? `<div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost sm" style="flex:1" data-pick="${i.best.sellerId}:${esc(i.product)}" data-go="seller/${i.best.sellerId}">${t("viewProfile")}</button><button class="btn sm" style="flex:1" data-act="makeDeal" data-id="${i.best.sellerId}" data-product="${esc(i.product)}">🤝 ${t("makeDeal")}</button></div>` : ""}
         </div>`;
       return `
-        ${header(t("assistant"), t("assistantSub"))}
+        <div class="row" style="margin-bottom:4px"><b style="font-size:16px">🎙️ ${t("assistant")}</b><span class="grow"></span><button class="icon-btn" data-act="asstClose" aria-label="Close">${I.close}</button></div>
         <div class="asst-stage">
           <button class="asst-big ${a.recording ? "rec" : ""}" data-act="asstMic" aria-label="${t("tapToTalk")}">${I.mic}</button>
           <div class="sub" style="font-weight:700;margin-top:10px">${a.recording ? t("tapToStop") : t("tapToTalk")}</div>
@@ -1114,7 +1116,7 @@
     const p = store.myProducts[i]; if (!p) return;
     sheet(`
       <h3>${t("postDetails")}</h3>
-      <div class="card mp-row">${p.photo ? photo(p.photo, "photo thumb") : `<span class="mp-ic">${I.bag}</span>`}<div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(catLabelOf(p.category))} · ${esc(p.place || provLabel(p.province))}</div></div><div class="price">${fmt(p.price)}<small>${t("perKgShort")}</small></div></div>
+      <div class="card mp-row">${p.photo ? photo(p.photo, "photo thumb") : `<span class="mp-ic">${I.bag}</span>`}<div class="grow"><div class="name">${esc(p.name)} ${p.verified ? `<span class="vbuyer" style="margin:0">✅ ${t("verifiedBadge")}</span>` : ""}</div><div class="sub">${esc(catLabelOf(p.category))} · ${esc(p.place || provLabel(p.province))}</div></div><div class="price">${fmt(p.price)}<small>${t("perKgShort")}</small></div></div>
       <div class="row" style="gap:8px"><button class="btn ghost sm" style="flex:1" data-act="deletePost" data-i="${i}">${t("delete")}</button><button class="btn sm" style="flex:1" data-act="editPost" data-i="${i}">${t("edit")}</button></div>`);
   }
 
@@ -1134,6 +1136,7 @@
       <label class="field"><span>${t("location")}</span><select id="ap-prov">${S.meta.provinces.map((p) => `<option value="${p.key}" ${p.key === (ex ? ex.province : store.province) ? "selected" : ""}>${esc(p.label[S.lang] || p.label.en)}</option>`).join("")}</select></label>
       <label class="field" style="margin-top:8px"><input id="ap-place" placeholder="${t("placePh")}" autocomplete="off" value="${esc(ex ? ex.place || "" : "")}" /></label>
       <button type="button" class="btn ghost" style="margin-top:10px" data-act="apLocate" id="ap-locate">${I.pin}<span>${t("useMyLocation")}</span></button>
+      <div id="ap-verify" hidden></div>
       <button type="button" class="btn" data-act="saveProduct">${ex ? t("saveProfile") : t("saveProduct")}</button>`);
     draftPhoto = ex ? ex.photo || "" : "";
     const f = document.getElementById("ap-file");
@@ -1152,18 +1155,38 @@
     el.addEventListener("click", (e) => { if (e.target === el || e.target.closest("[data-popup-ok]")) { el.remove(); onOk && onOk(); } });
     document.body.appendChild(el);
   }
-  function saveProduct() {
+  async function saveProduct(force = false) {
     const name = document.getElementById("ap-name").value.trim();
     const price = Number(document.getElementById("ap-price").value);
     const catBtn = document.querySelector("#ap-cat .chip.on");
     const province = document.getElementById("ap-prov").value;
     const place = document.getElementById("ap-place").value.trim();
     if (!name || !price || !catBtn) return toast(t("fillAll"));
+    // ---- AI check: photo ↔ name, category, price sanity, inappropriate content. Errors block; warnings inform.
+    let verdict = null;
+    if (!force) {
+      const btn = document.querySelector("#sheet [data-act=saveProduct]"); if (btn) { btn.disabled = true; btn.textContent = t("checking"); }
+      try { verdict = await api("/listings/verify", { method: "POST", body: JSON.stringify({ name, category: catBtn.dataset.apcat, price, province, photo: draftPhoto || null }) }); }
+      catch { verdict = null; }
+      if (btn) { btn.disabled = false; btn.textContent = editingIndex != null ? t("saveProfile") : t("saveProduct"); }
+      const box = document.getElementById("ap-verify");
+      if (verdict && box) {
+        const errors = verdict.issues.filter((i) => i.severity === "error"), warns = verdict.issues.filter((i) => i.severity === "warning");
+        box.hidden = false;
+        box.innerHTML = `<div class="verify ${errors.length ? "bad" : "good"}"><b>${I.shield}${errors.length ? t("verifyFailed") : t("verifyPassed")}</b>
+          ${verdict.detected.photoShows ? `<div class="sub">${esc(t("detectedAs", verdict.detected.photoShows))}</div>` : ""}
+          ${verdict.issues.map((i) => `<div class="vi ${i.severity}">${i.severity === "error" ? "⛔" : "⚠️"} ${esc(i.message[S.lang] || i.message.en)}</div>`).join("")}
+          ${!errors.length && warns.length ? `<button class="btn sm" style="margin-top:8px" data-act="saveProductForce">${t("postAnyway")}</button>` : ""}</div>`;
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        if (errors.length) { haptic("heavy"); return; }
+        if (warns.length) return; // user confirms with "post anyway"
+      }
+    }
     if (editingIndex != null && store.myProducts[editingIndex]) {
-      Object.assign(store.myProducts[editingIndex], { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto });
+      Object.assign(store.myProducts[editingIndex], { name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, verified: !!(verdict && verdict.ok && verdict.aiChecked) });
       editingIndex = null; save(); closeSheet(); haptic(); toast(t("updated")); return render();
     }
-    store.myProducts.unshift({ id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, at: new Date().toISOString() });
+    store.myProducts.unshift({ id: Date.now(), name, category: catBtn.dataset.apcat, price, province, place, loc: draftLoc, photo: draftPhoto, verified: !!(verdict && verdict.ok && verdict.aiChecked), at: new Date().toISOString() });
     save(); closeSheet(); haptic("medium");
     try { tg.HapticFeedback.notificationOccurred("success"); } catch {}
     popup(t("productAdded"), t("productAddedBody", name), () => { if (route().name !== "profile") go("profile"); else render(); });
@@ -1222,15 +1245,23 @@
     recordVoice((text) => { toast(t("heard", text)); runSearch(text, { provinceExplicit: true }); }, (on) => { S.listening = on; render(); });
   }
 
-  // ---------------------------------------------------------------- AI assistant
+  // ---------------------------------------------------------------- AI assistant (Siri-style overlay)
+  function assistantOpen() { return !document.getElementById("asst").hidden; }
+  function openAssistant(autoListen = true) {
+    const el = document.getElementById("asst");
+    el.hidden = false; renderAssistant();
+    if (autoListen && !S.rec) recordVoice((text) => askAssistant(text), (on) => { S.asst.recording = on; renderAssistant(); });
+  }
+  function closeAssistant() { if (S.rec) { try { S.rec.stop(); } catch {} } document.getElementById("asst").hidden = true; try { speechSynthesis.cancel(); } catch {} }
+  function renderAssistant() { const el = document.getElementById("asst"); if (!el.hidden) el.innerHTML = `<div class="asst-panel">${SCREENS.assistant()}</div>`; }
   async function askAssistant(text) {
     S.asst.text = text; S.asst.loading = true; S.asst.result = null;
-    if (route().name !== "assistant") go("assistant"); else render();
+    if (!assistantOpen()) openAssistant(false); else renderAssistant();
     try {
       S.asst.result = await api("/assistant", { method: "POST", body: JSON.stringify({ text, province: S.province, lat: S.location && S.location.lat, lng: S.location && S.location.lng }) });
       haptic("medium");
     } catch (e) { toast(e.body && e.body.error ? e.body.error : t("offline")); }
-    S.asst.loading = false; render();
+    S.asst.loading = false; renderAssistant();
   }
   function speak(text) {
     if (!("speechSynthesis" in window)) return toast(t("micUnsupported"));
@@ -1244,6 +1275,25 @@
 
   // ---------------------------------------------------------------- events (delegated)
   function afterRender(name) {
+    if (name === "search") {
+      // looping carousel: start on the real first card; when a clone is reached, jump silently to its twin
+      const st = document.getElementById("hstrip");
+      if (st && st.children.length > 2) {
+        const cards = [...st.children], n = cards.length - 2;
+        const posOf = (i) => cards[i].offsetLeft - (st.clientWidth - cards[i].offsetWidth) / 2;
+        st.scrollLeft = posOf(1);
+        let timer;
+        st.addEventListener("scroll", () => {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            const centre = st.scrollLeft + st.clientWidth / 2;
+            const idx = cards.findIndex((c) => Math.abs(c.offsetLeft + c.offsetWidth / 2 - centre) < c.offsetWidth / 2);
+            if (idx === 0) st.scrollTo({ left: posOf(n), behavior: "instant" });
+            else if (idx === n + 1) st.scrollTo({ left: posOf(1), behavior: "instant" });
+          }, 120);
+        }, { passive: true });
+      }
+    }
     if (name === "hot") {
       const view = document.getElementById("view");
       view.onscroll = async () => {
@@ -1267,6 +1317,16 @@
   }
 
   function submitSearch() { const v = document.getElementById("q").value; if (v.trim()) { haptic(); runSearch(v, { provinceExplicit: true }); } }
+  // Hold the centre + for one second → assistant (Siri-style). A plain tap still posts a product.
+  let holdTimer = null, held = false;
+  const fabOf = (e) => e.target.closest && e.target.closest("#tabbar .fab");
+  document.addEventListener("pointerdown", (e) => { const f = fabOf(e); if (!f) return; held = false; f.classList.add("holding"); holdTimer = setTimeout(() => { held = true; f.classList.remove("holding"); haptic("heavy"); openAssistant(true); }, 1000); });
+  const endHold = (e) => { const f = fabOf(e) || document.querySelector("#tabbar .fab"); if (holdTimer) clearTimeout(holdTimer); holdTimer = null; if (f) f.classList.remove("holding"); };
+  document.addEventListener("pointerup", endHold); document.addEventListener("pointercancel", endHold); document.addEventListener("pointerleave", endHold, true);
+  document.addEventListener("click", (e) => { if (fabOf(e) && held) { e.stopPropagation(); e.preventDefault(); held = false; } }, true);
+  document.addEventListener("contextmenu", (e) => { if (fabOf(e)) e.preventDefault(); });
+  document.getElementById("asst").addEventListener("click", (e) => { if (e.target === e.currentTarget) closeAssistant(); });
+
   document.addEventListener("input", (e) => {
     if (e.target.id === "deal-qty" || e.target.id === "deal-price") updateDealTotal();
     if (e.target.dataset && e.target.dataset.w) { const b = document.querySelector(`[data-wv="${e.target.dataset.w}"]`); if (b) b.textContent = e.target.value + "%"; }
@@ -1290,7 +1350,7 @@
     const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat],[data-fcat],[data-ptab],[data-pick],[data-win],[data-linksel]");
     if (!el) return;
     const d = el.dataset;
-    if (d.go !== undefined) { haptic(); closeSheet(); return go(d.go); }
+    if (d.go !== undefined) { haptic(); closeSheet(); if (assistantOpen()) closeAssistant(); return go(d.go); }
     if (d.cat) { S.category = d.cat; return render(); }
     if (d.ptab) { S.profileTab = d.ptab; return render(); }
     if (d.win) { S.dashWindow = d.win; return render(); }
@@ -1312,7 +1372,9 @@
     switch (d.act) {
       case "back": return back();
       case "mic": return mic();
-      case "asstMic": return recordVoice((text) => askAssistant(text), (on) => { S.asst.recording = on; render(); });
+      case "asstMic": return recordVoice((text) => askAssistant(text), (on) => { S.asst.recording = on; renderAssistant(); });
+      case "asstClose": return closeAssistant();
+      case "openAssistant": return openAssistant(true);
       case "basketMic": return recordVoice((text) => { const ta = document.getElementById("basket"); S.basketText = (S.basketText ? S.basketText + "\n" : "") + text.replace(/\s*(,|\bva\b|\bи\b|\band\b)\s*/gi, "\n"); if (ta) ta.value = S.basketText; toast(t("heard", text)); getQuote(); }, (on) => { S.basketRec = on; render(); });
       case "speak": return S.asst.result && speak(S.asst.result.answer);
       case "asstToBasket": { const r = S.asst.result; S.basketText = r.items.filter((i) => i.best).map((i) => `${i.quantity || i.best.minOrderKg} ${per(i.product).split("/")[1]} ${plabel(i.product)}`).join("\n"); return go("basket"); }
@@ -1344,7 +1406,8 @@
         const w = {}; document.querySelectorAll("[data-w]").forEach((i) => (w[i.dataset.w] = Number(i.value) / 100));
         S.weights = w; haptic(); return runSearch(`${S.q.text}${S.q.qty ? " " + S.q.qty + " kg" : ""}`, { provinceExplicit: true });
       }
-      case "saveProduct": return saveProduct();
+      case "saveProduct": return saveProduct(false);
+      case "saveProductForce": return saveProduct(true);
       case "apLocate": return locateForProduct();
       case "removeProduct": store.myProducts.splice(Number(d.i), 1); save(); haptic(); return render();
       case "addAlert": return alertSheet(S.results ? S.results.product : S.meta.products[0].key);
@@ -1375,7 +1438,8 @@
     const lat = parseFloat(params.get("lat")), lng = parseFloat(params.get("lng"));
     if (!isNaN(lat) && !isNaN(lng)) S.location = { lat, lng };
     const screen = params.get("screen");
-    if (screen && !params.get("product")) { history.replaceState(null, "", "#" + screen); }
+    if (screen === "assistant") { history.replaceState(null, "", "#search"); setTimeout(() => openAssistant(true), 400); }
+    else if (screen && !params.get("product")) { history.replaceState(null, "", "#" + screen); }
     const product = params.get("product");
     if (product) { if (!location.hash || location.hash === "#search") history.replaceState(null, "", "#search"); await runSearch(product, { region: params.get("region") || undefined }); }
     else render();

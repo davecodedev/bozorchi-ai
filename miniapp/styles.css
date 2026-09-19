@@ -357,3 +357,22 @@ a { color: var(--primary); text-decoration: none; }
 .asst-big svg { width: 44px; height: 44px; }
 .asst-big:active { transform: scale(.96); }
 .asst-big.rec { background: var(--alert); box-shadow: 0 0 0 10px rgba(194,59,50,.15); animation: pulse 1s infinite; }
+
+/* ---------- Siri-style assistant overlay ---------- */
+#asst { position: fixed; inset: 0; z-index: 22; background: rgba(27,29,46,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: flex-end; }
+.asst-panel { width: 100%; max-width: 640px; margin: 0 auto; max-height: 88dvh; overflow-y: auto; background: var(--bg); border-radius: 22px 22px 0 0; padding: 14px 16px calc(20px + var(--tg-safe-area-inset-bottom, var(--safe-b))); animation: up .22s ease-out; }
+.asst-panel .asst-stage { padding: 8px 0 4px; }
+.asst-panel .asst-big { width: 96px; height: 96px; }
+.asst-panel .asst-big svg { width: 38px; height: 38px; }
+#tabbar button.fab.holding span { transform: scale(1.12); background: #6B4DF6; transition: transform .9s ease, background .9s ease; }
+#tabbar button.fab span { transition: transform .15s ease; }
+.pcard.clone { opacity: .999; }
+
+/* ---------- AI listing check ---------- */
+.verify { border-radius: 14px; padding: 12px 14px; margin: 12px 0 4px; font-size: 13px; }
+.verify b { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.verify b svg { width: 16px; height: 16px; }
+.verify.good { background: var(--positive-soft); color: #14603A; border: 1px solid #CBEBD6; }
+.verify.bad { background: var(--alert-soft); color: #8A2A23; border: 1px solid #F1C9C5; }
+.verify .vi { margin-top: 6px; line-height: 1.4; }
+.verify .vi.warning { color: #7A5A00; }

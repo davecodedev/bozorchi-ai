@@ -17,6 +17,7 @@ import { photoFor } from "./photos.js";
 import { transcribeAudio, transcribeAvailable } from "./transcribe.js";
 import { sellerDashboard, WINDOWS } from "./dashboard.js";
 import { runAssistant } from "./assistant.js";
+import { verifyListing } from "./verify.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -27,7 +28,7 @@ import { DEFAULT_WEIGHTS } from "./scoring.js";
 import { getSeller, listSellers } from "./sellers.js";
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "6mb" })); // listing photos arrive as data URLs
 app.use("/transcribe", express.raw({ type: ["audio/*", "video/*", "application/octet-stream"], limit: "8mb" }));
 
 // Mini App may be served from another origin (e.g. Vercel) — allow it.
@@ -231,6 +232,12 @@ app.post("/deals/:id/decline", async (req, res) => {
     const { actor } = await actorFor(req, req.params.id);
     res.json({ deal: presentDeal(await declineDeal(req.params.id, actor), "buyer") });
   } catch (e) { dealErr(res, e); }
+});
+
+/** AI verification of a listing before it is posted (photo ↔ name, category, price sanity, inappropriate content). */
+app.post("/listings/verify", async (req, res) => {
+  try { res.json(await verifyListing(req.body ?? {})); }
+  catch (e) { console.error(e); res.status(500).json({ error: "internal error" }); }
 });
 
 /** AI assistant: multi-item request + preferences → per-item picks, basket quote and a spoken answer. */
