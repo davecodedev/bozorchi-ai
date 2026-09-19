@@ -5,6 +5,7 @@
  * Run: npm run db:seed   (from repo root)
  */
 import { PrismaClient } from "@prisma/client";
+import { CATEGORIES, PRODUCTS, type Category } from "../backend/src/products.js";
 
 const prisma = new PrismaClient();
 
@@ -76,14 +77,15 @@ const sellers: SellerSeed[] = [
 ];
 
 // ---- price history generation (P3) ----
-const HISTORY_DAYS = 45;
-/** Deliberate 45-day trends per product so the forecast has something real to detect. */
-const TREND: Record<string, number> = { tomato: 0.15, onion: -0.08, potato: 0.03, cucumber: -0.12, carrot: 0.0, apple: 0.05, grape: 0.10 };
-const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000);
 function prng(seedStr: string) {
   let seed = [...seedStr].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 11);
   return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 2 ** 32; };
 }
+const HISTORY_DAYS = 45;
+/** Deliberate 45-day trends per product so the forecast has something real to detect. */
+const TREND: Record<string, number> = { tomato: 0.15, onion: -0.08, potato: 0.03, cucumber: -0.12, carrot: 0.0, apple: 0.05, grape: 0.10 };
+for (const p of PRODUCTS) if (!(p.key in TREND)) { const r = prng("trend:" + p.key); TREND[p.key] = Math.round((r() * 0.27 - 0.12) * 100) / 100; } // −12% … +15%
+const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000);
 /** Price on day index i (0 = HISTORY_DAYS ago … HISTORY_DAYS = today) following the product trend + noise. */
 function priceOn(i: number, current: number, product: string, rnd: () => number, noisy: boolean) {
   const trend = TREND[product] ?? 0;
@@ -104,7 +106,69 @@ function schedule(r: Reporting): { days: number[]; lastAgoH: number } {
   }
 }
 
+// ---------------- generated sellers: ~50 per category so every product has ~50 listings ----------------
+const SELLERS_PER_CATEGORY = 50;
+const PROVINCES: { key: string; city: string; lat: number; lng: number; weight: number; bazaars: string[] }[] = [
+  { key: "toshkent-shahri", city: "Toshkent", lat: 41.3111, lng: 69.2797, weight: 10, bazaars: ["Chorsu Bazaar", "Olmazor Bazaar", "Farhod Bazaar", "Yunusobod Bazaar", "Qo'yliq Bazaar", "Sergeli Bazaar", "Mirobod Bazaar", "Parkent Bazaar", "Beshyog'och Bazaar", "Chilonzor Bazaar", "Oloy Bazaar", "Malika Bozori", "Abu Saxiy Bozori", "Bek Baraka Bozori", "O'rikzor Bozori", "Yangiobod Bozori", "Qorasuv Bozori", "Ippodrom Bozori"] },
+  { key: "toshkent", city: "Qibray", lat: 41.39, lng: 69.47, weight: 2, bazaars: ["Qibray Dehqon Bozori", "Chirchiq Markaziy Bozor", "Angren Bozori"] },
+  { key: "samarqand", city: "Samarqand", lat: 39.6542, lng: 66.9597, weight: 2, bazaars: ["Siyob Bozori", "Samarqand Markaziy Bozor"] },
+  { key: "fargona", city: "Farg'ona", lat: 40.3842, lng: 71.7843, weight: 2, bazaars: ["Farg'ona Markaziy Bozor", "Qo'qon Bozori", "Marg'ilon Bozori"] },
+  { key: "andijon", city: "Andijon", lat: 40.7821, lng: 72.3442, weight: 1, bazaars: ["Andijon Eski Shahar Bozori"] },
+  { key: "namangan", city: "Namangan", lat: 40.9983, lng: 71.6726, weight: 1, bazaars: ["Namangan Markaziy Bozor"] },
+  { key: "buxoro", city: "Buxoro", lat: 39.7747, lng: 64.4286, weight: 1, bazaars: ["Buxoro Markaziy Bozor"] },
+  { key: "xorazm", city: "Urganch", lat: 41.55, lng: 60.6333, weight: 1, bazaars: ["Urganch Dehqon Bozori"] },
+  { key: "qashqadaryo", city: "Qarshi", lat: 38.86, lng: 65.789, weight: 1, bazaars: ["Qarshi Markaziy Bozor"] },
+  { key: "navoiy", city: "Navoiy", lat: 40.0844, lng: 65.3792, weight: 1, bazaars: ["Navoiy Markaziy Bozor"] },
+  { key: "jizzax", city: "Jizzax", lat: 40.1158, lng: 67.8422, weight: 1, bazaars: ["Jizzax Dehqon Bozori"] },
+  { key: "surxondaryo", city: "Termiz", lat: 37.2242, lng: 67.2783, weight: 1, bazaars: ["Termiz Markaziy Bozor"] },
+];
+const FIRST = ["Akmal", "Nodira", "Bobur", "Dilnoza", "Jasur", "Madina", "Sardor", "Sevara", "Otabek", "Gulnora", "Rustam", "Zulfiya", "Sherzod", "Malika", "Farrux", "Nigora", "Ulug'bek", "Kamola", "Aziz", "Feruza", "Doston", "Shahnoza", "Bekzod", "Munisa", "Javlon", "Dildora"];
+const BRAND_A = ["Baraka", "Farovon", "Zamin", "Omad", "Iqbol", "Ziyo", "Nur", "Umid", "Bahor", "Navro'z", "Chinor", "Ipak", "Oltin", "Kumush", "Yulduz", "Diyor", "Sharq", "Obod", "Sahovat", "Rizq", "Barakat", "Istiqbol", "Kamalak", "Mehr", "Sarbon"];
+const BRAND_B: Record<Category, string[]> = {
+  vegetables: ["Sabzavot", "Dehqon", "Agro"], fruits: ["Meva", "Bog'i", "Fresh"], meat: ["Go'sht", "Qassob", "Ferma"], dairy: ["Sut", "Milk", "Ferma"],
+  grains: ["Don", "Savdo", "Ulgurji"], spices: ["Ziravor", "Savdo", "Trade"], nuts: ["Meva", "Savdo", "Quruq Meva"], household: ["Market", "Savdo", "Home"],
+  building: ["Qurilish", "Stroy", "Beton"], textiles: ["Mato", "Tekstil", "Atlas"], electronics: ["Elektro", "Tech", "Market"], tools: ["Asbob", "Instrument", "Master"],
+};
+type GenSeller = Omit<SellerSeed, "listings"> & { listings: SellerSeed["listings"] };
+function generateSellers(existingNames: Set<string>): GenSeller[] {
+  const out: GenSeller[] = [];
+  const provPool = PROVINCES.flatMap((p) => Array(p.weight).fill(p) as typeof PROVINCES);
+  let phone = 20;
+  for (const cat of CATEGORIES) {
+    const products = PRODUCTS.filter((p) => p.category === cat.key);
+    const rnd = prng("sellers:" + cat.key);
+    for (let i = 0; i < SELLERS_PER_CATEGORY; i++) {
+      const prov = provPool[Math.floor(rnd() * provPool.length)];
+      let name = rnd() < 0.45
+        ? `${FIRST[Math.floor(rnd() * FIRST.length)]} ${rnd() < 0.5 ? "aka" : "opa"}`
+        : `${BRAND_A[Math.floor(rnd() * BRAND_A.length)]} ${BRAND_B[cat.key][Math.floor(rnd() * BRAND_B[cat.key].length)]}${rnd() < 0.3 ? " MCHJ" : ""}`;
+      let n = 2; const base = name; while (existingNames.has(name)) name = `${base} ${n++}`;
+      existingNames.add(name);
+      const r = rnd();
+      const reporting: Reporting = r < 0.6 ? "daily" : r < 0.9 ? "regular" : r < 0.95 ? "quiet" : "none";
+      const regional = prov.key !== "toshkent-shahri";
+      const listings: SellerSeed["listings"] = [];
+      for (const p of products) {
+        if (rnd() > 0.95) continue; // a few sellers skip a product
+        const spread = 0.8 + rnd() * 0.4; // ±20 %
+        const regionalDiscount = regional ? 0.82 : 1;
+        const price = Math.max(50, Math.round((p.basePrice * spread * regionalDiscount) / (p.basePrice >= 10_000 ? 500 : 50)) * (p.basePrice >= 10_000 ? 500 : 50));
+        const minOrder = p.unit === "kg" || p.unit === "l" ? [10, 20, 50, 100, 200][Math.floor(rnd() * 5)] : p.unit === "dona" ? [1, 5, 10, 50][Math.floor(rnd() * 4)] : p.unit === "qop" ? [5, 10, 20][Math.floor(rnd() * 3)] : [10, 50, 100][Math.floor(rnd() * 3)];
+        listings.push([p.key, price, minOrder, 0]);
+      }
+      out.push({
+        name, bazaar: prov.bazaars[Math.floor(rnd() * prov.bazaars.length)], region: prov.key === "toshkent-shahri" ? ["Chilanzar", "Yunusabad", "Mirabad", "Yakkasaray", "Shaykhantahur", "Almazar", "Sergeli", "Bektemir", "Uchtepa", "Yashnabad"][Math.floor(rnd() * 10)] : prov.city,
+        province: prov.key, lat: prov.lat + (rnd() - 0.5) * (regional ? 0.06 : 0.16), lng: prov.lng + (rnd() - 0.5) * (regional ? 0.06 : 0.2),
+        verified: rnd() < 0.6, rating: Math.round((3.5 + rnd() * 1.4) * 10) / 10, reviewCount: Math.floor(5 + rnd() * 300), phone: `+99890${String(1110000 + phone++).padStart(7, "0")}`,
+        reporting, listings,
+      });
+    }
+  }
+  return out;
+}
+
 async function main() {
+  await prisma.deal.deleteMany();
   await prisma.contactUnlock.deleteMany();
   await prisma.buyerInteraction.deleteMany();
   await prisma.priceHistory.deleteMany();
@@ -117,11 +181,15 @@ async function main() {
   let historyCount = 0;
   let firstSellerId = 0;
   const listingIds = new Map<string, number>(); // "Seller name:product" → listing id (for interactions)
-  for (const { listings, reporting, ...data } of sellers) {
+  const allSeeds: SellerSeed[] = [...sellers, ...generateSellers(new Set(sellers.map((x) => x.name)))];
+  let historyBatch: { sellerId: number; product: string; region: string; price: number; reportedAt: Date }[] = [];
+  const flushHistory = async () => { if (historyBatch.length) { await prisma.priceHistory.createMany({ data: historyBatch }); historyCount += historyBatch.length; historyBatch = []; } };
+  for (const { listings, reporting, ...data } of allSeeds) {
     const seller = await prisma.seller.create({ data });
     firstSellerId ||= seller.id;
     const { days, lastAgoH } = schedule(reporting);
     const lastDay = days.length ? Math.max(...days) : HISTORY_DAYS;
+    const listingRows = [];
     for (const [product, pricePerKg, minOrderKg, ago] of listings) {
       const rnd = prng(`${seller.name}:${product}`);
       const rows = days.map((i) => ({
@@ -132,16 +200,18 @@ async function main() {
       }));
       // the spammer files the same price ten times a day — pure repetition, no information
       if (reporting === "spammer") for (const r of [...rows]) for (let k = 1; k < 10; k++) rows.push({ ...r, reportedAt: new Date(r.reportedAt.getTime() - k * 3_600_000) });
-      if (rows.length) { await prisma.priceHistory.createMany({ data: rows }); historyCount += rows.length; }
+      historyBatch.push(...rows);
+      if (historyBatch.length >= 2000) await flushHistory();
       const last = rows.length ? new Date(Math.max(...rows.map((r) => r.reportedAt.getTime()))) : daysAgo(ago);
-      const listing = await prisma.listing.create({
-        // placeholder photo per seller+product (picsum.photos, deterministic by seed) — real uploads later
-        data: { sellerId: seller.id, product, pricePerKg, minOrderKg, reportedAt: last, photoUrl: `https://picsum.photos/seed/${encodeURIComponent(`${product}-${seller.id}`)}/640/400` },
-      });
-      listingIds.set(`${seller.name}:${product}`, listing.id);
-      listingCount++;
+      // placeholder photo per seller+product (picsum.photos, deterministic by seed) — real uploads later
+      listingRows.push({ sellerId: seller.id, product, pricePerKg, minOrderKg, reportedAt: last, photoUrl: `https://picsum.photos/seed/${encodeURIComponent(`${product}-${seller.id}`)}/640/400` });
     }
+    await prisma.listing.createMany({ data: listingRows });
+    const created = await prisma.listing.findMany({ where: { sellerId: seller.id }, select: { id: true, product: true } });
+    for (const l of created) listingIds.set(`${seller.name}:${l.product}`, l.id);
+    listingCount += listingRows.length;
   }
+  await flushHistory();
 
   // ---- fake buyers + reviews so every profile has a few (deterministic, not random) ----
   const buyerSeeds = [
@@ -174,18 +244,18 @@ async function main() {
 
   let reviewCount = 0;
   const allSellers = await prisma.seller.findMany({ orderBy: { id: "asc" } });
+  const reviewRows = [];
   for (const [i, seller] of allSellers.entries()) {
     // 2–4 reviews per seller, picked deterministically so demos are repeatable
     const n = 2 + ((i * 7) % 3);
     for (let k = 0; k < n; k++) {
       const [rating, comment] = comments[(i * 5 + k * 3) % comments.length];
       const buyer = buyers[(i + k * 2) % buyers.length];
-      await prisma.review.create({
-        data: { sellerId: seller.id, buyerId: buyer.id, rating, comment, createdAt: daysAgo(3 + ((i * 11 + k * 9) % 40)) },
-      });
-      reviewCount++;
+      reviewRows.push({ sellerId: seller.id, buyerId: buyer.id, rating, comment, createdAt: daysAgo(3 + ((i * 11 + k * 9) % 40)) });
     }
   }
+  for (let i = 0; i < reviewRows.length; i += 1000) await prisma.review.createMany({ data: reviewRows.slice(i, i + 1000) });
+  reviewCount = reviewRows.length;
 
   // ---- buyer interaction history (P4): two opposite habits ----
   const cheap = await prisma.buyer.create({ data: { telegramUserId: "demo-cheap", name: "Arzon Xaridor", tier: "free" } });
@@ -205,7 +275,7 @@ async function main() {
     interactionCount += 2;
   }
 
-  console.log(`Seeded ${sellers.length} sellers, ${listingCount} listings, ${historyCount} price reports, ${buyers.length + 2} buyers, ${reviewCount} reviews, ${interactionCount} interactions.`);
+  console.log(`Seeded ${allSeeds.length} sellers, ${listingCount} listings, ${historyCount} price reports, ${buyers.length + 2} buyers, ${reviewCount} reviews, ${interactionCount} interactions.`);
 }
 
 main()

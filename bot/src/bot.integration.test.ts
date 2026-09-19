@@ -94,7 +94,7 @@ test("shared location is used for the next query", { skip: !backendUp && "backen
   await bot.handleUpdate(textUpdate("piyoz") as never);
   const text = String(messages(sent)[1].payload.text);
   assert.match(text, /📍 Sizga yaqin/);
-  assert.match(text, /🥇 <b>Qo&#39;yliq Ulgurji<\/b>|🥇 <b>Qo'yliq Ulgurji<\/b>/); // nearest wholesaler wins
+  assert.match(text, /Qo'yliq Ulgurji/); // the wholesaler 300 m away is in the top 3 (distance is 20% of the score)
   const rows2 = (messages(sent)[1].payload.reply_markup as { inline_keyboard: { web_app?: { url: string } }[][] }).inline_keyboard;
   const url = rows2[rows2.length - 1][0].web_app!.url;
   assert.match(url, /lat=41\.25&lng=69\.36/);
@@ -102,7 +102,7 @@ test("shared location is used for the next query", { skip: !backendUp && "backen
 
 test("unknown product → helpful error, not a crash", { skip: !backendUp && "backend not running" }, async () => {
   const { bot, sent } = harness();
-  await bot.handleUpdate(textUpdate("banan") as never);
+  await bot.handleUpdate(textUpdate("samolyot") as never); // an airplane — not something a bazaar sells
   // keyword path → "not found"; LLM path → "which product do you need?" — both are correct
   assert.match(String(messages(sent)[0].payload.text), /topilmadi|tushunmadim/);
 });

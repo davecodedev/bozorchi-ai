@@ -22,7 +22,7 @@ export function parseBasket(text: string): { items: BasketItem[]; unknown: strin
   for (const raw of text.split(/[\n,;]+/)) {
     const line = raw.trim();
     if (!line) continue;
-    const m = line.match(/(\d+(?:[.,]\d+)?)\s*(kg|кг|t|tonna|тонн[аы]?|т)\b/i);
+    const m = line.match(/(\d+(?:[.,]\d+)?)\s*(kg|кг|t|tonna|тонн[аы]?|т|dona|ta|шт|qop|мешок|l|litr|л|m|metr|м)\b/i);
     let qty = 100;
     let rest = line;
     if (m) {

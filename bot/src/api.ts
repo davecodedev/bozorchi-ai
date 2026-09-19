@@ -28,6 +28,7 @@ export interface Result {
 
 export interface RecommendResponse {
   product: string;
+  unit?: "kg" | "l" | "dona" | "qop" | "m";
   province?: string | null;
   label: { uz: string; ru: string; en: string };
   candidates: number;

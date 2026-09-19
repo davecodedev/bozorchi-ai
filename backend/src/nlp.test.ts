@@ -86,6 +86,8 @@ test("toKg: weight units normalise, non-weight units return null", () => {
   assert.equal(toKg(2, "t"), 2000);
   assert.equal(toKg(3, "тонны"), 3000);
   assert.equal(toKg(500, null), 500);
-  assert.equal(toKg(10, "qop"), null);
+  assert.equal(toKg(10, "qop"), 10); // bags / pieces pass through in the listing's own unit
+  assert.equal(toKg(3, "dona"), 3);
+  assert.equal(toKg(10, "quti"), null); // unknown unit → no filter
   assert.equal(toKg(null, "kg"), null);
 });

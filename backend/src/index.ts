@@ -15,7 +15,7 @@ import { marketChartPng, marketChartSvg, marketView } from "./market.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
-import { CATEGORIES, PRODUCTS, resolveProduct } from "./products.js";
+import { CATEGORIES, PRODUCTS, resolveProduct, UNIT_LABEL } from "./products.js";
 import { prisma } from "./db.js";
 import { recommend, RecommendError } from "./recommend.js";
 import { DEFAULT_WEIGHTS } from "./scoring.js";
@@ -72,8 +72,9 @@ app.post("/sellers/:id/unlock", async (req, res) => {
 /** Everything the Mini App needs to draw its chips. */
 app.get("/meta", (_req, res) =>
   res.json({
-    products: PRODUCTS.map(({ key, category, label }) => ({ key, category, label })),
+    products: PRODUCTS.map(({ key, category, unit, label }) => ({ key, category, unit, label })),
     categories: CATEGORIES,
+    units: UNIT_LABEL,
     provinces: PROVINCES.map(({ key, label }) => ({ key, label })),
     defaultWeights: DEFAULT_WEIGHTS,
   }),

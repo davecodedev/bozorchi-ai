@@ -149,5 +149,7 @@ export function toKg(quantity: number | null, unit: string | null): number | nul
   if (/^(t|tonna|ton|tons|tonne|tonnes|тонн[аы]?|т)$/.test(u)) return quantity * 1000;
   if (/^(kg|kilogram|kilograms|кг|килограмм)$/.test(u)) return quantity;
   if (/^(g|gram|grams|г|гр|грамм)$/.test(u)) return quantity / 1000;
-  return null; // pieces, boxes, sacks… not a weight we can filter on
+  // pieces / bags / litres / metres: the listing's own unit — pass the number through
+  if (/^(dona|ta|pc|pcs|piece|pieces|шт|штук|qop|bag|bags|мешок|мешков|l|litr|liter|litre|л|литр|m|metr|meter|metre|м|метр)$/.test(u)) return quantity;
+  return null;
 }

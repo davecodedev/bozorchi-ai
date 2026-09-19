@@ -15,6 +15,19 @@ bazarcha/
 └── data/      seed.ts — mock sellers × products for Tashkent
 ```
 
+## Catalog & seed data
+
+`backend/src/products.ts` defines **55 products across 12 categories** — vegetables, fruits, meat &
+eggs, dairy, grains & staples, spices, nuts & dried fruit, household, building materials, textiles &
+clothing, electronics, tools — each with a unit (`kg`, `l`, `dona` = piece, `qop` = 50 kg bag, `m`) and
+aliases in Uzbek, Russian and English. Search resolves exact aliases, aliases inside a sentence, then
+fuzzy matches (1–2 typos: "kartoshkaa", "pomidr").
+
+`data/seed.ts` generates **~50 sellers per category** (621 total, 21 hand-written + 600 generated
+deterministically) so every product has ~45–70 listings, plus 45 days of price history per listing
+(~96k reports), reviews, and the reliability/personalisation demo fixtures. Quantities in searches
+use the listing's unit ("20 qop sement", "100 dona tuxum", "500 kg pomidor").
+
 ## Quick start
 
 ```bash

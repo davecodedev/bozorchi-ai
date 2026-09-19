@@ -1,6 +1,6 @@
 import { prisma } from "./db.js";
 import { distanceKm, resolveProvince, resolveRegion } from "./geo.js";
-import { productLabel, resolveProduct } from "./products.js";
+import { productLabel, productUnit, resolveProduct } from "./products.js";
 import { computeReliabilityBulk, type Tier } from "./reliability.js";
 import { rankCandidates, type Candidate, type Weights } from "./scoring.js";
 
@@ -21,7 +21,7 @@ export interface RecommendRequest {
   region?: string;
   /** Province key (from the Mini App chips) — filters sellers AND sets buyer location. */
   province?: string;
-  /** Requested order size; sellers whose minimum order is larger are excluded. */
+  /** Requested order size in the listing's unit (kg / l / dona / qop / m); sellers whose minimum order is larger are excluded. */
   quantityKg?: number;
   /** Search radius in km. Defaults to DEFAULT_RADIUS_KM, or unlimited when a province is given. */
   radiusKm?: number;
@@ -135,6 +135,7 @@ export async function recommend(req: RecommendRequest) {
   return {
     product: productKey,
     label: productLabel(productKey),
+    unit: productUnit(productKey),
     province: province?.key ?? null,
     quantityKg: quantityKg ?? null,
     radiusKm: Number.isFinite(radiusKm) ? radiusKm : null,

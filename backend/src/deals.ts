@@ -11,7 +11,7 @@ import type { Deal } from "@prisma/client";
 import { calculateCommission, type Commission } from "./commission.js";
 import { contactOf, type Contact } from "./contactUnlock.js";
 import { prisma } from "./db.js";
-import { productLabel } from "./products.js";
+import { productLabel, productUnit } from "./products.js";
 
 export type DealStatus = "offered" | "countered" | "accepted" | "declined";
 export type Actor = "buyer" | "seller";
@@ -94,7 +94,7 @@ export function presentDeal(d: Loaded, viewer: Actor = "buyer"): Record<string, 
   const commission = status === "accepted" && d.totalValue != null ? calculateCommission(d.totalValue) : null;
   return {
     id: d.id, status, turn, yourTurn: turn === viewer,
-    listingId: d.listingId, product: d.listing.product, label: productLabel(d.listing.product), photoUrl: d.listing.photoUrl, listPrice: d.listing.pricePerKg,
+    listingId: d.listingId, product: d.listing.product, label: productLabel(d.listing.product), unit: productUnit(d.listing.product), photoUrl: d.listing.photoUrl, listPrice: d.listing.pricePerKg,
     seller: { id: d.seller.id, name: d.seller.name, bazaar: d.seller.bazaar, region: d.seller.region, verified: d.seller.verified, rating: d.seller.rating },
     buyer: { name: d.buyer.name, verifiedBuyer: d.buyer.verifiedBuyer },
     quantity: d.quantity, initialOffer: d.initialOffer, counterOffer: d.counterOffer, agreedPrice: d.agreedPrice, totalValue: d.totalValue,

@@ -274,6 +274,8 @@
   const PALETTE = ["#3E5CF6", "#2F7DE1", "#1AA6E6", "#0BB5C9", "#2D68F0"];
   const color = (s) => PALETTE[[...String(s)].reduce((a, c) => a + c.charCodeAt(0), 0) % PALETTE.length];
   const avatar = (name, cls = "") => `<span class="avatar ${cls}" style="background:${color(name)}">${esc(initials(name))}</span>`;
+  const unitOf = (key) => { const p = S.meta && S.meta.products.find((x) => x.key === key); return p ? p.unit : "kg"; };
+  const per = (keyOrUnit) => { const u = ["kg", "l", "dona", "qop", "m"].includes(keyOrUnit) ? keyOrUnit : unitOf(keyOrUnit); const lbl = S.meta && S.meta.units && S.meta.units[u] ? (S.meta.units[u][S.lang] || S.meta.units[u].en) : u; return `${S.lang === "ru" ? "сум" : "so'm"}/${lbl}`; };
   const plabel = (key) => { const p = S.meta && S.meta.products.find((x) => x.key === key); return p ? p.label[S.lang] || p.label.en : key; };
   const provLabel = (key) => { const p = S.meta && S.meta.provinces.find((x) => x.key === key); return p ? p.label[S.lang] || p.label.en : key || ""; };
   const isSaved = (id) => store.saved.includes(Number(id));
@@ -303,10 +305,10 @@
   function parseQuery(raw) {
     let text = raw.replace(/[·•]/g, " ").trim();
     let qty = null;
-    const m = text.match(/(\d+(?:[.,]\d+)?)\s*(kg|кг|t|tonna|тонн[аы]?|т)\b/i);
+    const m = text.match(/(\d+(?:[.,]\d+)?)\s*(kg|кг|t|tonna|тонн[аы]?|т|dona|ta|шт|qop|мешок|litr|л|metr|м)\b/i);
     if (m) {
       const n = parseFloat(m[1].replace(",", "."));
-      qty = /^(t|tonna|тонн|т)/i.test(m[2]) ? n * 1000 : n;
+      qty = /^(t|tonna|тонн|т)$/i.test(m[2]) ? n * 1000 : n;
       text = text.replace(m[0], " ").replace(/\s+/g, " ").trim();
     }
     return { text, qty };
@@ -379,7 +381,7 @@
     <div class="hdr"><div class="hdr-icon">${icon}</div><div><h1>${esc(title)}</h1><p>${esc(sub)}</p></div></div>`;
   const catChips = (active, dataKey) => `
     <p class="label">${t("category")}</p>
-    <div class="chips">
+    <div class="chips scroll">
       <button class="chip ${active === "all" ? "on" : ""}" data-${dataKey}="all">${t("all")}</button>
       ${S.meta.categories.map((c) => `<button class="chip ${active === c.key ? "on" : ""}" data-${dataKey}="${c.key}">${esc(c.label[S.lang] || c.label.en)}</button>`).join("")}
     </div>`;
@@ -399,7 +401,8 @@
   const sellerRow = (s) => `
     <div class="card row"><button class="row grow" data-go="seller/${s.id}" style="text-align:left">${avatar(s.name)}
       <div class="grow"><div class="name">${esc(s.name)}</div><div class="sub">${esc(s.region)} · <span class="star">★ ${s.rating.toFixed(1)}</span>${s.reliability ? ` · <span class="tier-dot ${s.reliability.tier}"></span>${t({ gold: "tierGold", silver: "tierSilver", bronze: "tierBronze", new: "tierNew" }[s.reliability.tier])}` : ""}</div></div></button>${bmBtn(s.id)}</div>`;
-  const sellerCats = (s) => (s.categories || []).map((c) => t("catLabel", c)).join(" & ") || "—";
+  const catLabelOf = (key) => { const c = S.meta && S.meta.categories.find((x) => x.key === key); return c ? (c.label[S.lang] || c.label.en) : t("catLabel", key); };
+  const sellerCats = (s) => (s.categories || []).slice(0, 2).map(catLabelOf).join(" & ") || "—";
   const tierBadge = (rel) => {
     if (!rel) return "";
     const k = { gold: "tierGold", silver: "tierSilver", bronze: "tierBronze", new: "tierNew" }[rel.tier] || "tierNew";
@@ -453,7 +456,7 @@
       const d = S.results;
       if (!d) { go("search"); return ""; }
       const w = S.meta.defaultWeights;
-      const sub = `${S.q.qty ? S.q.qty + " kg " : ""}${plabel(d.product).toLowerCase()} · ${provLabel(S.province)}`;
+      const sub = `${S.q.qty ? S.q.qty + " " + per(d.product).split("/")[1] + " " : ""}${plabel(d.product)} · ${provLabel(S.province)}`;
       const [top, ...rest] = d.results;
       const cheapestId = d.results.length ? d.results.reduce((a, b) => (a.pricePerKg <= b.pricePerKg ? a : b)).sellerId : null;
       return `
@@ -467,7 +470,7 @@
           <div class="row" style="margin-bottom:14px">${avatar(top.sellerName, "md")}
             <div class="grow"><div class="name">${esc(top.sellerName)}</div><div class="sub">${esc(top.region)}</div></div>
             <div style="text-align:right"><div class="big">${Math.round(top.score)}</div><div class="sub">${t("matchScore")}</div></div></div>
-          <div class="price-row"><span class="price">${fmt(top.pricePerKg)} <small>${t("perKg")}</small></span><span class="sub">${top.minOrderKg ? t("minOrder", top.minOrderKg) + " · " : ""}${top.distanceKm} km</span></div>
+          <div class="price-row"><span class="price">${fmt(top.pricePerKg)} <small>${per(d.product)}</small></span><span class="sub">${top.minOrderKg ? `min. ${top.minOrderKg} ${per(d.product).split("/")[1]} · ` : ""}${top.distanceKm} km</span></div>
           ${bars(top.breakdown)}
           <button class="btn" style="margin-top:16px" data-go="seller/${top.sellerId}">${t("viewProfile")} ${I.arrow}</button>
         </div>
@@ -475,7 +478,7 @@
         ${rest.map((r) => `
           <button class="card" style="width:100%;text-align:left" data-go="seller/${r.sellerId}">
             <div class="row">${photo(r.photoUrl, "photo thumb")}<span class="rank">#${r.rank}</span><div class="grow"><div class="name">${esc(r.sellerName)}</div><div class="sub">${esc(r.region)} · ${r.distanceKm} km</div></div>
-              <div style="text-align:right;flex:none"><div class="big" style="font-size:24px">${Math.round(r.score)}</div><div class="price" style="font-size:14px">${fmt(r.pricePerKg)}<small>${t("perKgShort")}</small></div></div></div>
+              <div style="text-align:right;flex:none"><div class="big" style="font-size:24px">${Math.round(r.score)}</div><div class="price" style="font-size:14px">${fmt(r.pricePerKg)}<small>/${per(d.product).split("/")[1]}</small></div></div></div>
             <div class="legend"><span><i class="dot"></i>${t("price")} <b>${Math.round(r.breakdown.priceScore)}</b></span><span><i class="dot q"></i>${t("quality")} <b>${Math.round(r.breakdown.qualityScore)}</b></span><span><i class="dot d"></i>${t("dist")} <b>${Math.round(r.breakdown.distanceScore)}</b></span></div>
             ${r.sellerId === cheapestId ? `<div class="hint">${t("cheapestNote")}</div>` : ""}
           </button>`).join("")}
@@ -543,11 +546,11 @@
           ${bars(match.breakdown)}
           <p class="sub" style="margin:12px 0 0">${esc(t("priceNote", Math.round(match.breakdown.priceScore)))}</p>
         </div>
-        <div class="chips"><span class="tag">${esc(plabel(product))}</span>${S.q.qty ? `<span class="tag">${esc(t("requested", S.q.qty))}</span>` : ""}<span class="tag">${fmt(match.pricePerKg)} ${t("perKg")}</span></div>
+        <div class="chips"><span class="tag">${esc(plabel(product))}</span>${S.q.qty ? `<span class="tag">${esc(t("requested", S.q.qty))}</span>` : ""}<span class="tag">${fmt(match.pricePerKg)} ${per(product)}</span></div>
         ${trendLine((s.products.find((p) => p.product === product) || {}).trend)}`
         : `
         <div class="card"><p class="label caps" style="margin-bottom:12px">${t("currentPrices")}</p>
-          ${s.products.length ? s.products.map((p) => `<div style="padding:8px 0;border-top:1px solid var(--border)"><div class="row">${photo(p.photoUrl, "photo thumb")}<div class="grow"><b>${esc(plabel(p.product))}</b><div class="sub">${t("minOrder", p.minOrderKg)} · ${t("ago", daysBetween(p.reportedAt))}</div></div><b>${fmt(p.pricePerKg)} ${t("perKg")}</b></div>${trendLine(p.trend)}</div>`).join("") : `<div class="sub">—</div>`}
+          ${s.products.length ? s.products.map((p) => `<div style="padding:8px 0;border-top:1px solid var(--border)"><div class="row">${photo(p.photoUrl, "photo thumb")}<div class="grow"><b>${esc(plabel(p.product))}</b><div class="sub">min. ${p.minOrderKg} ${per(p.product).split("/")[1]} · ${t("ago", daysBetween(p.reportedAt))}</div></div><b>${fmt(p.pricePerKg)} ${per(p.product)}</b></div>${trendLine(p.trend)}</div>`).join("") : `<div class="sub">—</div>`}
         </div>`}
         ${product ? `<button class="link-row soft" data-go="history/${s.id}/${product}">${I.trend.replace("<svg", '<svg style="width:18px;height:18px"')}<span class="grow">${t("viewHistory")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>` : ""}
         <p class="label caps">${t("reviews")}</p>
@@ -597,7 +600,7 @@
         <p class="label caps" style="margin-top:20px">${t("myProducts")}</p>
         ${store.myProducts.length ? store.myProducts.map((p, i) => `
           <div class="card mp-row" style="padding:12px 14px"><span class="mp-ic">${I.bag}</span>
-            <div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(t("catLabel", p.category))} · ${esc(p.place || provLabel(p.province))}</div></div>
+            <div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${esc(catLabelOf(p.category))} · ${esc(p.place || provLabel(p.province))}</div></div>
             <div class="price" style="font-size:15px">${fmt(p.price)}<small>${t("perKgShort")}</small></div>
             <button class="x" data-act="removeProduct" data-i="${i}" aria-label="Remove">${I.close}</button></div>`).join("")
           : `<p class="sub wrap" style="margin:0 0 10px">${t("noProducts")}</p>`}
@@ -648,7 +651,7 @@
         ${header(t("myDeals"), "")}
         ${deals.length ? deals.map((d) => `
           <button class="card" style="width:100%;text-align:left" data-go="deal/${d.id}">
-            <div class="row">${photo(d.photoUrl, "photo thumb")}<div class="grow"><div class="name">${esc(plabel(d.product))} · ${d.quantity} kg</div><div class="sub">${esc(d.seller.name)}</div><div class="sub wrap" style="margin-top:2px;color:${d.status === "accepted" ? "var(--positive)" : d.status === "declined" ? "var(--alert)" : "var(--primary)"};font-weight:700">${d.yourTurn ? "🔔 " : ""}${esc(st(d))}</div></div>
+            <div class="row">${photo(d.photoUrl, "photo thumb")}<div class="grow"><div class="name">${esc(plabel(d.product))} · ${d.quantity} ${per(d.product).split("/")[1]}</div><div class="sub">${esc(d.seller.name)}</div><div class="sub wrap" style="margin-top:2px;color:${d.status === "accepted" ? "var(--positive)" : d.status === "declined" ? "var(--alert)" : "var(--primary)"};font-weight:700">${d.yourTurn ? "🔔 " : ""}${esc(st(d))}</div></div>
               <div style="text-align:right;flex:none"><div class="price">${fmt(d.agreedPrice ?? d.counterOffer ?? d.initialOffer)}<small>${t("perKgShort")}</small></div>${d.totalValue ? `<div class="sub">${fmt(d.totalValue)}</div>` : ""}</div></div>
           </button>`).join("") : `<p class="foot-note">${t("dealsEmpty")}</p>`}`;
     },
@@ -664,10 +667,10 @@
         <div class="callout ${color}" style="margin-top:0">${d.status === "accepted" ? I.check : d.status === "declined" ? I.close : I.bell}<div><b>${esc(st)}</b>${d.status === "declined" ? t("ended") : ""}</div></div>
         <div class="card">
           <div class="row" style="margin-bottom:8px">${photo(d.photoUrl, "photo thumb")}<div class="grow"><div class="name">${esc(plabel(d.product))}</div><div class="sub">${esc(d.seller.name)} · ${esc(d.seller.bazaar)}</div></div></div>
-          ${line(t("quantityKg"), `${d.quantity} kg`)}
-          ${line(t("yourOffer"), `${fmt(d.initialOffer)} ${t("perKgLabel")}`)}
-          ${d.counterOffer != null ? line(t("sellerCounter"), `${fmt(d.counterOffer)} ${t("perKgLabel")}`) : ""}
-          ${d.agreedPrice != null ? line(t("agreed"), `${fmt(d.agreedPrice)} ${t("perKgLabel")}`, true) : ""}
+          ${line(t("quantityKg").replace(/\s*\(.*\)$/, ""), `${d.quantity} ${per(d.product).split("/")[1]}`)}
+          ${line(t("yourOffer"), `${fmt(d.initialOffer)} ${per(d.product)}`)}
+          ${d.counterOffer != null ? line(t("sellerCounter"), `${fmt(d.counterOffer)} ${per(d.product)}`) : ""}
+          ${d.agreedPrice != null ? line(t("agreed"), `${fmt(d.agreedPrice)} ${per(d.product)}`, true) : ""}
           ${d.totalValue != null ? line(t("totalValue"), `${fmt(d.totalValue)} so'm`, true) : line(t("runningTotal"), `${fmt((d.counterOffer ?? d.initialOffer) * d.quantity)} so'm`)}
         </div>
         ${d.status === "countered" ? `
@@ -833,7 +836,7 @@
     const sel = products.find((p) => p.product === productKey) || products[0];
     sheet(`
       <h3>🤝 ${t("dealTitle")}</h3><p class="sub wrap">${esc(t("dealSub", s.name))}</p>
-      <label class="field"><span>${t("product")}</span><select id="deal-product">${products.map((p) => `<option value="${p.listingId}" data-price="${p.pricePerKg}" data-min="${p.minOrderKg}" ${p.listingId === sel.listingId ? "selected" : ""}>${esc(plabel(p.product))} · ${fmt(p.pricePerKg)} ${t("perKgLabel")}</option>`).join("")}</select></label>
+      <label class="field"><span>${t("product")}</span><select id="deal-product">${products.map((p) => `<option value="${p.listingId}" data-price="${p.pricePerKg}" data-min="${p.minOrderKg}" data-unit="${per(p.product)}" ${p.listingId === sel.listingId ? "selected" : ""}>${esc(plabel(p.product))} · ${fmt(p.pricePerKg)} ${per(p.product)}</option>`).join("")}</select></label>
       <label class="field"><span>${t("quantityKg")}</span><div class="row" style="gap:8px"><button type="button" class="icon-btn" data-step="-10">−</button><input id="deal-qty" type="number" inputmode="numeric" min="${sel.minOrderKg}" step="10" value="${Math.max(sel.minOrderKg, 100)}" style="text-align:center" /><button type="button" class="icon-btn" data-step="10">+</button></div></label>
       <label class="field"><span>${t("offerPrice")}</span><input id="deal-price" type="number" inputmode="numeric" value="${sel.pricePerKg}" /><span class="sub" id="deal-list" style="margin-top:4px">${esc(t("listPrice", fmt(sel.pricePerKg)))}</span></label>
       <div class="price-row" style="margin-top:14px"><span class="sub">${t("runningTotal")}</span><span class="price" id="deal-total"></span></div>
