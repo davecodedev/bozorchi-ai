@@ -19,6 +19,11 @@ test("full parse → canonical key, kg, district from the parsed region", () => 
   assert.deepEqual(r, { product: "tomato", quantityKg: 500, region: "Chilanzar" });
 });
 
+test("LLM returned nothing but keyword fallback found a product → use it", () => {
+  const r = resolveQuery("kartoshka yunusobod", p({ productKey: "potato" }), undefined);
+  assert.deepEqual(r, { product: "potato", quantityKg: undefined, region: "Yunusabad" });
+});
+
 test("unknown product name is passed through so /recommend can 404 with a helpful message", () => {
   assert.equal(resolveQuery("banan", p({ product: "banan" })).product, "banan");
 });

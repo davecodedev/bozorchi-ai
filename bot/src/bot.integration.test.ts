@@ -40,7 +40,8 @@ const textUpdate = (text: string, lang?: string) => ({
   update_id: updateId++,
   message: { message_id: updateId, date: 0, chat, from: user(lang), text },
 });
-const messages = (sent: Sent[]) => sent.filter((s) => s.method === "sendMessage");
+// Result messages only — the bot may first send a "🧠 Got it: …" line when the LLM parser is on.
+const messages = (sent: Sent[]) => sent.filter((s) => s.method === "sendMessage" && !String(s.payload.text).startsWith("🧠"));
 
 test("/start replies with welcome + quick-pick keyboard", { skip: !backendUp && "backend not running" }, async () => {
   const { bot, sent } = harness();
@@ -97,7 +98,8 @@ test("shared location is used for the next query", { skip: !backendUp && "backen
 test("unknown product → helpful error, not a crash", { skip: !backendUp && "backend not running" }, async () => {
   const { bot, sent } = harness();
   await bot.handleUpdate(textUpdate("banan") as never);
-  assert.match(String(messages(sent)[0].payload.text), /topilmadi/);
+  // keyword path → "not found"; LLM path → "which product do you need?" — both are correct
+  assert.match(String(messages(sent)[0].payload.text), /topilmadi|tushunmadim/);
 });
 
 test("voice without STT configured → asks to type", { skip: !backendUp && "backend not running" }, async () => {

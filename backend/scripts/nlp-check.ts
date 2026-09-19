@@ -19,7 +19,8 @@ if (!nlpAvailable()) {
 }
 const prov = selectProviderName();
 console.log(`provider: ${prov} · model: ${prov === "gemini" ? GEMINI_MODEL : ANTHROPIC_MODEL}`);
-for (const input of INPUTS) {
+for (const [i, input] of INPUTS.entries()) {
+  if (i > 0) await new Promise((r) => setTimeout(r, 4000)); // free-tier rate limits are tight
   const t0 = Date.now();
   const r = await parseQuery(input);
   console.log(`\n> ${JSON.stringify(input)}   (${Date.now() - t0} ms)`);

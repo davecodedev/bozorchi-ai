@@ -149,14 +149,14 @@ export interface ResolvedQuery {
 /**
  * Merge the LLM's structured fields with our fallbacks:
  *  - parser unavailable (no API key) → old behaviour: raw text + keyword district extraction
- *  - parser ran but found no product   → null (bot asks)
+ *  - parser ran but found no product   → null (bot asks) — unless keyword matching on the raw text found one
  *  - region: parsed region → district alias map; else district named anywhere in the raw text; else the user's last region
  */
 export function resolveQuery(rawText: string, parsed: ParsedQuery, lastRegion?: string): ResolvedQuery {
   if (!parsed.available) {
     return { product: rawText, quantityKg: undefined, region: extractRegion(rawText) ?? lastRegion };
   }
-  if (!parsed.product) return { product: null, quantityKg: undefined, region: undefined };
+  if (!parsed.product && !parsed.productKey) return { product: null, quantityKg: undefined, region: undefined };
   const region = (parsed.region ? extractRegion(parsed.region) : undefined) ?? extractRegion(rawText) ?? lastRegion;
   return { product: parsed.productKey ?? parsed.product, quantityKg: parsed.quantityKg ?? undefined, region };
 }

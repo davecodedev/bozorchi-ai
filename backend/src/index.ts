@@ -94,8 +94,10 @@ app.post("/parse", async (req, res) => {
   res.json({
     available: true,
     ...parsed,
-    // canonical key if the model's product name is one we sell ("помидоры" → "tomato"); null otherwise
-    productKey: parsed.product ? resolveProduct(parsed.product) : null,
+    // canonical key if the model's product name is one we sell ("помидоры" → "tomato"). When the
+    // model returned nothing (rate limit, outage), fall back to keyword matching on the raw text so
+    // a plain "kartoshka" still works — the bot only asks when neither finds a product.
+    productKey: parsed.product ? resolveProduct(parsed.product) : resolveProduct(text),
     quantityKg: toKg(parsed.quantity, parsed.unit),
   });
 });

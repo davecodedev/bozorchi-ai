@@ -28,6 +28,7 @@ test("gemini provider sends model, system instruction, JSON mime type, token cap
   assert.equal(seen[0].config.systemInstruction, SYSTEM_PROMPT);
   assert.equal(seen[0].config.maxOutputTokens, NLP_MAX_TOKENS);
   assert.equal(seen[0].config.responseMimeType, "application/json");
+  assert.equal(seen[0].config.thinkingConfig.thinkingBudget, 0);
   assert.deepEqual(r, { product: "piyoz", quantity: 2, unit: "t", region: null });
 });
 

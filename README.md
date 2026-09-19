@@ -85,19 +85,32 @@ in @BotFather → Bot Settings → Menu Button so the app opens from the chat's 
 ## LLM query parsing (`backend/src/nlp.ts`)
 
 The bot no longer keyword-matches the raw message. Every text or transcribed voice message goes
-through `parseQuery()` first — one `claude-haiku-4-5` call (200 max tokens, JSON-only system prompt)
-that returns `{product, quantity, unit, region}` from messy Uzbek / Russian / mixed input, typos and
+through `parseQuery()` first — one small-model call (200 max tokens, JSON-only system prompt) that
+returns `{product, quantity, unit, region}` from messy Uzbek / Russian / mixed input, typos and
 voice-transcript run-ons. It is exposed as `POST /parse` and the bot calls it right before `/recommend`.
+
+Two providers, picked from whichever key is in `backend/.env` (`NLP_PROVIDER` overrides):
+
+| provider | key | model |
+|---|---|---|
+| `gemini` (default when set) | `GEMINI_API_KEY` — Gemini Developer API; `AQ.…` express keys work too | `gemini-3.6-flash`, thinking off (`gemini-2.5-flash` is closed to new accounts) |
+| `anthropic` | `ANTHROPIC_API_KEY` | `claude-haiku-4-5` |
+
+Free-tier Gemini keys have tight per-minute limits; when a call is rate-limited the parser returns
+nulls and `/parse` falls back to keyword matching on the raw text, so a plain "kartoshka" still works.
 
 Rules in the bot (`resolveQuery()` in `bot/src/bot.ts`):
 
 - **No product found** → the bot asks what they need; it never calls `/recommend` blind.
 - **No region** → the district named anywhere in the text, else the user's last used region, else Tashkent.
 - **No quantity** → no minimum-order filter. Weight units are normalised to kg (`2 tonna` → 2000).
-- **No `ANTHROPIC_API_KEY`** (or any API failure) → `parseQuery` returns all nulls and the bot falls back
+- **No key** (or any API failure) → `parseQuery` returns all nulls and the bot falls back
   to the old keyword path, so the demo never breaks mid-conversation.
 
-Set `ANTHROPIC_API_KEY` in `backend/.env`, then verify against realistic inputs:
+Verified live (Gemini): `500 kg pomidor kerak, Toshkent` → pomidor · 500 kg · Toshkent;
+`menga span piyoz kerakk tezroq` → piyoz, no quantity; a mixed Uzbek/Russian run-on with
+"две тонны картошка … yunusobodga" → kartoshka · 2000 kg · Yunusobod; nonsense and empty → all nulls.
+Re-run any time with:
 
 ```bash
 npm run nlp:check --workspace backend
