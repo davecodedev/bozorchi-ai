@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bozorchi AI — Admin</title>
+<link rel="stylesheet" href="admin.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="login" class="login hidden">
+  <form id="loginForm" class="login-card">
+    <div class="logo">🛒 Bozorchi AI</div>
+    <h1>Platform admin</h1>
+    <p class="muted">Enter the admin password (ADMIN_PASSWORD in backend/.env).</p>
+    <input id="pw" type="password" placeholder="Password" autocomplete="current-password" />
+    <button class="btn primary" type="submit">Sign in</button>
+    <p id="loginErr" class="err"></p>
+  </form>
+</div>
+
+<div id="shell" class="shell hidden">
+  <aside class="sidebar">
+    <div class="logo">🛒 Bozorchi AI <span class="tag">admin</span></div>
+    <nav id="nav">
+      <a data-page="overview" class="active">📊 Overview</a>
+      <a data-page="users">👤 Users</a>
+      <a data-page="sellers">🏪 Sellers</a>
+      <a data-page="listings">📦 Listings</a>
+      <a data-page="deals">🤝 Deals</a>
+      <a data-page="revenue">💰 Revenue</a>
+      <a data-page="activity">⚡ Activity</a>
+      <a data-page="settings">⚙️ Settings</a>
+      <a href="/app/admin.html" target="_blank">📈 Bazaar analytics ↗</a>
+    </nav>
+    <div class="sidebar-foot">
+      <span id="health" class="pill">● checking…</span>
+      <button id="logout" class="link">Sign out</button>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script src="admin.js"></script>
+</body>
+</html>

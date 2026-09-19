@@ -8,7 +8,7 @@
  */
 import type { Buyer, Seller } from "@prisma/client";
 import { prisma } from "./db.js";
-import { nextTier, TIERS, tierOf, UNLOCK_WINDOW_HOURS, type Tier } from "./tiers.js";
+import { liveTiers, nextTier, tierOf, UNLOCK_WINDOW_HOURS, type Tier } from "./tiers.js";
 
 export interface Contact {
   sellerId: number;
@@ -45,6 +45,7 @@ export async function countUnlocks(buyerId: number): Promise<number> {
 
 export async function usageOf(b: Buyer): Promise<Usage> {
   const tier = tierOf(b);
+  const TIERS = await liveTiers();
   const used = await countUnlocks(b.id);
   const { quota, unlimited } = TIERS[tier];
   return {
@@ -80,6 +81,7 @@ export async function unlockContact(buyerTelegramUserId: string, sellerId: numbe
 
   // 2–4. rolling-window quota
   const tier = tierOf(buyer);
+  const TIERS = await liveTiers();
   const used = await countUnlocks(buyer.id);
   if (used >= TIERS[tier].quota) {
     const n = nextTier(tier);

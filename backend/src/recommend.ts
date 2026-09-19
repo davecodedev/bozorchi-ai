@@ -71,7 +71,7 @@ export async function recommend(req: RecommendRequest) {
     where: {
       product: productKey,
       reportedAt: { gte: since },
-      ...(province ? { seller: { province: province.key } } : {}),
+      seller: { suspended: false, ...(province ? { province: province.key } : {}) },
       ...(quantityKg ? { minOrderKg: { lte: quantityKg } } : {}),
     },
     include: { seller: true },

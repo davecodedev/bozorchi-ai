@@ -48,10 +48,14 @@ export function identify(req: Request): Identity {
   return { telegramUserId: "anon" };
 }
 
+export class BannedError extends Error { status = 403; }
+
 export async function getOrCreateBuyer(id: Identity) {
-  return prisma.buyer.upsert({
+  const b = await prisma.buyer.upsert({
     where: { telegramUserId: id.telegramUserId },
     create: { telegramUserId: id.telegramUserId, name: id.name, username: id.username },
-    update: { ...(id.name ? { name: id.name } : {}), ...(id.username ? { username: id.username } : {}) },
+    update: { ...(id.name ? { name: id.name } : {}), ...(id.username ? { username: id.username } : {}), lastSeenAt: new Date() },
   });
+  if (b.banned) throw new BannedError("account suspended");
+  return b;
 }

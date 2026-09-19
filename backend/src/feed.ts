@@ -40,7 +40,7 @@ const median = (xs: number[]) => { const a = [...xs].sort((p, q) => p - q); cons
 async function buildFeed(province: string | null, category: string | null, buyer?: { lat: number; lng: number }): Promise<FeedItem[]> {
   const since = new Date(Date.now() - MAX_LISTING_AGE_DAYS * 86_400_000);
   const listings = await prisma.listing.findMany({
-    where: { reportedAt: { gte: since }, ...(province ? { seller: { province } } : {}) },
+    where: { reportedAt: { gte: since }, seller: { suspended: false, ...(province ? { province } : {}) } },
     include: { seller: true },
     orderBy: { reportedAt: "desc" },
   });

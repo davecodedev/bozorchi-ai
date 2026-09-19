@@ -9,6 +9,7 @@
  */
 import type { Deal } from "@prisma/client";
 import { calculateCommission, type Commission } from "./commission.js";
+import { cachedSettings, getSettings } from "./settings.js";
 import { contactOf, type Contact } from "./contactUnlock.js";
 import { prisma } from "./db.js";
 import { productLabel, productUnit } from "./products.js";
@@ -64,8 +65,8 @@ export async function acceptDeal(id: string, actor: Actor) {
   else if (d.status === "countered" && actor === "seller") throw new DealError(409, "waiting for the buyer to answer your counter-offer");
   else throw new DealError(409, `cannot accept a deal that is ${d.status}`);
   const totalValue = agreed * d.quantity;
-  const c = calculateCommission(totalValue);
-  return prisma.deal.update({ where: { id }, data: { status: "accepted", agreedPrice: agreed, totalValue, commissionAmt: c.totalCommission }, include: dealInclude });
+  const c = (await getSettings()).commissionEnabled ? calculateCommission(totalValue).totalCommission : 0;
+  return prisma.deal.update({ where: { id }, data: { status: "accepted", agreedPrice: agreed, totalValue, commissionAmt: c }, include: dealInclude });
 }
 
 export async function declineDeal(id: string, actor: Actor) {
@@ -109,5 +110,6 @@ export function presentDeal(d: Loaded, viewer: Actor = "buyer"): Record<string, 
 /** True when this caller may act as the seller on this deal (the seller's own Telegram account, or demo mode). */
 export function mayActAsSeller(d: Pick<Deal, "sellerId"> & { seller: { telegramUserId: string | null } }, callerTelegramUserId: string): boolean {
   if (d.seller.telegramUserId && d.seller.telegramUserId === callerTelegramUserId) return true;
-  return process.env.DEMO_SELLER_ACTIONS !== "0"; // sellers have no accounts yet — anyone may play the seller in the demo
+  if (process.env.DEMO_SELLER_ACTIONS === "0") return false;
+  return cachedSettings().features.demoSellerActions; // sellers have no accounts yet — anyone may play the seller in the demo (admin can switch it off)
 }

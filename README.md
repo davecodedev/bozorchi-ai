@@ -12,6 +12,7 @@ bazarcha/
 │   └── src/scoring.ts   the recommendation engine (pure, unit-tested)
 ├── bot/       grammY Telegram bot            (/start, text, voice, location → /recommend)
 ├── miniapp/   Telegram Mini App — plain HTML/CSS/JS, served by the backend at /app/
+├── admin/     Platform admin panel (separate site) — served by the backend at /admin/
 └── data/      seed.ts — mock sellers × products for Tashkent
 ```
 
@@ -225,6 +226,48 @@ Listings carry a `photoUrl` — a real photo of the product from Wikipedia / Wik
 (`backend/src/photos.json`, regenerated with `npm run photos:find --workspace backend`, hand-pinned
 where the automatic pick was poor). The Mini App shows a basket icon when a listing has none, never
 a broken image.
+
+## Platform admin panel (`admin/`, `backend/src/admin.ts`)
+
+A separate website for the people running Bozorchi AI, at **`http://localhost:3000/admin/`**
+(same origin as the API, so the same tunnel exposes it). Sign in with `ADMIN_PASSWORD` from
+`backend/.env` (default `admin` when unset — change it before exposing a tunnel). The browser
+sends it as an `x-admin-key` header on every `/admin/api/*` call.
+
+Pages (left sidebar):
+- **Overview** — users (total / new / active), paying users, MRR, commission earned, GMV,
+  deals, contact unlocks, AI calls (parse · assistant · voice · verify), sellers; per-day charts
+  for commission, deals & signups, searches & AI calls, users by plan. Window: 24h · 7d · 30d · 90d · all.
+- **Users** — every buyer with plan, unlocks, deals, GMV, last seen; change plan inline,
+  verify / unverify, **ban / unban** (banned buyers get 403 on every request).
+- **Sellers** — rating, reliability tier + score, listings, deals, revenue; verify and
+  **suspend** (suspended sellers disappear from search, hot feed and lists).
+- **Listings** — newest first with photo, seller and price; filter by product; delete.
+- **Deals** — every negotiation with offer / counter / agreed price, total and commission.
+- **Revenue** — commission, take rate, MRR / ARR, conversion, average deal, commission brackets.
+- **Activity** — the event log: `search`, `parse`, `assistant`, `transcribe`, `verify`, `unlock`,
+  `upgrade`, `deal_created` / `deal_countered` / `deal_accepted` / `deal_declined` with metadata.
+- **Settings** — plan quotas and prices, feature flags (assistant, voice, deals, verification,
+  demo seller auto-replies), commission on/off, **platform fees** (deal opening fee, contact
+  reveal fee — shown to buyers as a confirmation sheet before they act) and an announcement banner
+  that appears at the top of the Mini App. Saved as JSON rows in the `Setting` table; the API
+  re-reads them within 5 s.
+- **Bazaar analytics ↗** — the older per-bazaar analytics page (`/app/admin.html`).
+
+Every user-facing route calls `logEvent()` (`backend/src/events.ts`, fire-and-forget) so the
+Activity page and the AI-usage counters are real. `Buyer.banned`, `Buyer.lastSeenAt`,
+`Seller.suspended`, `Event` and `Setting` were added to the Prisma schema for this.
+
+## Seller profile (Mini App)
+
+Opening a seller from results or the Sellers tab shows an Instagram-style profile: avatar,
+**posts / deals / reviews** counters, name + verified badge + **level** (Starter → Bronze → Silver
+→ Gold → Platinum, computed from deals done, rating and reliability), bio line (rating, bazaar,
+district, member since), earned **badges** (Top seller, Experienced, 5-star service, Consistent
+prices), action row (**Make a deal · Contact · price history**), then tabs: **Posts** (photo grid,
+tap for listing details), **Reviews**, **Stats** (level progress, deals, rating, reliability
+score, price reports, current prices). "Make a deal" and "Contact" first show a **fee sheet**
+(10 000 / 5 000 so'm by default, editable in the admin panel) before continuing.
 
 ## The bot (`bot/`)
 

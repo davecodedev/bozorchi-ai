@@ -19,6 +19,10 @@
       price: "Price", quality: "Quality", distance: "Distance", dist: "Dist", cheapestNote: "Cheapest price — lower quality & distance score",
       noResults: "No sellers match this search yet.", tryAnother: "Try another product or region.",
       sellerProfile: "Seller profile", verifiedBy: `Verified by ${BRAND}`, notVerified: "Not verified yet",
+      statsTab: "Stats", contactBtn: "Contact", memberSince: (d) => `On ${BRAND} since ${d}`, levelLbl: "Level", nextLevel: (n) => `${n} pts to the next level`, maxLevel: "Top level reached", priceReports: "Price reports", reliabilityScore: "Reliability score", avgRating: "Average rating",
+      lvl_starter: "Starter", lvl_bronze: "Bronze", lvl_silver: "Silver", lvl_gold: "Gold", lvl_platinum: "Platinum",
+      b_top_seller: "🏆 Top seller", b_experienced: "🤝 Experienced", b_five_star: "⭐ 5-star service", b_consistent: "📈 Consistent prices",
+      feeDealTitle: "Deal opening fee", feeDealBody: (n, name) => `Opening a deal with ${name} costs ${n} so'm. The fee is charged when you send the offer.`, feeContactTitle: "Contact fee", feeContactBody: (n) => `Revealing this seller's phone number costs ${n} so'm.`, continueBtn: "Continue", postSheet: "Listing", minOrder: (n, u) => `Min. order ${n} ${u}`,
       matchFor: (q, p) => `Match for ${q ? q + " kg " : ""}${p}`, priceNote: (s) => s >= 80 ? `Price competitiveness ${s}/100 — strong value for an order this size.` : s >= 50 ? `Price competitiveness ${s}/100 — fair for an order this size.` : `Price competitiveness ${s}/100 — pricier than alternatives nearby.`,
       requested: (q) => `~${q} kg requested`, currentPrices: "Current prices", minOrder: (kg) => `min. ${kg} kg`, perKg: "so'm/kg",
       viewHistory: "View 30-day price history", reviews: "Reviews", noReviews: "No public reviews yet",
@@ -99,6 +103,10 @@
       price: "Narx", quality: "Sifat", distance: "Masofa", dist: "Masofa", cheapestNote: "Eng arzon narx — sifat va masofa bali pastroq",
       noResults: "Bu so'rov bo'yicha sotuvchi topilmadi.", tryAnother: "Boshqa mahsulot yoki hududni sinab ko'ring.",
       sellerProfile: "Sotuvchi profili", verifiedBy: `${BRAND} tomonidan tasdiqlangan`, notVerified: "Hali tasdiqlanmagan",
+      statsTab: "Statistika", contactBtn: "Kontakt", memberSince: (d) => `${BRAND}da ${d} dan beri`, levelLbl: "Daraja", nextLevel: (n) => `Keyingi darajaga ${n} ball`, maxLevel: "Eng yuqori daraja", priceReports: "Narx hisobotlari", reliabilityScore: "Ishonchlilik bali", avgRating: "O'rtacha reyting",
+      lvl_starter: "Yangi", lvl_bronze: "Bronza", lvl_silver: "Kumush", lvl_gold: "Oltin", lvl_platinum: "Platina",
+      b_top_seller: "🏆 Top sotuvchi", b_experienced: "🤝 Tajribali", b_five_star: "⭐ 5 yulduzli xizmat", b_consistent: "📈 Barqaror narxlar",
+      feeDealTitle: "Kelishuv ochish to'lovi", feeDealBody: (n, name) => `${name} bilan kelishuv ochish ${n} so'm turadi. To'lov taklif yuborilganda olinadi.`, feeContactTitle: "Kontakt to'lovi", feeContactBody: (n) => `Bu sotuvchining telefon raqamini ochish ${n} so'm turadi.`, continueBtn: "Davom etish", postSheet: "E'lon", minOrder: (n, u) => `Min. buyurtma ${n} ${u}`,
       matchFor: (q, p) => `${q ? q + " kg " : ""}${p} uchun moslik`, priceNote: (s) => s >= 80 ? `Narx raqobatbardoshligi ${s}/100 — bu hajm uchun juda foydali.` : s >= 50 ? `Narx raqobatbardoshligi ${s}/100 — bu hajm uchun o'rtacha.` : `Narx raqobatbardoshligi ${s}/100 — yaqin atrofdagilardan qimmatroq.`,
       requested: (q) => `~${q} kg so'raldi`, currentPrices: "Joriy narxlar", minOrder: (kg) => `min. ${kg} kg`, perKg: "so'm/kg",
       viewHistory: "30 kunlik narx tarixi", reviews: "Sharhlar", noReviews: "Hali ochiq sharhlar yo'q",
@@ -179,6 +187,10 @@
       price: "Цена", quality: "Качество", distance: "Расстояние", dist: "Расст.", cheapestNote: "Самая низкая цена — ниже балл качества и расстояния",
       noResults: "Продавцы по этому запросу пока не найдены.", tryAnother: "Попробуйте другой товар или регион.",
       sellerProfile: "Профиль продавца", verifiedBy: `Проверен ${BRAND}`, notVerified: "Ещё не проверен",
+      statsTab: "Статистика", contactBtn: "Контакт", memberSince: (d) => `На ${BRAND} с ${d}`, levelLbl: "Уровень", nextLevel: (n) => `${n} очков до следующего уровня`, maxLevel: "Максимальный уровень", priceReports: "Отчёты о ценах", reliabilityScore: "Балл надёжности", avgRating: "Средний рейтинг",
+      lvl_starter: "Новичок", lvl_bronze: "Бронза", lvl_silver: "Серебро", lvl_gold: "Золото", lvl_platinum: "Платина",
+      b_top_seller: "🏆 Топ-продавец", b_experienced: "🤝 Опытный", b_five_star: "⭐ Сервис на 5 звёзд", b_consistent: "📈 Стабильные цены",
+      feeDealTitle: "Плата за открытие сделки", feeDealBody: (n, name) => `Открытие сделки с ${name} стоит ${n} сум. Плата списывается при отправке предложения.`, feeContactTitle: "Плата за контакт", feeContactBody: (n) => `Открытие номера телефона этого продавца стоит ${n} сум.`, continueBtn: "Продолжить", postSheet: "Объявление", minOrder: (n, u) => `Мин. заказ ${n} ${u}`,
       matchFor: (q, p) => `Соответствие: ${q ? q + " кг " : ""}${p}`, priceNote: (s) => s >= 80 ? `Конкурентность цены ${s}/100 — отличная для такого объёма.` : s >= 50 ? `Конкурентность цены ${s}/100 — средняя для такого объёма.` : `Конкурентность цены ${s}/100 — дороже соседних предложений.`,
       requested: (q) => `~${q} кг запрошено`, currentPrices: "Текущие цены", minOrder: (kg) => `мин. ${kg} кг`, perKg: "сум/кг",
       viewHistory: "История цен за 30 дней", reviews: "Отзывы", noReviews: "Публичных отзывов пока нет",
@@ -425,7 +437,8 @@
     document.getElementById("tabbar").hidden = false;
     renderTabs(isTab ? r.name : TAB_OF[r.name] || "search");
     if (tg) { if (isTab) tg.BackButton.hide(); else tg.BackButton.show(); }
-    Promise.resolve(fn(...r.args)).then((html) => { if (route().name === r.name) { view.innerHTML = `<div class="screen">${html}</div>`; view.scrollTop = keepScroll; } afterRender(r.name); })
+    const ann = S.meta && S.meta.settings && S.meta.settings.announcement ? `<div class="announce">📣 ${esc(S.meta.settings.announcement)}</div>` : "";
+    Promise.resolve(fn(...r.args)).then((html) => { if (route().name === r.name) { view.innerHTML = `<div class="screen">${ann}${html}</div>`; view.scrollTop = keepScroll; } afterRender(r.name); })
       .catch((e) => { view.innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
   }
   function renderTabs(active) {
@@ -636,39 +649,64 @@
 
     async seller(id) {
       const s = await loadSeller(id);
+      const F = (S.meta.settings && S.meta.settings.features) || {};
       const match = S.results && S.results.results.find((r) => r.sellerId === s.id);
       const picked = S.pick && S.pick.sellerId === s.id && s.products.some((p) => p.product === S.pick.product) ? S.pick.product : null;
       const product = match ? S.results.product : (picked || (s.products[0] && s.products[0].product));
       const reviews = s.reviews || [];
+      const st = s.stats || { posts: s.products.length, dealsDone: 0, reviews: reviews.length, avgRating: s.rating, priceReports: 0, memberSince: null };
+      const lvl = s.level || { key: "starter", points: 0, next: 60, badges: [] };
+      const tab = S.sellerTab || "posts";
+      const stat = (n, l) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`;
+      const since = st.memberSince ? new Date(st.memberSince).toLocaleDateString(S.lang === "ru" ? "ru-RU" : "en-GB", { month: "short", year: "numeric" }) : "";
+      const lvlBadge = `<span class="lvl ${lvl.key}">${t("lvl_" + lvl.key)}</span>`;
+      const progress = lvl.next ? Math.min(100, Math.round((lvl.points / lvl.next) * 100)) : 100;
+      const postCell = (p) => `<button class="ig-cell" data-act="sellerPost" data-id="${s.id}" data-product="${esc(p.product)}">${photo(p.photoUrl, "photo cell")}<div class="cell-cap"><b>${esc(plabel(p.product))}</b><span>${fmt(p.pricePerKg)}</span></div></button>`;
       return `
         ${header(t("sellerProfile"), "", bmBtn(s.id))}
-        ${photo((s.products.find((p) => p.product === product) || s.products[0] || {}).photoUrl, "photo hero")}
-        <div class="card soft" style="text-align:center;padding:24px 16px">
-          ${avatar(s.name, "lg")}
-          <div class="name" style="font-size:20px;margin-top:12px">${esc(s.name)}</div>
-          <div class="sub">${esc(s.region)}, ${esc(provLabel(s.province))}</div>
-          <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><span class="verified ${s.verified ? "" : "off"}">${I.shield}${s.verified ? t("verifiedBy") : t("notVerified")}</span>${tierBadge(s.reliability)}</div>
+        <div class="ig-head">
+          <div class="ig-avatar">${avatar(s.name, "lg")}</div>
+          <div class="ig-stats">${stat(st.posts, t("posts"))}${stat(st.dealsDone, t("dealsStat"))}${stat(st.reviews, t("reviews"))}</div>
         </div>
+        <div class="ig-name">${esc(s.name)} ${s.verified ? `<span class="vbuyer">✅ ${t("verifiedBy")}</span>` : ""}${lvlBadge}</div>
+        <p class="ig-bio">★ ${Number(st.avgRating || 0).toFixed(1)} · ${esc(s.bazaar || "")} · ${esc(s.region)}, ${esc(provLabel(s.province))}${since ? `\n${esc(t("memberSince", since))}` : ""}</p>
+        <div class="badges">${tierBadge(s.reliability)}${lvl.badges.map((b) => `<span class="bdg">${t("b_" + b)}</span>`).join("")}</div>
+        <div class="ig-actions seller">
+          ${F.deals === false ? `<span></span>` : `<button class="btn sm" data-act="makeDeal" data-id="${s.id}" data-product="${esc(product || "")}">🤝 ${t("makeDeal")}</button>`}
+          <button class="btn ghost sm" data-act="request" data-id="${s.id}">${I.phone}${s.contactUnlocked ? t("requestOffer") : t("contactBtn")}</button>
+          <button class="icon-btn" data-go="history/${s.id}/${esc(product || "")}" aria-label="${t("viewHistory")}">${I.trend}</button>
+        </div>
+        ${!s.contactUnlocked && S.me ? `<p class="sub wrap" style="text-align:center;margin:-6px 0 10px;font-size:12px">${esc(t("revealHint", S.me.used, S.me.quota, S.me.unlimited))}</p>` : ""}
+        ${s.contactUnlocked && s.contact ? contactCard(s) : ""}
         ${match ? `
         <div class="card">
           <div class="score-hd"><span class="t">${esc(t("matchFor", S.q.qty, plabel(product)))}</span><span class="big">${Math.round(match.score)}</span></div>
           ${bars(match.breakdown)}
-          <p class="sub" style="margin:12px 0 0">${esc(t("priceNote", Math.round(match.breakdown.priceScore)))}</p>
+          <div class="chips" style="margin:10px 0 0"><span class="tag">${esc(plabel(product))}</span>${S.q.qty ? `<span class="tag">${esc(t("requested", S.q.qty))}</span>` : ""}<span class="tag">${fmt(match.pricePerKg)} ${per(product)}</span></div>
+        </div>` : ""}
+        <div class="ig-tabs">
+          <button class="${tab === "posts" ? "on" : ""}" data-stab="posts">${I.grid}${t("posts")}</button>
+          <button class="${tab === "reviews" ? "on" : ""}" data-stab="reviews">${I.star}${t("reviews")}</button>
+          <button class="${tab === "stats" ? "on" : ""}" data-stab="stats">${I.trend}${t("statsTab")}</button>
         </div>
-        <div class="chips"><span class="tag">${esc(plabel(product))}</span>${S.q.qty ? `<span class="tag">${esc(t("requested", S.q.qty))}</span>` : ""}<span class="tag">${fmt(match.pricePerKg)} ${per(product)}</span></div>
-        ${trendLine((s.products.find((p) => p.product === product) || {}).trend)}`
-        : `
-        <div class="card"><p class="label caps" style="margin-bottom:12px">${t("currentPrices")}</p>
-          ${s.products.length ? s.products.map((p) => `<div style="padding:8px 0;border-top:1px solid var(--border)"><div class="row">${photo(p.photoUrl, "photo thumb")}<div class="grow"><b>${esc(plabel(p.product))}</b><div class="sub">min. ${p.minOrderKg} ${per(p.product).split("/")[1]} · ${t("ago", daysBetween(p.reportedAt))}</div></div><b>${fmt(p.pricePerKg)} ${per(p.product)}</b></div>${trendLine(p.trend)}</div>`).join("") : `<div class="sub">—</div>`}
-        </div>`}
-        ${product ? `<button class="link-row soft" data-go="history/${s.id}/${product}">${I.trend.replace("<svg", '<svg style="width:18px;height:18px"')}<span class="grow">${t("viewHistory")}</span>${I.chev.replace("<svg", '<svg class="chev"')}</button>` : ""}
-        <p class="label caps">${t("reviews")}</p>
-        ${reviews.length ? reviews.map((r) => `<div class="card"><div class="row"><b>${"★".repeat(r.rating)}</b><span class="sub">${esc(r.buyer && r.buyer.name || "Buyer")} · ${t("ago", daysBetween(r.createdAt))}</span></div>${r.comment ? `<p style="margin:8px 0 0">${esc(r.comment)}</p>` : ""}</div>`).join("")
-          : `<div class="card soft"><div class="row" style="align-items:flex-start">${I.shield.replace("<svg", '<svg style="width:22px;height:22px;color:var(--primary);flex:none"')}<div><div class="name">${t("noReviews")}</div><p class="sub" style="margin:4px 0 0">${t("noReviewsBody")}</p></div></div></div>`}
-        ${s.contactUnlocked && s.contact ? contactCard(s) : ""}
-        <button class="btn" style="margin-top:8px" data-act="makeDeal" data-id="${s.id}" data-product="${esc(product || "")}">🤝 ${t("makeDeal")}</button>
-        <button class="btn ghost" style="margin-top:8px" data-act="request" data-id="${s.id}">${s.contactUnlocked ? t("requestOffer") : `${I.phone}${t("revealContact")}`}</button>
-        ${!s.contactUnlocked && S.me ? `<p class="sub wrap" style="text-align:center;margin:8px 0 0">${esc(t("revealHint", S.me.used, S.me.quota, S.me.unlimited))}</p>` : ""}`;
+        ${tab === "posts" ? (s.products.length ? `<div class="ig-grid">${s.products.map(postCell).join("")}</div>` : `<div class="empty">${I.bag}<div>${t("noPosts")}</div></div>`) : ""}
+        ${tab === "reviews" ? (reviews.length ? reviews.map((r) => `<div class="card"><div class="row"><b style="color:#E0A800">${"★".repeat(r.rating)}<span style="color:var(--border)">${"★".repeat(5 - r.rating)}</span></b><span class="sub">${esc(r.buyer && r.buyer.name || "Buyer")} · ${t("ago", daysBetween(r.createdAt))}</span></div>${r.comment ? `<p style="margin:8px 0 0">${esc(r.comment)}</p>` : ""}</div>`).join("")
+          : `<div class="card soft"><div class="row" style="align-items:flex-start">${I.shield.replace("<svg", '<svg style="width:22px;height:22px;color:var(--primary);flex:none"')}<div><div class="name">${t("noReviews")}</div><p class="sub" style="margin:4px 0 0">${t("noReviewsBody")}</p></div></div></div>`) : ""}
+        ${tab === "stats" ? `
+          <div class="card">
+            <div class="row"><b class="grow">${t("levelLbl")}: ${t("lvl_" + lvl.key)}</b><span class="sub">${lvl.points} pts</span></div>
+            <div class="lvl-bar"><i style="width:${progress}%"></i></div>
+            <p class="sub" style="margin:6px 0 0">${lvl.next ? esc(t("nextLevel", Math.max(0, lvl.next - lvl.points))) : t("maxLevel")}</p>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><span>${t("dealsStat")}</span><b>${st.dealsDone}</b></div>
+            <div class="kpi"><span>${t("avgRating")}</span><b>★ ${Number(st.avgRating || 0).toFixed(1)}</b></div>
+            <div class="kpi"><span>${t("reliabilityScore")}</span><b>${s.reliability ? s.reliability.score : "—"}</b></div>
+            <div class="kpi"><span>${t("priceReports")}</span><b>${fmt(st.priceReports)}</b></div>
+          </div>
+          <div class="card"><p class="label caps" style="margin-bottom:12px">${t("currentPrices")}</p>
+            ${s.products.length ? s.products.map((p) => `<div style="padding:8px 0;border-top:1px solid var(--border)"><div class="row">${photo(p.photoUrl, "photo thumb")}<div class="grow"><b>${esc(plabel(p.product))}</b><div class="sub">min. ${p.minOrderKg} ${per(p.product).split("/")[1]} · ${t("ago", daysBetween(p.reportedAt))}</div></div><b>${fmt(p.pricePerKg)} ${per(p.product)}</b></div>${trendLine(p.trend)}</div>`).join("") : `<div class="sub">—</div>`}
+          </div>` : ""}`;
     },
 
     async sellers() {
@@ -968,6 +1006,34 @@
       <h3>${t("requestTitle")}</h3><p class="sub wrap">${esc(t("requestBody", s.name))}</p>
       ${contactCard(s)}
       <button class="btn" data-act="sendRequest" data-id="${s.id}">${t("sendRequest")}</button>`);
+  }
+  const fees = () => (S.meta.settings && S.meta.settings.fees) || { dealOpenUzs: 10000, contactUzs: 5000 };
+  /** Fee notice before opening a deal or revealing a contact — the platform's flat fees, set from the admin panel. */
+  async function feeSheet(kind, sellerId, productKey) {
+    const s = await loadSeller(sellerId);
+    const f = fees();
+    if (kind === "deal") return sheet(`
+      <h3>🤝 ${t("feeDealTitle")}</h3>
+      <div class="fee-box"><b>${fmt(f.dealOpenUzs)} so'm</b><span class="sub">${esc(t("feeDealTitle"))}</span></div>
+      <p class="sub wrap">${esc(t("feeDealBody", fmt(f.dealOpenUzs), s.name))}</p>
+      <button class="btn" data-act="feeDeal" data-id="${s.id}" data-product="${esc(productKey || "")}">${t("continueBtn")}</button>`);
+    sheet(`
+      <h3>📞 ${t("feeContactTitle")}</h3>
+      <div class="fee-box"><b>${fmt(f.contactUzs)} so'm</b><span class="sub">${esc(t("feeContactTitle"))}</span></div>
+      <p class="sub wrap">${esc(t("feeContactBody", fmt(f.contactUzs)))}${S.me ? ` ${esc(t("revealHint", S.me.used, S.me.quota, S.me.unlimited))}.` : ""}</p>
+      <button class="btn" data-act="feeContact" data-id="${s.id}">${t("continueBtn")}</button>`);
+  }
+  /** Tapping a post in the seller's grid: listing details + actions. */
+  async function sellerPostSheet(sellerId, productKey) {
+    const s = await loadSeller(sellerId);
+    const p = s.products.find((x) => x.product === productKey) || s.products[0];
+    if (!p) return;
+    sheet(`
+      ${photo(p.photoUrl, "photo hero")}
+      <h3 style="margin-top:10px">${esc(plabel(p.product))}</h3>
+      <div class="price-row"><span class="sub">${esc(t("minOrder", p.minOrderKg, per(p.product).split("/")[1]))} · ${t("ago", daysBetween(p.reportedAt))}</span><span class="price">${fmt(p.pricePerKg)} ${per(p.product)}</span></div>
+      ${trendLine(p.trend)}
+      <div class="row" style="gap:8px;margin-top:12px"><button class="btn ghost sm" style="flex:1" data-go="history/${s.id}/${esc(p.product)}">${I.trend}${t("viewHistory")}</button><button class="btn sm" style="flex:1" data-act="makeDeal" data-id="${s.id}" data-product="${esc(p.product)}">🤝 ${t("makeDeal")}</button></div>`);
   }
   async function dealSheet(sellerId, productKey) {
     const s = await loadSeller(sellerId);
@@ -1347,12 +1413,13 @@
     if (e.target.id === "deal-product") { const o = e.target.selectedOptions[0]; const p = document.getElementById("deal-price"); const q = document.getElementById("deal-qty"); p.value = o.dataset.price; q.min = o.dataset.min; if (Number(q.value) < Number(o.dataset.min)) q.value = o.dataset.min; document.getElementById("deal-list").textContent = t("listPrice", fmt(Number(o.dataset.price))); updateDealTotal(); }
   });
   document.addEventListener("click", async (e) => {
-    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat],[data-fcat],[data-ptab],[data-pick],[data-win],[data-linksel]");
+    const el = e.target.closest("[data-go],[data-act],[data-cat],[data-prov],[data-scat],[data-sprov],[data-bm],[data-lang],[data-tgl],[data-setprov],[data-apcat],[data-fcat],[data-ptab],[data-stab],[data-pick],[data-win],[data-linksel]");
     if (!el) return;
     const d = el.dataset;
     if (d.go !== undefined) { haptic(); closeSheet(); if (assistantOpen()) closeAssistant(); return go(d.go); }
     if (d.cat) { S.category = d.cat; return render(); }
     if (d.ptab) { S.profileTab = d.ptab; return render(); }
+    if (d.stab) { S.sellerTab = d.stab; return render(); }
     if (d.win) { S.dashWindow = d.win; return render(); }
     if (d.linksel) { store.profile.sellerId = Number(d.linksel); save(); closeSheet(); return route().name === "dashboard" ? render() : go("dashboard"); }
     if (d.fcat) { S.feed = { items: [], next: 0, category: d.fcat, loading: false, key: "" }; return render(); }
@@ -1378,7 +1445,10 @@
       case "basketMic": return recordVoice((text) => { const ta = document.getElementById("basket"); S.basketText = (S.basketText ? S.basketText + "\n" : "") + text.replace(/\s*(,|\bva\b|\bи\b|\band\b)\s*/gi, "\n"); if (ta) ta.value = S.basketText; toast(t("heard", text)); getQuote(); }, (on) => { S.basketRec = on; render(); });
       case "speak": return S.asst.result && speak(S.asst.result.answer);
       case "asstToBasket": { const r = S.asst.result; S.basketText = r.items.filter((i) => i.best).map((i) => `${i.quantity || i.best.minOrderKg} ${per(i.product).split("/")[1]} ${plabel(i.product)}`).join("\n"); return go("basket"); }
-      case "request": haptic(); return requestSheet(d.id);
+      case "request": { haptic(); const sl = await loadSeller(d.id); return sl.contactUnlocked ? requestSheet(d.id) : feeSheet("contact", d.id); }
+      case "feeContact": closeSheet(); return requestSheet(d.id);
+      case "feeDeal": closeSheet(); return dealSheet(d.id, d.product);
+      case "sellerPost": haptic(); return sellerPostSheet(d.id, d.product);
       case "sendRequest": closeSheet(); haptic("medium"); try { tg.HapticFeedback.notificationOccurred("success"); } catch {} return toast(t("requestSent"));
       case "chooseRegion": return regionSheet();
       case "addProduct": haptic(); return addProductSheet();
@@ -1391,7 +1461,7 @@
       case "editPost": closeSheet(); return addProductSheet(Number(d.i));
       case "deletePost": store.myProducts.splice(Number(d.i), 1); save(); closeSheet(); haptic(); toast(t("deleted")); return render();
       case "upgrade": haptic(); return go("profile");
-      case "makeDeal": haptic(); return dealSheet(d.id, d.product);
+      case "makeDeal": haptic(); return feeSheet("deal", d.id, d.product);
       case "sendOffer": return sendOffer();
       case "dealAccept": return dealAction(d.id, "accept", { actor: "buyer" });
       case "dealDecline": return dealAction(d.id, "decline", { actor: "buyer" });

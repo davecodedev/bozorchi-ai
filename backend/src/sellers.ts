@@ -15,6 +15,7 @@ export async function listSellers(f: SellerFilter) {
   const since = new Date(Date.now() - MAX_LISTING_AGE_DAYS * 86_400_000);
   const sellers = await prisma.seller.findMany({
     where: {
+      suspended: false,
       ...(f.province ? { province: f.province } : {}),
       ...(f.q ? { name: { contains: f.q } } : {}),
     },
@@ -58,7 +59,15 @@ export async function getSeller(id: number) {
   const latest = new Map<string, (typeof s.listings)[number]>();
   for (const l of s.listings) if (!latest.has(l.product)) latest.set(l.product, l);
   const { listings: _l, ...seller } = s;
-  const reliability = await computeReliability(s.id);
+  const [reliability, dealsDone, reviewsAgg, priceReports] = await Promise.all([
+    computeReliability(s.id),
+    prisma.deal.count({ where: { sellerId: s.id, status: "accepted" } }),
+    prisma.review.aggregate({ where: { sellerId: s.id }, _count: { _all: true }, _avg: { rating: true } }),
+    prisma.priceHistory.count({ where: { sellerId: s.id } }),
+  ]);
+  const first = await prisma.priceHistory.findFirst({ where: { sellerId: s.id }, orderBy: { reportedAt: "asc" }, select: { reportedAt: true } });
+  const stats = { posts: latest.size, dealsDone, reviews: reviewsAgg._count._all, avgRating: Math.round((reviewsAgg._avg.rating ?? s.rating) * 10) / 10, priceReports, memberSince: first?.reportedAt ?? new Date() };
+  const level = sellerLevel(dealsDone, stats.avgRating, reliability.tier);
   const products = await Promise.all(
     [...latest.values()].map(async (l) => ({
       listingId: l.id,
@@ -72,5 +81,17 @@ export async function getSeller(id: number) {
       trend: await forecastTrend(l.product, s.province), // P3: "Narx tendensiyasi: so'nggi 30 kunda +15%"
     })),
   );
-  return { ...seller, products, reliability };
+  return { ...seller, products, reliability, stats, level };
+}
+
+/** Gamified seller level: deals done × rating × reliability → badge shown on the profile. */
+export function sellerLevel(dealsDone: number, avgRating: number, reliabilityTier: string) {
+  const badges: string[] = [];
+  if (dealsDone >= 50) badges.push("top_seller"); else if (dealsDone >= 10) badges.push("experienced");
+  if (avgRating >= 4.7) badges.push("five_star");
+  if (reliabilityTier === "gold") badges.push("consistent");
+  const pts = dealsDone * 10 + Math.max(0, avgRating - 3) * 50 + (({ gold: 100, silver: 60, bronze: 30 } as Record<string, number>)[reliabilityTier] ?? 0);
+  const key = pts >= 700 ? "platinum" : pts >= 400 ? "gold" : pts >= 200 ? "silver" : pts >= 60 ? "bronze" : "starter";
+  const next = { starter: 60, bronze: 200, silver: 400, gold: 700, platinum: null }[key] as number | null;
+  return { key, points: Math.round(pts), next, badges };
 }

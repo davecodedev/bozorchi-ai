@@ -328,8 +328,20 @@ a { color: var(--primary); text-decoration: none; }
 .ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin: 0 -16px; }
 .ig-cell { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--primary-soft); text-align: left; }
 .ig-cell .photo.cell { width: 100%; height: 100%; border-radius: 0; }
-.cell-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 8px 6px; background: linear-gradient(transparent, rgba(0,0,0,.55)); color: #fff; font-size: 11px; display: flex; justify-content: space-between; gap: 6px; }
+.cell-cap { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; padding: 22px 8px 6px; background: linear-gradient(transparent, rgba(0,0,0,.55)); color: #fff; font-size: 11px; display: flex; justify-content: space-between; gap: 6px; }
 .cell-cap b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ig-actions.seller { grid-template-columns: 1fr 1fr 40px; }
+.ig-actions.seller .btn.sm { min-height: 36px; padding: 6px 10px; font-size: 13px; border-radius: 10px; white-space: nowrap; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+.bdg { font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; background: var(--chip); color: var(--text); }
+.lvl { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .04em; background: var(--chip); color: var(--muted); }
+.lvl.bronze { background: #F4E3D3; color: #8A4B1D; } .lvl.silver { background: #E8ECF1; color: #4B5563; } .lvl.gold { background: #FBEFC8; color: #8A6400; } .lvl.platinum { background: #DDE9FF; color: #1D4ED8; }
+.lvl-bar { height: 8px; border-radius: 999px; background: var(--chip); overflow: hidden; margin-top: 10px; }
+.lvl-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--primary), #6BD48F); border-radius: 999px; }
+.fee-box { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 14px 16px; border-radius: var(--radius); background: var(--primary-soft); margin: 6px 0 10px; }
+.fee-box b { font-size: 22px; font-weight: 800; color: var(--primary); }
+.announce { background: #FFF6D9; color: #7A5A00; border: 1px solid #F3E1A3; border-radius: 12px; padding: 10px 12px; font-size: 13px; font-weight: 600; margin: 0 0 12px; }
 
 /* ---------- seller dashboard ---------- */
 .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }

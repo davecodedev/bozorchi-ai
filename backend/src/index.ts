@@ -18,6 +18,10 @@ import { transcribeAudio, transcribeAvailable } from "./transcribe.js";
 import { sellerDashboard, WINDOWS } from "./dashboard.js";
 import { runAssistant } from "./assistant.js";
 import { verifyListing } from "./verify.js";
+import { logEvent } from "./events.js";
+import { getSettings } from "./settings.js";
+import { adminCatalog, adminAuth, adminDeals, adminEvents, adminListings, adminSellers, adminStats, adminUpdateUser, adminUsers, DEFAULT_SETTINGS, setSetting } from "./admin.js";
+import { BannedError } from "./auth.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVINCES } from "./geo.js";
@@ -44,6 +48,8 @@ app.get("/health", (_req, res) => res.json({ ok: true, service: "bozorchi-ai-bac
 
 // ---------------------------------------------------------------- account & tiers
 const buyerOf = (req: Request) => getOrCreateBuyer(identify(req));
+// banned buyers: turn BannedError into a 403 for every route
+app.use(async (req, res, next) => { try { if (/^\/(me|recommend|sellers|deals|quote|assistant|history|market|feed|parse)/.test(req.path)) await buyerOf(req); next(); } catch (e) { if (e instanceof BannedError) return res.status(403).json({ error: "account suspended" }); next(); } });
 
 app.get("/me", async (req, res) => {
   const b = await buyerOf(req);
@@ -56,6 +62,7 @@ app.post("/me/upgrade", async (req, res) => {
   const tier = req.body?.tier as Tier;
   if (!["free", "pro", "max"].includes(tier)) return res.status(400).json({ error: "tier must be free | pro | max" });
   const u = await setTier(b.id, tier);
+  logEvent("upgrade", { buyerId: b.id, meta: { tier } });
   res.json({ ok: true, tier: tierOf(u), verifiedBuyer: u.verifiedBuyer, usage: await usageOf(u) });
 });
 
@@ -70,6 +77,7 @@ app.post("/sellers/:id/unlock", async (req, res) => {
   try {
     const b = await buyerOf(req);
     const r = await unlockContact(b.telegramUserId, id);
+    logEvent("unlock", { buyerId: b.id, sellerId: id, meta: { status: r.status } });
     res.status(r.status === "quota_exceeded" ? 402 : 200).json(r);
   } catch (e) {
     res.status(404).json({ error: (e as Error).message });
@@ -77,8 +85,9 @@ app.post("/sellers/:id/unlock", async (req, res) => {
 });
 
 /** Everything the Mini App needs to draw its chips. */
-app.get("/meta", (_req, res) =>
+app.get("/meta", async (_req, res) =>
   res.json({
+    settings: (({ features, announcement, fees }) => ({ features, announcement, fees }))(await getSettings()),
     products: PRODUCTS.map(({ key, category, unit, label, aliases }) => ({ key, category, unit, label, aliases, photoUrl: photoFor(key) })),
     categories: CATEGORIES,
     units: UNIT_LABEL,
@@ -119,6 +128,7 @@ app.post("/parse", async (req, res) => {
   const text = typeof req.body?.text === "string" ? req.body.text : "";
   if (!nlpAvailable()) return res.json({ available: false, product: null, quantity: null, unit: null, region: null, productKey: null, quantityKg: null });
   const parsed = await parseQuery(text);
+  logEvent("parse", { meta: { text: text.slice(0, 120), product: parsed.product } });
   res.json({
     available: true,
     ...parsed,
@@ -142,6 +152,7 @@ app.post("/recommend", async (req, res) => {
       personalWeights: personal.preference ? personal.weights : undefined,
     });
     (data as Record<string, unknown>).personalization = { preference: personal.preference, contacts: personal.contacts };
+    logEvent("search", { buyerId: b.id, meta: { product: data.product, province: data.province, candidates: data.candidates } });
     res.json({ ...data, usage: await usageOf(b) });
   } catch (e) {
     if (e instanceof RecommendError) {
@@ -196,9 +207,11 @@ const actorFor = async (req: Request, dealId: string): Promise<{ actor: Actor; t
 };
 
 app.post("/deals", async (req, res) => {
+  if (!(await getSettings()).features.deals) return res.status(403).json({ error: "deals are disabled by admin" });
   try {
     const b = await buyerOf(req);
     const d = await createDeal(b.telegramUserId, req.body ?? {});
+    logEvent("deal_created", { buyerId: b.id, sellerId: d.sellerId, meta: { deal: d.id, product: d.listing.product, quantity: d.quantity, offer: d.initialOffer } });
     res.status(201).json({ deal: presentDeal(d) });
   } catch (e) { dealErr(res, e); }
 });
@@ -218,49 +231,61 @@ app.post("/deals/:id/counter", async (req, res) => {
   try {
     const { actor } = await actorFor(req, req.params.id);
     if (actor !== "seller") throw new DealError(403, "only the seller can counter");
-    res.json({ deal: presentDeal(await counterDeal(req.params.id, req.body?.pricePerKg), "buyer") });
+    const d = await counterDeal(req.params.id, req.body?.pricePerKg);
+    logEvent("deal_countered", { buyerId: d.buyerId, sellerId: d.sellerId, meta: { deal: d.id, counter: d.counterOffer } });
+    res.json({ deal: presentDeal(d, "buyer") });
   } catch (e) { dealErr(res, e); }
 });
 app.post("/deals/:id/accept", async (req, res) => {
   try {
     const { actor } = await actorFor(req, req.params.id);
-    res.json({ deal: presentDeal(await acceptDeal(req.params.id, actor), "buyer") });
+    const d = await acceptDeal(req.params.id, actor);
+    logEvent("deal_accepted", { buyerId: d.buyerId, sellerId: d.sellerId, meta: { deal: d.id, total: d.totalValue, commission: d.commissionAmt } });
+    res.json({ deal: presentDeal(d, "buyer") });
   } catch (e) { dealErr(res, e); }
 });
 app.post("/deals/:id/decline", async (req, res) => {
   try {
     const { actor } = await actorFor(req, req.params.id);
-    res.json({ deal: presentDeal(await declineDeal(req.params.id, actor), "buyer") });
+    const d = await declineDeal(req.params.id, actor);
+    logEvent("deal_declined", { buyerId: d.buyerId, sellerId: d.sellerId, meta: { deal: d.id, by: actor } });
+    res.json({ deal: presentDeal(d, "buyer") });
   } catch (e) { dealErr(res, e); }
 });
 
 /** AI verification of a listing before it is posted (photo ↔ name, category, price sanity, inappropriate content). */
 app.post("/listings/verify", async (req, res) => {
-  try { res.json(await verifyListing(req.body ?? {})); }
+  if (!(await getSettings()).features.verification) return res.json({ ok: true, issues: [], skipped: "disabled by admin" });
+  try { const v = await verifyListing(req.body ?? {}); logEvent("verify", { meta: { name: req.body?.name, ok: v.ok, issues: v.issues.map((i) => i.code) } }); res.json(v); }
   catch (e) { console.error(e); res.status(500).json({ error: "internal error" }); }
 });
 
 /** AI assistant: multi-item request + preferences → per-item picks, basket quote and a spoken answer. */
 app.post("/assistant", async (req, res) => {
+  if (!(await getSettings()).features.assistant) return res.status(403).json({ error: "assistant disabled by admin" });
   try {
     const text = typeof req.body?.text === "string" ? req.body.text.trim() : "";
     if (!text) return res.status(400).json({ error: "text is required" });
     const b = await buyerOf(req);
     const personal = await getPersonalWeights(b.telegramUserId);
     const { province, region, lat, lng } = req.body ?? {};
-    res.json(await runAssistant({ text, province, region, lat, lng, personalWeights: personal.preference ? personal.weights : undefined }));
+    const out = await runAssistant({ text, province, region, lat, lng, personalWeights: personal.preference ? personal.weights : undefined });
+    logEvent("assistant", { buyerId: b.id, meta: { text: text.slice(0, 120), items: out.items.length, priority: out.plan.priority } });
+    res.json(out);
   } catch (e) { console.error(e); res.status(500).json({ error: "internal error" }); }
 });
 
 /** Voice → text via Gemini audio. Body = raw audio bytes (content-type = the recording's mime type). */
-app.get("/transcribe", (_req, res) => res.json({ available: transcribeAvailable() }));
+app.get("/transcribe", async (_req, res) => res.json({ available: transcribeAvailable() && (await getSettings()).features.voice }));
 app.post("/transcribe", async (req, res) => {
+  if (!(await getSettings()).features.voice) return res.status(403).json({ error: "voice disabled by admin", available: false });
   if (!transcribeAvailable()) return res.status(503).json({ error: "speech recognition not configured", available: false });
   const buf = req.body as Buffer;
   if (!Buffer.isBuffer(buf) || buf.length < 500) return res.status(400).json({ error: "no audio" });
   try {
     const mime = (req.header("content-type") || "audio/webm").split(";")[0];
     const text = await transcribeAudio(buf, mime);
+    logEvent("transcribe", { meta: { bytes: buf.length, chars: text.length } });
     res.json({ text, available: true });
   } catch (e) {
     console.error("transcribe failed:", e);
@@ -354,6 +379,29 @@ app.post("/quote", async (req, res) => {
     res.status(500).json({ error: "internal error" });
   }
 });
+
+// ---------------------------------------------------------------- platform admin (separate site at /admin/)
+app.use("/admin/api", adminAuth);
+app.get("/admin/api/stats", async (req, res) => { try { res.json(await adminStats(String(req.query.window || "7d"))); } catch (e) { console.error(e); res.status(500).json({ error: "internal error" }); } });
+app.get("/admin/api/users", async (req, res) => res.json(await adminUsers({ search: req.query.q as string, tier: req.query.tier as string, page: Number(req.query.page) || 1 })));
+app.post("/admin/api/users/:id", async (req, res) => { try { res.json({ user: await adminUpdateUser(Number(req.params.id), req.body ?? {}) }); } catch (e) { res.status(400).json({ error: (e as Error).message }); } });
+app.get("/admin/api/sellers", async (req, res) => res.json(await adminSellers({ search: req.query.q as string, province: req.query.province as string, page: Number(req.query.page) || 1, suspended: req.query.suspended === "1" ? true : req.query.suspended === "0" ? false : undefined })));
+app.post("/admin/api/sellers/:id", async (req, res) => { try { res.json({ seller: await prisma.seller.update({ where: { id: Number(req.params.id) }, data: { ...(typeof req.body?.suspended === "boolean" ? { suspended: req.body.suspended } : {}), ...(typeof req.body?.verified === "boolean" ? { verified: req.body.verified } : {}) } }) }); } catch (e) { res.status(400).json({ error: (e as Error).message }); } });
+app.get("/admin/api/listings", async (req, res) => res.json(await adminListings({ search: req.query.q as string, product: req.query.product as string, page: Number(req.query.page) || 1 })));
+app.delete("/admin/api/listings/:id", async (req, res) => { try { const id = Number(req.params.id); await prisma.buyerInteraction.deleteMany({ where: { listingId: id } }); await prisma.deal.deleteMany({ where: { listingId: id } }); await prisma.listing.delete({ where: { id } }); res.json({ ok: true }); } catch (e) { res.status(400).json({ error: (e as Error).message }); } });
+app.get("/admin/api/deals", async (req, res) => res.json(await adminDeals({ status: req.query.status as string, page: Number(req.query.page) || 1 })));
+app.get("/admin/api/events", async (req, res) => res.json({ events: await adminEvents({ type: req.query.type as string, limit: Number(req.query.limit) || 100 }) }));
+app.get("/admin/api/settings", async (_req, res) => res.json({ settings: await getSettings(), defaults: DEFAULT_SETTINGS }));
+app.post("/admin/api/settings", async (req, res) => {
+  try {
+    const patch = req.body ?? {};
+    for (const key of ["tiers", "features", "commissionEnabled", "announcement", "fees"] as const) if (key in patch) await setSetting(key, patch[key]);
+    res.json({ settings: await getSettings() });
+  } catch (e) { res.status(400).json({ error: (e as Error).message }); }
+});
+app.get("/admin/api/products", (_req, res) => res.json(adminCatalog()));
+const adminDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../admin");
+app.use("/admin", express.static(adminDir, { extensions: ["html"] }));
 
 // Serve the Mini App from the same origin, so one HTTPS tunnel exposes both API and app.
 const miniappDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../miniapp");

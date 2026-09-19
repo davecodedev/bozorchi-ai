@@ -7,6 +7,7 @@
  */
 import type { Buyer } from "@prisma/client";
 import { prisma } from "./db.js";
+import { getSettings } from "./settings.js";
 
 export type Tier = "free" | "pro" | "max";
 
@@ -26,6 +27,16 @@ export const nextTier = (t: Tier): Tier | null => TIER_ORDER[TIER_ORDER.indexOf(
 
 export function tierInfo(t: Tier) {
   return { tier: t, ...TIERS[t] };
+}
+
+/** Live tier table: code defaults overridden by admin settings (quota, price). */
+export async function liveTiers(): Promise<typeof TIERS> {
+  const s = await getSettings();
+  return {
+    free: { ...TIERS.free, quota: s.tiers.free.quota, priceUsd: s.tiers.free.priceUsd },
+    pro: { ...TIERS.pro, quota: s.tiers.pro.quota, priceUsd: s.tiers.pro.priceUsd },
+    max: { ...TIERS.max, quota: s.tiers.max.quota, priceUsd: s.tiers.max.priceUsd },
+  };
 }
 
 /**
